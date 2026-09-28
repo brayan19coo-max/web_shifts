@@ -1,5 +1,10 @@
 # Sonidos
 
+> ✅ Los 14 sonidos de Shift's ya están conectados en `js/config.js`.
+> Se procesaron para la web: se recortó el silencio del inicio y del final, se igualó el volumen
+> y se convirtieron a MP3 real (la mayoría eran WAV con extensión .mp3). Pasaron de 6 MB a 1.6 MB.
+> Para reemplazar uno, sube un archivo nuevo con el mismo nombre.
+
 **Nombres sugeridos para los archivos** (así solo hay que conectarlos):
 `hover.mp3`, `click.mp3`, `open.mp3`, `close.mp3`, `add.mp3`, `remove.mp3`, `success.mp3`,
 `error.mp3`, `whoosh.mp3`, `tick.mp3`, `note.mp3`, `spray.mp3`, `unlock.mp3`, `ambient.mp3`.

@@ -64,20 +64,20 @@ export const DROP = {
  * `ambient` es la música de fondo: un loop largo (.mp3).
  */
 export const SOUNDS = {
-  hover: null,    // pasar el mouse sobre botones/productos
-  click: null,    // clic en botones
-  open: null,     // abrir carrito / vista rápida / menú
-  close: null,    // cerrar paneles
-  add: null,      // agregar al carrito
-  remove: null,   // quitar del carrito
-  success: null,  // compra / suscripción exitosa
-  error: null,    // validación fallida (falta talla, clave incorrecta)
-  whoosh: null,   // transiciones (filtros, intro)
-  tick: null,     // pequeños detalles (colores, cantidades, contador)
-  note: null,     // letras de "Shifting your style" (se afina por letra)
-  spray: null,    // clic en el logo (lata de aerosol)
-  unlock: null,   // drop desbloqueado
-  ambient: null,  // música de fondo en loop
+  hover: 'assets/sounds/hover.mp3',         // pasar el mouse sobre botones/productos
+  click: 'assets/sounds/click.mp3',         // clic en botones
+  open: 'assets/sounds/open.mp3',           // abrir carrito / vista rápida / menú
+  close: 'assets/sounds/close.mp3',         // cerrar paneles
+  add: 'assets/sounds/add.mp3',             // agregar al carrito
+  remove: 'assets/sounds/remove.mp3',       // quitar del carrito
+  success: 'assets/sounds/success.mp3',     // compra / suscripción exitosa
+  error: 'assets/sounds/error.mp3',         // validación fallida (falta talla, clave incorrecta)
+  whoosh: 'assets/sounds/whoosh.mp3',       // transiciones (filtros, intro)
+  tick: 'assets/sounds/tick.mp3',           // pequeños detalles (colores, cantidades, contador)
+  note: 'assets/sounds/note.mp3',           // letras de "Shifting your style" (se afina por letra)
+  spray: 'assets/sounds/spray.mp3',         // clic en el logo (lata de aerosol)
+  unlock: 'assets/sounds/unlock.mp3',       // drop desbloqueado
+  ambient: 'assets/sounds/ambient.mp3',     // música de fondo en loop
 };
 
 /** Volúmenes por defecto (0 a 1). */
