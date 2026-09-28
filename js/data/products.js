@@ -1,12 +1,36 @@
 /**
- * CATÁLOGO
- * -------------------------------------------------------------
- * Agrega, quita o edita productos aquí.
+ * CATÁLOGO DE PRODUCTOS
+ * =============================================================
+ * Para AGREGAR un producto: copia esta plantilla, pégala dentro de
+ * la lista PRODUCTS (más abajo) y cambia los datos.
  *
- * - type: forma de la ilustración cuando no hay foto
- *         ('tee' | 'hoodie' | 'jacket' | 'pants' | 'cap' | 'tote')
- * - images: (opcional) fotos reales por color, en el mismo orden que `colors`.
- *           Ej: images: ['assets/images/tee-negra.jpg', 'assets/images/tee-blanca.jpg']
+ *   {
+ *     id: 'hoodie-negro-graffiti',       // único, sin espacios ni tildes
+ *     name: 'Hoodie Graffiti',           // nombre que se ve en la tienda
+ *     category: 'hoodies',               // una de las categorías de CATEGORIES
+ *     type: 'hoodie',                    // dibujo si no hay foto: tee | hoodie | jacket | pants | cap | tote
+ *     price: 189000,                     // en pesos, sin puntos ni signo $
+ *     tag: 'Nuevo',                      // etiqueta opcional (bórrala si no quieres)
+ *     description: 'Texto que aparece en la vista rápida.',
+ *     colors: [
+ *       { name: 'Negro', hex: '#111111' },
+ *       { name: 'Blanco', hex: '#f4f4f4' },
+ *     ],
+ *     sizes: ['S', 'M', 'L', 'XL'],      // o ['Única']
+ *     images: [                          // opcional: una foto por color, mismo orden
+ *       'assets/images/productos/hoodie-graffiti-negro.jpg',
+ *       'assets/images/productos/hoodie-graffiti-blanco.jpg',
+ *     ],
+ *     drop: 'drop-02',                   // opcional: lo bloquea en el drop con clave
+ *   },
+ *
+ * Reglas rápidas:
+ * - Cada producto va entre { } y termina con una coma.
+ * - Los textos van entre comillas simples '...'.
+ * - Fotos: guárdalas en assets/images/productos/ (formato .jpg o .webp,
+ *   cuadradas o verticales 4:5, fondo liso, idealmente < 300 KB).
+ * - Para QUITAR un producto, borra su bloque { ... }, completo.
+ * - Para sacar un producto del drop bloqueado, borra su línea `drop`.
  */
 
 export const CATEGORIES = [
@@ -18,137 +42,133 @@ export const CATEGORIES = [
   { id: 'accesorios', label: 'Accesorios' },
 ];
 
-const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
+const SIZES = ['S', 'M', 'L', 'XL'];
+
+const NEGRO = { name: 'Negro', hex: '#111111' };
+const BLANCO = { name: 'Blanco', hex: '#f4f4f4' };
+const GRIS = { name: 'Gris', hex: '#8a8a8a' };
+const CARBON = { name: 'Carbón', hex: '#333333' };
 
 export const PRODUCTS = [
+  // ---------------- COLECCIÓN (Drop 01) ----------------
   {
-    id: 'tee-static',
-    name: 'Tee Static',
+    id: 'tee-tag',
+    name: 'Tee Tag',
     category: 'camisetas',
     type: 'tee',
     price: 89000,
     tag: 'Drop 01',
-    description: 'Camiseta oversize en algodón peinado de 240 g. Estampado frontal en tinta de alta densidad.',
-    colors: [
-      { name: 'Negro', hex: '#161616' },
-      { name: 'Hueso', hex: '#e9e4d8' },
-      { name: 'Ácido', hex: '#d4ff3a' },
-    ],
+    description: 'Camiseta oversize en algodón de 240 g con el logo Shift\'s estampado al frente.',
+    colors: [NEGRO, BLANCO],
     sizes: SIZES,
   },
   {
-    id: 'tee-glitch',
-    name: 'Tee Glitch',
+    id: 'tee-wall',
+    name: 'Tee Wall',
     category: 'camisetas',
     type: 'tee',
     price: 95000,
     tag: 'Nuevo',
-    description: 'Corte boxy, cuello acanalado grueso y gráfico glitch en la espalda.',
-    colors: [
-      { name: 'Blanco', hex: '#f4f4f0' },
-      { name: 'Rojo', hex: '#ff4d2e' },
-    ],
+    description: 'Corte boxy, cuello grueso y gráfico de muro pintado en la espalda.',
+    colors: [BLANCO, GRIS],
     sizes: SIZES,
   },
   {
-    id: 'hoodie-orbit',
-    name: 'Hoodie Orbit',
+    id: 'hoodie-bomb',
+    name: 'Hoodie Bomb',
     category: 'hoodies',
     type: 'hoodie',
     price: 189000,
     tag: 'Más vendido',
-    description: 'Felpa perchada de 420 g, capucha doble y bolsillo canguro. Bordado tono sobre tono.',
-    colors: [
-      { name: 'Grafito', hex: '#2a2a2e' },
-      { name: 'Oliva', hex: '#5d6b3a' },
-      { name: 'Lila', hex: '#b9a6ff' },
-    ],
+    description: 'Felpa perchada de 420 g, capucha doble y bolsillo canguro. Logo bordado.',
+    colors: [NEGRO, CARBON, BLANCO],
     sizes: SIZES,
   },
   {
-    id: 'hoodie-noise',
-    name: 'Hoodie Noise',
-    category: 'hoodies',
-    type: 'hoodie',
-    price: 199000,
-    tag: 'Últimas unidades',
-    description: 'Hoodie heavyweight con lavado vintage. Cada pieza queda única.',
-    colors: [
-      { name: 'Arena', hex: '#cdb892' },
-      { name: 'Negro', hex: '#141414' },
-    ],
-    sizes: SIZES,
-  },
-  {
-    id: 'jacket-shift',
-    name: 'Chaqueta Shift',
+    id: 'jacket-crew',
+    name: 'Chaqueta Crew',
     category: 'chaquetas',
     type: 'jacket',
     price: 279000,
     tag: 'Drop 01',
-    description: 'Chaqueta coach en nylon repelente al agua con forro de malla y cremallera metálica.',
-    colors: [
-      { name: 'Negro', hex: '#101010' },
-      { name: 'Azul eléctrico', hex: '#2f5bff' },
-    ],
+    description: 'Chaqueta coach en nylon repelente al agua con forro de malla.',
+    colors: [NEGRO, BLANCO],
     sizes: SIZES,
   },
   {
     id: 'pants-cargo',
-    name: 'Cargo Drift',
+    name: 'Cargo Throw-Up',
     category: 'pantalones',
     type: 'pants',
     price: 169000,
-    tag: 'Nuevo',
-    description: 'Pantalón cargo de bota ancha con seis bolsillos y cordón ajustable en el ruedo.',
-    colors: [
-      { name: 'Caqui', hex: '#8c7b58' },
-      { name: 'Negro', hex: '#1b1b1b' },
-    ],
+    description: 'Pantalón cargo de bota ancha con seis bolsillos y cordón en el ruedo.',
+    colors: [NEGRO, GRIS],
     sizes: ['28', '30', '32', '34', '36'],
   },
   {
-    id: 'pants-jogger',
-    name: 'Jogger Loop',
-    category: 'pantalones',
-    type: 'pants',
-    price: 139000,
-    description: 'Jogger en felpa francesa con puño elástico y bolsillo trasero con cremallera.',
-    colors: [
-      { name: 'Gris jaspe', hex: '#9a9a9a' },
-      { name: 'Grafito', hex: '#2a2a2e' },
-    ],
-    sizes: SIZES,
-  },
-  {
-    id: 'cap-signal',
-    name: 'Gorra Signal',
+    id: 'cap-piece',
+    name: 'Gorra Piece',
     category: 'accesorios',
     type: 'cap',
     price: 69000,
-    tag: 'Drop 01',
-    description: 'Gorra de seis paneles en sarga lavada, correa metálica y bordado 3D.',
-    colors: [
-      { name: 'Negro', hex: '#161616' },
-      { name: 'Ácido', hex: '#d4ff3a' },
-      { name: 'Hueso', hex: '#e9e4d8' },
-    ],
+    description: 'Gorra de seis paneles en sarga lavada con bordado 3D.',
+    colors: [NEGRO, BLANCO],
     sizes: ['Única'],
   },
   {
-    id: 'tote-carry',
-    name: 'Tote Carry',
+    id: 'tote-can',
+    name: 'Tote Can',
     category: 'accesorios',
     type: 'tote',
     price: 59000,
-    description: 'Bolso tote en lona de 16 oz con bolsillo interno y serigrafía frontal.',
-    colors: [
-      { name: 'Crudo', hex: '#e6dcc4' },
-      { name: 'Negro', hex: '#141414' },
-    ],
+    description: 'Bolso tote en lona de 16 oz con el logo en serigrafía.',
+    colors: [BLANCO, NEGRO],
     sizes: ['Única'],
   },
+
+  // ---------------- DROP 02 (bloqueado con clave) ----------------
+  {
+    id: 'hoodie-night-shift',
+    name: 'Hoodie Night Shift',
+    category: 'hoodies',
+    type: 'hoodie',
+    price: 219000,
+    tag: 'Drop 02',
+    description: 'Edición limitada numerada. Estampado reflectivo que aparece con el flash.',
+    colors: [NEGRO, CARBON],
+    sizes: SIZES,
+    drop: 'drop-02',
+  },
+  {
+    id: 'tee-outline',
+    name: 'Tee Outline',
+    category: 'camisetas',
+    type: 'tee',
+    price: 99000,
+    tag: 'Drop 02',
+    description: 'Logo en contorno puff print, algodón pesado de 280 g.',
+    colors: [BLANCO, NEGRO],
+    sizes: SIZES,
+    drop: 'drop-02',
+  },
+  {
+    id: 'jacket-varsity',
+    name: 'Varsity Shift',
+    category: 'chaquetas',
+    type: 'jacket',
+    price: 349000,
+    tag: 'Drop 02',
+    description: 'Chaqueta varsity en paño con mangas en cuero sintético y parches bordados.',
+    colors: [NEGRO, BLANCO],
+    sizes: SIZES,
+    drop: 'drop-02',
+  },
 ];
+
+/** Productos visibles en la tienda principal (sin los de drops bloqueados). */
+export const CATALOG = PRODUCTS.filter((p) => !p.drop);
+
+export const getDropProducts = (dropId) => PRODUCTS.filter((p) => p.drop === dropId);
 
 export function getProduct(id) {
   return PRODUCTS.find((p) => p.id === id);

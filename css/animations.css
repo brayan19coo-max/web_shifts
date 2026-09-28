@@ -73,8 +73,29 @@
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(212, 255, 58, 0.6); }
-  100% { box-shadow: 0 0 0 12px rgba(212, 255, 58, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6); }
+  100% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+}
+
+@keyframes logo-in {
+  from { opacity: 0; transform: scale(0.6) rotate(-8deg); filter: blur(12px); }
+  to { opacity: 1; transform: none; filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.6)); }
+}
+
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-10px) rotate(1.5deg); }
+}
+
+@keyframes spray {
+  0% { filter: blur(0) brightness(1); transform: scale(1); }
+  20% { filter: blur(3px) brightness(1.6); transform: scale(1.06) rotate(-2deg); }
+  100% { filter: blur(0) brightness(1); transform: scale(1); }
+}
+
+@keyframes flip {
+  0% { transform: rotateX(90deg); opacity: 0; }
+  100% { transform: none; opacity: 1; }
 }
 
 @keyframes shake {
@@ -94,7 +115,8 @@
   }
 
   [data-reveal],
-  html:not(.is-entered) .hero__letter {
+  html:not(.is-entered) .hero__letter,
+  .hero__logo {
     opacity: 1;
     transform: none;
   }

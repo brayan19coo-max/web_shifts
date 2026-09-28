@@ -11,12 +11,13 @@ const SHAPES = {
   tee: `
     <path class="g-body" d="M62 42 L86 30 Q100 44 114 30 L138 42 L170 72 L150 92 L138 82 L138 172 L62 172 L62 82 L50 92 L30 72 Z"/>
     <path class="g-line" d="M86 30 Q100 50 114 30"/>
-    <text class="g-print" x="100" y="112">{{LOGO}}</text>`,
+    <image class="g-print" href="{{LOGO}}" x="72" y="86" width="56" height="34"/>`,
   hoodie: `
     <path class="g-body" d="M64 54 L82 40 Q100 30 118 40 L136 54 L166 132 L148 140 L138 100 L138 174 L62 174 L62 100 L52 140 L34 132 Z"/>
     <path class="g-shade" d="M80 42 Q100 8 120 42 Q112 62 100 62 Q88 62 80 42 Z"/>
     <path class="g-line" d="M94 62 L92 84 M106 62 L108 84"/>
-    <path class="g-line" d="M76 132 H124 L130 158 H70 Z"/>`,
+    <path class="g-line" d="M76 132 H124 L130 158 H70 Z"/>
+    <image class="g-print" href="{{LOGO}}" x="78" y="92" width="44" height="26"/>`,
   jacket: `
     <path class="g-body" d="M64 44 L84 32 L100 44 L116 32 L136 44 L166 136 L148 142 L138 96 L138 172 L62 172 L62 96 L52 142 L34 136 Z"/>
     <path class="g-shade" d="M84 32 L100 58 L116 32 L108 30 L100 42 L92 30 Z"/>
@@ -34,7 +35,7 @@ const SHAPES = {
   tote: `
     <path class="g-line g-handle" d="M76 74 Q76 30 100 30 Q124 30 124 74"/>
     <path class="g-body" d="M52 72 H148 L154 176 H46 Z"/>
-    <text class="g-print" x="100" y="132">{{LOGO}}</text>`,
+    <image class="g-print" href="{{LOGO}}" x="62" y="100" width="76" height="45"/>`,
 };
 
 /** Devuelve true si el color es claro (para decidir el color de las líneas). */
@@ -48,7 +49,7 @@ function isLight(hex) {
 
 export function garmentSvg(type, hex) {
   const light = isLight(hex);
-  const shape = (SHAPES[type] || SHAPES.tee).replaceAll('{{LOGO}}', escapeHtml(BRAND.name));
+  const shape = (SHAPES[type] || SHAPES.tee).replaceAll('{{LOGO}}', escapeHtml(BRAND.logo));
   return `
     <svg class="garment" viewBox="0 0 200 200" aria-hidden="true"
       style="--g-fill:${hex};--g-ink:${light ? 'rgba(0,0,0,.55)' : 'rgba(255,255,255,.5)'};--g-shade:${light ? 'rgba(0,0,0,.12)' : 'rgba(255,255,255,.1)'}">

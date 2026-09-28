@@ -1,0 +1,270 @@
+/* =========================================================
+   DROP BLOQUEADO — logo 3D, contador y formulario de clave
+   ========================================================= */
+
+.drop {
+  position: relative;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 50%, rgba(255, 255, 255, 0.07), transparent 70%),
+    repeating-linear-gradient(-45deg, transparent 0 22px, rgba(255, 255, 255, 0.018) 22px 44px);
+  overflow: hidden;
+}
+
+.drop__stage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: clamp(24px, 5vw, 80px);
+}
+
+/* ---------- Logo 3D ---------- */
+.logo3d {
+  position: relative;
+  aspect-ratio: 522 / 312;
+  width: 100%;
+  max-width: 620px;
+  justify-self: center;
+  perspective: 1100px;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.logo3d.is-dragging {
+  cursor: grabbing;
+}
+
+.logo3d::after {
+  /* sombra en el "piso" */
+  content: '';
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  bottom: -18%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.16), transparent 70%);
+  filter: blur(6px);
+}
+
+.logo3d__spinner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.logo3d__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.logo3d__face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ---------- Información ---------- */
+.drop__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.drop__status-open,
+.drop.is-unlocked .drop__status-locked {
+  display: none;
+}
+
+.drop.is-unlocked .drop__status-open {
+  display: inline;
+}
+
+/* Candado dibujado con CSS: el arco sube al desbloquear */
+.drop__lock {
+  position: relative;
+  width: 14px;
+  height: 11px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: var(--fg);
+}
+
+.drop__lock::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  bottom: 9px;
+  width: 6px;
+  height: 7px;
+  border: 2px solid var(--fg);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  transform-origin: right bottom;
+  transition: transform 0.5s var(--ease);
+}
+
+.drop.is-unlocked .drop__lock::before {
+  transform: translateY(-3px) rotate(25deg);
+}
+
+.drop__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(64px, 11vw, 170px);
+  line-height: 0.85;
+  text-transform: uppercase;
+  margin: 18px 0 10px;
+}
+
+.drop__subtitle {
+  color: var(--muted);
+  font-family: var(--font-marker);
+  font-size: clamp(16px, 1.6vw, 20px);
+  margin-bottom: 26px;
+}
+
+/* ---------- Contador ---------- */
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 520px;
+}
+
+.countdown div {
+  display: grid;
+  justify-items: center;
+  padding: 14px 6px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--fg);
+  color: var(--bg);
+  perspective: 300px;
+}
+
+.countdown span {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 60px);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown span.is-flip {
+  animation: flip 0.45s var(--ease);
+}
+
+.countdown small {
+  margin-top: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+.drop__date {
+  margin: 12px 0 26px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Formulario ---------- */
+.drop__form {
+  display: flex;
+  gap: 8px;
+  max-width: 520px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  transition: border-color 0.3s;
+}
+
+.drop__form:focus-within {
+  border-color: var(--fg);
+}
+
+.drop__form input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 18px;
+  background: none;
+  border: 0;
+  outline: none;
+  font-size: 16px;
+  letter-spacing: 0.15em;
+}
+
+.drop__form input::placeholder {
+  letter-spacing: 0;
+}
+
+.drop__msg {
+  min-height: 1.5em;
+  margin-top: 10px;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.drop__granted {
+  display: none;
+  font-family: var(--font-marker);
+  font-size: 20px;
+}
+
+/* ---------- Estado desbloqueado ---------- */
+.drop.is-unlocked .drop__form,
+.drop.is-unlocked .drop__msg {
+  display: none;
+}
+
+.drop.is-unlocked .drop__granted {
+  display: block;
+  animation: swap 0.6s var(--ease);
+}
+
+.drop.is-live .countdown {
+  opacity: 0.35;
+}
+
+.drop__grid {
+  margin-top: clamp(48px, 7vw, 90px);
+}
+
+.drop__grid[hidden] {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .drop__stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .logo3d {
+    max-width: 440px;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 420px) {
+  .countdown {
+    gap: 6px;
+  }
+
+  .drop__form .btn {
+    padding: 0 16px;
+  }
+}

@@ -3,22 +3,36 @@ import { BRAND } from '../config.js';
 import { sound } from '../audio/sound-manager.js';
 
 /**
- * Hero: el logo gigante es un "instrumento": cada letra suena con
- * una nota distinta al pasar el mouse o tocarla. Fondo con parallax
- * que sigue al puntero.
+ * Hero
+ * - Logo grande que sigue al puntero en 3D y "se pinta" (sonido de
+ *   aerosol) al hacerle clic.
+ * - El eslogan es un instrumento: cada letra suena con una nota
+ *   distinta al pasar el mouse o deslizar el dedo.
  */
 export function initHero() {
   const hero = $('#inicio');
   const title = $('[data-hero-title]', hero);
-  $('[data-hero-tagline]', hero).textContent = BRAND.tagline;
+  const logo = $('[data-hero-logo]', hero);
+  $('[data-hero-tagline]', hero).textContent = BRAND.description;
 
-  title.setAttribute('aria-label', BRAND.name);
-  title.innerHTML = [...BRAND.name]
+  logo.src = BRAND.logoSticker;
+  logo.alt = BRAND.name;
+
+  // ---------- Eslogan musical ----------
+  title.setAttribute('aria-label', BRAND.tagline);
+  let index = 0;
+  title.innerHTML = BRAND.tagline
+    .split(' ')
     .map(
-      (char, i) =>
-        `<span class="hero__letter" aria-hidden="true" data-index="${i}" style="--i:${i}"><span class="hero__glyph">${escapeHtml(char)}</span></span>`,
+      (word) =>
+        `<span class="hero__word">${[...word]
+          .map(
+            (char) =>
+              `<span class="hero__letter" aria-hidden="true" data-index="${index}" style="--i:${index++}"><span class="hero__glyph">${escapeHtml(char)}</span></span>`,
+          )
+          .join('')}</span>`,
     )
-    .join('');
+    .join(' ');
 
   const hit = (letter) => {
     if (!letter || letter.classList.contains('is-hit')) return;
@@ -33,9 +47,17 @@ export function initHero() {
     hit(document.elementFromPoint(event.clientX, event.clientY)?.closest('.hero__letter'));
   });
 
+  // ---------- Logo ----------
+  logo.addEventListener('click', () => {
+    sound.play('spray');
+    logo.classList.remove('is-sprayed');
+    void logo.offsetWidth;
+    logo.classList.add('is-sprayed');
+  });
+
   if (prefersReducedMotion()) return;
 
-  // Parallax con el puntero
+  // Parallax + inclinación 3D del logo con el puntero
   hero.addEventListener('pointermove', (event) => {
     const rect = hero.getBoundingClientRect();
     hero.style.setProperty('--px', ((event.clientX - rect.left) / rect.width - 0.5).toFixed(3));

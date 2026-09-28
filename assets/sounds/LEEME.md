@@ -1,5 +1,9 @@
 # Sonidos
 
+**Nombres sugeridos para los archivos** (así solo hay que conectarlos):
+`hover.mp3`, `click.mp3`, `open.mp3`, `close.mp3`, `add.mp3`, `remove.mp3`, `success.mp3`,
+`error.mp3`, `whoosh.mp3`, `tick.mp3`, `note.mp3`, `spray.mp3`, `unlock.mp3`, `ambient.mp3`.
+
 Pon aquí tus archivos de audio y enlázalos en `js/config.js` → `SOUNDS`.
 Mientras un sonido esté en `null`, el sitio usa uno **sintetizado en vivo**, así que no se rompe nada si falta alguno.
 
@@ -15,7 +19,9 @@ Mientras un sonido esté en `null`, el sitio usa uno **sintetizado en vivo**, as
 | `error`   | Falta talla o correo inválido                   | "error", "denied", "buzz"                   | < 0.4 s        |
 | `whoosh`  | Entrada al sitio, cambiar filtros               | "whoosh", "transition", "swipe"             | 0.3 – 0.8 s    |
 | `tick`    | Colores, cantidades, cambio de look             | "tick", "tiny click", "tap"                 | < 0.05 s       |
-| `note`    | Letras del logo gigante (se afina por letra)    | Una nota musical limpia: "pluck", "piano C" | 0.3 – 1 s      |
+| `note`    | Letras de "Shifting your style" (una nota c/u)  | Una nota musical limpia: "pluck", "piano C" | 0.3 – 1 s      |
+| `spray`   | Clic en el logo grande                          | "spray can", "aerosol shake and spray"      | 0.5 – 1 s      |
+| `unlock`  | Drop desbloqueado con la clave                  | "unlock", "vault open", "level up"          | 0.5 – 1.5 s    |
 | `ambient` | Música de fondo en loop                         | "lofi loop", "ambient loop", beat propio    | 30 s – 3 min   |
 
 ## Consejos

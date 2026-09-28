@@ -90,6 +90,24 @@ export const RECIPES = {
 
   tick: (ctx, out) => tone(ctx, out, { from: 2200, duration: 0.025, volume: 0.05 }),
 
+  // Lata de aerosol: sacudida (clics de la bolita) + disparo de spray
+  spray: (ctx, out) => {
+    [0, 0.07, 0.14].forEach((start) =>
+      tone(ctx, out, { type: 'square', from: 2600, to: 1800, start, duration: 0.025, volume: 0.05 }),
+    );
+    noise(ctx, out, { start: 0.22, duration: 0.55, volume: 0.12, filterFrom: 5000, filterTo: 7500, q: 0.6 });
+  },
+
+  unlock: (ctx, out) => {
+    // "clack" del candado + acorde ascendente
+    noise(ctx, out, { duration: 0.06, volume: 0.15, filterFrom: 1800, filterTo: 900, q: 3 });
+    tone(ctx, out, { type: 'triangle', from: 180, to: 90, duration: 0.12, volume: 0.15 });
+    [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>
+      tone(ctx, out, { type: 'triangle', from: f, start: 0.12 + i * 0.07, duration: 0.5, volume: 0.1 }),
+    );
+    noise(ctx, out, { start: 0.12, duration: 0.7, volume: 0.05, filterFrom: 800, filterTo: 6000 });
+  },
+
   note: (ctx, out, { index = 0 } = {}) => {
     const f = PENTATONIC[index % PENTATONIC.length];
     tone(ctx, out, { type: 'triangle', from: f, duration: 0.6, volume: 0.12, attack: 0.01 });

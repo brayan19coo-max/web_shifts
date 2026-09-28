@@ -1,6 +1,5 @@
 import { $ } from '../utils/dom.js';
 import { sound } from '../audio/sound-manager.js';
-import { BRAND } from '../config.js';
 
 /**
  * Pantalla de entrada: contador de carga + elección de experiencia
@@ -12,7 +11,6 @@ export function initLoader() {
   const counter = $('[data-loader-count]', root);
   const bar = $('[data-loader-bar]', root);
   const actions = $('[data-loader-actions]', root);
-  $('[data-loader-brand]', root).textContent = BRAND.name;
 
   return new Promise((resolve) => {
     const duration = 1600;

@@ -3,18 +3,19 @@
    Cambia aquí los colores y fuentes de la marca.
    ========================================================= */
 :root {
-  --bg: #0b0b0c;
-  --bg-2: #141416;
-  --bg-3: #1d1d20;
-  --fg: #f2f0ea;
-  --muted: #8d8a82;
-  --line: rgba(242, 240, 234, 0.12);
-  --accent: #d4ff3a;
-  --accent-ink: #0b0b0c;
-  --hot: #ff4d2e;
-  --lilac: #b9a6ff;
+  /* Paleta Shift's: negro y blanco */
+  --bg: #0a0a0a;
+  --bg-2: #141414;
+  --bg-3: #1f1f1f;
+  --fg: #f4f4f4;
+  --muted: #8f8f8f;
+  --line: rgba(244, 244, 244, 0.14);
+  --accent: #f4f4f4;       /* color de acción (botones, etiquetas) */
+  --accent-ink: #0a0a0a;   /* texto sobre --accent */
+  --danger: #ff5a5a;       /* solo para mensajes de error */
 
   --font-display: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  --font-marker: 'Permanent Marker', 'Comic Sans MS', cursive;
   --font-body: 'Space Grotesk', system-ui, sans-serif;
 
   --radius: 18px;

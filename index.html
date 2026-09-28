@@ -3,19 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SHIFTS — Ropa urbana</title>
-  <meta name="description" content="Ropa urbana hecha en series cortas. Sin temporadas, solo drops.">
+  <title>Shift's — Shifting your style</title>
+  <meta name="description" content="Shift's: ropa urbana con alma de graffiti. Shifting your style.">
   <meta name="theme-color" content="#0b0b0c">
-  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.png" type="image/png">
+  <link rel="preload" as="image" href="assets/images/logo-sticker.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/drop.css">
   <link rel="stylesheet" href="css/animations.css">
 
   <script type="module" src="js/main.js"></script>
@@ -26,7 +28,7 @@
   <!-- ============ LOADER / ENTRADA ============ -->
   <div class="loader" id="loader" role="dialog" aria-modal="true" aria-label="Bienvenida">
     <div class="loader__inner">
-      <p class="loader__brand" data-loader-brand>SHIFTS</p>
+      <img class="loader__logo" src="assets/images/logo-sticker.png" alt="Shift's">
       <p class="loader__count"><span data-loader-count>000</span>%</p>
       <div class="loader__bar"><span data-loader-bar></span></div>
       <div class="loader__actions" data-loader-actions>
@@ -41,10 +43,11 @@
 
   <!-- ============ HEADER ============ -->
   <header class="header" id="header">
-    <a href="#inicio" class="header__logo" data-brand-name data-sfx-hover="hover">SHIFTS</a>
+    <a href="#inicio" class="header__logo" data-sfx-hover="hover" aria-label="Shift's — inicio"><img src="assets/images/logo-sticker.png" alt=""></a>
 
     <nav class="header__nav" aria-label="Principal">
       <a href="#tienda" data-sfx-hover="hover">Tienda</a>
+      <a href="#drop" data-sfx-hover="hover">Drop 02 🔒</a>
       <a href="#lookbook" data-sfx-hover="hover">Lookbook</a>
       <a href="#nosotros" data-sfx-hover="hover">Nosotros</a>
       <a href="#club" data-sfx-hover="hover">Club</a>
@@ -70,9 +73,10 @@
 
   <nav class="mobile-menu" id="mobile-menu" aria-label="Menú móvil">
     <a href="#tienda" data-sfx="click"><sup>01</sup>Tienda</a>
-    <a href="#lookbook" data-sfx="click"><sup>02</sup>Lookbook</a>
-    <a href="#nosotros" data-sfx="click"><sup>03</sup>Nosotros</a>
-    <a href="#club" data-sfx="click"><sup>04</sup>Club</a>
+    <a href="#drop" data-sfx="click"><sup>02</sup>Drop 02</a>
+    <a href="#lookbook" data-sfx="click"><sup>03</sup>Lookbook</a>
+    <a href="#nosotros" data-sfx="click"><sup>04</sup>Nosotros</a>
+    <a href="#club" data-sfx="click"><sup>05</sup>Club</a>
   </nav>
 
   <main>
@@ -87,7 +91,10 @@
 
       <div class="hero__content">
         <p class="hero__eyebrow"><span class="dot"></span> Drop 01 — Disponible ahora</p>
-        <h1 class="hero__title" data-hero-title>SHIFTS</h1>
+        <h1 class="hero__logo-wrap">
+          <img class="hero__logo" src="assets/images/logo-sticker.png" alt="Shift's" data-hero-logo data-cursor="Spray">
+        </h1>
+        <p class="hero__title" data-hero-title>Shifting your style</p>
         <p class="hero__hint" aria-hidden="true">↑ <span class="only-mouse">pasa el mouse por</span><span class="only-touch">toca o desliza sobre</span> las letras</p>
         <div class="hero__bottom">
           <p class="hero__tagline" data-hero-tagline></p>
@@ -116,6 +123,36 @@
       <div class="grid" data-grid></div>
     </section>
 
+    <!-- ============ DROP BLOQUEADO ============ -->
+    <section class="drop section" id="drop">
+      <div class="drop__stage">
+        <div class="drop__logo" data-drop-logo data-cursor="Girar"></div>
+
+        <div class="drop__info" data-reveal>
+          <p class="drop__label"><span class="drop__lock" aria-hidden="true"></span><span class="drop__status-locked">Bloqueado</span><span class="drop__status-open">Desbloqueado</span></p>
+          <h2 class="drop__title" data-drop-name>Drop 02</h2>
+          <p class="drop__subtitle"><span data-drop-subtitle></span> · <span data-drop-count>0</span> piezas</p>
+
+          <div class="countdown" aria-label="Tiempo para el lanzamiento">
+            <div><span data-unit="days">00</span><small>días</small></div>
+            <div><span data-unit="hours">00</span><small>horas</small></div>
+            <div><span data-unit="minutes">00</span><small>min</small></div>
+            <div><span data-unit="seconds">00</span><small>seg</small></div>
+          </div>
+          <p class="drop__date">Lanzamiento: <span data-drop-date></span></p>
+
+          <form class="drop__form" data-drop-form novalidate>
+            <label class="sr-only" for="drop-key">Clave del drop</label>
+            <input id="drop-key" type="password" placeholder="Clave de acceso" autocomplete="off" spellcheck="false">
+            <button type="submit" class="btn btn--accent" data-sfx-hover="hover"><span>Desbloquear</span><span class="btn__arrow">→</span></button>
+          </form>
+          <p class="drop__msg" data-drop-msg aria-live="polite"></p>
+          <p class="drop__granted">✓ Acceso concedido. Eres de los primeros.</p>
+        </div>
+      </div>
+      <div class="grid drop__grid" data-drop-grid hidden></div>
+    </section>
+
     <!-- ============ LOOKBOOK ============ -->
     <section class="lookbook" id="lookbook" aria-label="Lookbook">
       <div class="lookbook__sticky">
@@ -124,25 +161,25 @@
           <div class="lookbook__progress"><span data-look-progress></span></div>
         </div>
         <div class="lookbook__track" data-look-track>
-          <article class="look" data-look style="--look-bg:#d4ff3a;--look-fg:#0b0b0c">
+          <article class="look" data-look style="--look-bg:#f4f4f4;--look-fg:#0b0b0c">
             <span class="look__num">01</span>
-            <div class="look__art" data-look-art="hoodie" data-color="#161616"></div>
-            <div class="look__text"><h3>Ruido blanco</h3><p>Capas pesadas para noches largas. Hoodie Orbit + Cargo Drift.</p></div>
+            <div class="look__art" data-look-art="hoodie" data-color="#111111"></div>
+            <div class="look__text"><h3>Ruido blanco</h3><p>Capas pesadas para noches largas. Hoodie Bomb + Cargo Throw-Up.</p></div>
           </article>
-          <article class="look" data-look style="--look-bg:#ff4d2e;--look-fg:#0b0b0c">
+          <article class="look" data-look style="--look-bg:#1a1a1a;--look-fg:#f4f4f4">
             <span class="look__num">02</span>
-            <div class="look__art" data-look-art="jacket" data-color="#f2f0ea"></div>
-            <div class="look__text"><h3>Señal perdida</h3><p>Nylon que corta el viento. Chaqueta Shift sobre Tee Static.</p></div>
+            <div class="look__art" data-look-art="jacket" data-color="#f4f4f4"></div>
+            <div class="look__text"><h3>Señal perdida</h3><p>Nylon que corta el viento. Chaqueta Crew sobre Tee Tag.</p></div>
           </article>
-          <article class="look" data-look style="--look-bg:#b9a6ff;--look-fg:#0b0b0c">
+          <article class="look" data-look style="--look-bg:#8a8a8a;--look-fg:#0b0b0c">
             <span class="look__num">03</span>
             <div class="look__art" data-look-art="tee" data-color="#0b0b0c"></div>
-            <div class="look__text"><h3>Frecuencia baja</h3><p>Lo básico, pero con peso. Tee Glitch y Gorra Signal.</p></div>
+            <div class="look__text"><h3>Frecuencia baja</h3><p>Lo básico, pero con peso. Tee Wall y Gorra Piece.</p></div>
           </article>
-          <article class="look" data-look style="--look-bg:#f2f0ea;--look-fg:#0b0b0c">
+          <article class="look" data-look style="--look-bg:#f4f4f4;--look-fg:#0b0b0c">
             <span class="look__num">04</span>
-            <div class="look__art" data-look-art="pants" data-color="#2f5bff"></div>
-            <div class="look__text"><h3>Modo avión</h3><p>Todo lo que necesitas, nada más. Jogger Loop + Tote Carry.</p></div>
+            <div class="look__art" data-look-art="pants" data-color="#111111"></div>
+            <div class="look__text"><h3>Modo avión</h3><p>Todo lo que necesitas, nada más. Cargo negro + Tote Can.</p></div>
           </article>
         </div>
       </div>
@@ -152,8 +189,8 @@
     <section class="manifesto section" id="nosotros">
       <p class="manifesto__label" data-reveal>( Manifiesto )</p>
       <p class="manifesto__text" data-manifesto>
-        No hacemos temporadas. Hacemos cambios. Cada drop es una serie corta, pensada, cortada y cosida cerca de casa.
-        Ropa para moverse entre la calle, el estudio y la pista sin pedir permiso. Cuando se acaba, se acaba.
+        Nacimos en la calle, entre muros pintados y latas de aerosol. No hacemos temporadas: hacemos cambios.
+        Cada drop es una serie corta, cortada y cosida cerca de casa, para que tu estilo cambie cuando tú quieras. Shifting your style.
       </p>
       <div class="stats" data-reveal>
         <div><strong>300</strong><span>unidades por drop</span></div>
@@ -205,9 +242,9 @@
         </ul>
       </div>
     </div>
-    <p class="footer__brand" data-brand-name aria-hidden="true">SHIFTS</p>
+    <img class="footer__logo" src="assets/images/logo-sticker.png" alt="" aria-hidden="true">
     <div class="footer__bottom">
-      <span>© <span data-year></span> <span data-brand-name>SHIFTS</span>. Todos los derechos reservados.</span>
+      <span>© <span data-year></span> <span data-brand-name>Shift's</span>. Todos los derechos reservados.</span>
       <a href="#inicio" data-sfx="whoosh" data-sfx-hover="hover">Volver arriba ↑</a>
     </div>
   </footer>

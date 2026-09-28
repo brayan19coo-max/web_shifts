@@ -1,8 +1,7 @@
 import { $, escapeHtml, prefersReducedMotion } from '../utils/dom.js';
-import { PRODUCTS, CATEGORIES } from '../data/products.js';
-import { createProductCard } from './product-card.js';
+import { CATALOG as PRODUCTS, CATEGORIES } from '../data/products.js';
+import { createProductCard, bindQuickView } from './product-card.js';
 import { sound } from '../audio/sound-manager.js';
-import { bus } from '../core/bus.js';
 
 /** Grilla de productos con filtros animados por categoría. */
 export function initProductGrid() {
@@ -51,12 +50,7 @@ export function initProductGrid() {
     }, 280);
   });
 
-  grid.addEventListener('click', (event) => {
-    const trigger = event.target.closest('[data-quick-view]');
-    if (!trigger) return;
-    const card = trigger.closest('.card');
-    bus.emit('quickview:open', { id: card.dataset.productId, colorIndex: card.getColorIndex() });
-  });
+  bindQuickView(grid);
 
   render();
 }

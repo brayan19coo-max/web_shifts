@@ -1,6 +1,7 @@
 import { html, escapeHtml, isFinePointer, prefersReducedMotion } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
 import { productVisual } from './product-art.js';
+import { bus } from '../core/bus.js';
 
 /**
  * Tarjeta de producto con inclinación 3D y brillo que sigue al mouse.
@@ -72,4 +73,14 @@ export function createProductCard(product, index = 0) {
   }
 
   return card;
+}
+
+/** Abre la vista rápida al hacer clic en cualquier tarjeta dentro de `container`. */
+export function bindQuickView(container) {
+  container.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-quick-view]');
+    if (!trigger) return;
+    const card = trigger.closest('.card');
+    bus.emit('quickview:open', { id: card.dataset.productId, colorIndex: card.getColorIndex() });
+  });
 }

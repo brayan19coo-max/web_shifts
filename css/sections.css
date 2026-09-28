@@ -27,10 +27,9 @@
   text-align: center;
 }
 
-.loader__brand {
-  font-family: var(--font-display);
-  font-size: clamp(56px, 16vw, 120px);
-  line-height: 0.9;
+.loader__logo {
+  width: min(320px, 70vw);
+  animation: logo-float 3s ease-in-out infinite;
 }
 
 .loader__count {
@@ -86,7 +85,7 @@
   position: relative;
   min-height: 100svh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   padding: calc(var(--header-h) + 20px) var(--gutter) clamp(32px, 6vw, 64px);
   overflow: hidden;
 }
@@ -110,9 +109,9 @@
   height: 46vw;
   left: -8vw;
   top: -10vw;
-  background: var(--accent);
+  background: #ffffff;
   translate: calc(var(--px) * -60px) calc(var(--py) * -60px);
-  opacity: 0.28;
+  opacity: 0.14;
 }
 
 .blob--b {
@@ -120,10 +119,10 @@
   height: 38vw;
   right: -6vw;
   top: 10vh;
-  background: var(--hot);
+  background: #9a9a9a;
   translate: calc(var(--px) * 80px) calc(var(--py) * 80px);
   animation-delay: -5s;
-  opacity: 0.35;
+  opacity: 0.16;
 }
 
 .blob--c {
@@ -131,10 +130,10 @@
   height: 30vw;
   left: 30vw;
   bottom: -12vw;
-  background: var(--lilac);
+  background: #ffffff;
   translate: calc(var(--px) * -40px) calc(var(--py) * 40px);
   animation-delay: -9s;
-  opacity: 0.3;
+  opacity: 0.1;
 }
 
 .grain {
@@ -148,6 +147,9 @@
 
 .hero__content {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   opacity: calc(1 - var(--scroll) * 1.2);
   transform: translateY(calc(var(--scroll) * 80px));
 }
@@ -173,17 +175,48 @@
   animation: pulse 1.8s infinite;
 }
 
+.hero__logo-wrap {
+  margin: clamp(16px, 3vw, 28px) 0 4px;
+  transform: perspective(900px) rotateY(calc(var(--px) * 16deg)) rotateX(calc(var(--py) * -12deg));
+  transition: transform 0.4s var(--ease);
+}
+
+.hero__logo {
+  width: min(86vw, 640px, 46svh * 1.67);
+  height: auto;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.6));
+}
+
+html.is-entered .hero__logo {
+  animation: logo-in 1.1s var(--ease) both 0.2s;
+}
+
+.hero__logo.is-sprayed {
+  animation: spray 0.8s var(--ease) !important;
+}
+
 .hero__title {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 0.28em;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(88px, 24vw, 440px);
-  line-height: 0.82;
-  letter-spacing: -0.01em;
-  margin: 20px 0 4px;
+  font-size: clamp(40px, min(7.5vw, 10svh), 120px);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 8px 0 6px;
   user-select: none;
   touch-action: pan-y;
+}
+
+.hero__word {
+  display: inline-flex;
+  white-space: nowrap;
 }
 
 .hero__letter,
@@ -207,15 +240,16 @@ html.is-entered .hero__letter {
 
 .hero__letter.is-hit .hero__glyph {
   animation: letter-hit 0.45s var(--ease);
-  color: var(--accent);
+  color: transparent;
+  -webkit-text-stroke: 2px var(--fg);
 }
 
 .hero__hint {
   color: var(--muted);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 24px;
+  font-family: var(--font-marker);
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: 28px;
 }
 
 .only-touch {
@@ -233,6 +267,7 @@ html.is-entered .hero__letter {
 }
 
 .hero__bottom {
+  width: 100%;
   display: flex;
   align-items: end;
   justify-content: space-between;
@@ -241,8 +276,9 @@ html.is-entered .hero__letter {
 }
 
 .hero__tagline {
-  max-width: 420px;
-  font-size: clamp(20px, 2.4vw, 30px);
+  max-width: 440px;
+  color: var(--muted);
+  font-size: clamp(17px, 1.8vw, 22px);
   line-height: 1.15;
 }
 
@@ -302,6 +338,7 @@ html.is-entered .hero__letter {
 }
 
 .lookbook__header .section__title span {
+  font-family: var(--font-marker);
   color: var(--muted);
   font-size: 0.4em;
   vertical-align: top;
@@ -428,7 +465,8 @@ html.is-entered .hero__letter {
 /* ---------- Manifiesto ---------- */
 .manifesto__label {
   color: var(--muted);
-  font-size: 14px;
+  font-family: var(--font-marker);
+  font-size: 18px;
   margin-bottom: 24px;
 }
 
@@ -496,7 +534,7 @@ html.is-entered .hero__letter {
   position: absolute;
   inset: auto -20% -60% -20%;
   height: 100%;
-  background: radial-gradient(ellipse at center, rgba(212, 255, 58, 0.18), transparent 60%);
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1), transparent 60%);
   pointer-events: none;
 }
 
@@ -509,8 +547,11 @@ html.is-entered .hero__letter {
 }
 
 .club__title em {
+  font-family: var(--font-marker);
   font-style: normal;
-  color: var(--accent);
+  text-transform: none;
+  display: inline-block;
+  transform: rotate(-4deg);
 }
 
 .club__text {
@@ -547,7 +588,7 @@ html.is-entered .hero__letter {
 }
 
 .club__form input[aria-invalid='true'] {
-  color: var(--hot);
+  color: var(--danger);
 }
 
 .club__msg {
@@ -555,7 +596,7 @@ html.is-entered .hero__letter {
   top: calc(100% + 10px);
   left: 0;
   right: 0;
-  color: var(--hot);
+  color: var(--danger);
   font-size: 13px;
 }
 

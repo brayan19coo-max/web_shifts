@@ -182,7 +182,7 @@ function celebrate() {
   const ctx = canvas.getContext('2d');
   ctx.scale(devicePixelRatio, devicePixelRatio);
 
-  const colors = ['#d4ff3a', '#ff4d2e', '#f2f0ea', '#b9a6ff', '#2f5bff'];
+  const colors = ['#ffffff', '#f4f4f4', '#bdbdbd', '#6f6f6f', '#1a1a1a'];
   const pieces = Array.from({ length: 140 }, () => ({
     x: innerWidth / 2,
     y: innerHeight * 0.6,

@@ -39,6 +39,16 @@
 .btn--accent {
   background: var(--accent);
   color: var(--accent-ink);
+  border: 2px solid var(--accent);
+}
+
+/* En la paleta blanco/negro el botón se "invierte" al pasar el mouse */
+.btn--accent::before {
+  background: var(--bg);
+}
+
+.btn--accent:hover {
+  color: var(--fg);
 }
 
 .btn--ghost {
@@ -181,8 +191,9 @@
   height: 20px;
   padding: 0 5px;
   border-radius: 999px;
-  background: var(--hot);
-  color: #fff;
+  background: var(--fg);
+  color: var(--bg);
+  box-shadow: 0 0 0 2px var(--bg);
   font-size: 11px;
   font-weight: 700;
   display: grid;
@@ -405,6 +416,8 @@ html.cursor-visible .cursor-ring {
 
 .card__tag {
   position: absolute;
+  font-family: var(--font-marker);
+  letter-spacing: 0.02em !important;
   top: 14px;
   left: 14px;
   padding: 6px 10px;
@@ -727,7 +740,7 @@ html.cursor-visible .cursor-ring {
 }
 
 .qv__hint.is-error {
-  color: var(--hot) !important;
+  color: var(--danger) !important;
 }
 
 .qv__swatches,
@@ -892,7 +905,7 @@ html.cursor-visible .cursor-ring {
 }
 
 .line__remove:hover {
-  color: var(--hot);
+  color: var(--fg);
 }
 
 .drawer__foot {
@@ -977,9 +990,9 @@ html.cursor-visible .cursor-ring {
 }
 
 .toast--success .toast__dot {
-  background: #33c26b;
+  background: var(--bg);
 }
 
 .toast--error .toast__dot {
-  background: var(--hot);
+  background: var(--danger);
 }
