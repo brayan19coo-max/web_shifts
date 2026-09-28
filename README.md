@@ -25,7 +25,7 @@ En VS Code también sirve la extensión **Live Server** (clic derecho en `index.
 |-----------------------------------------------------|----------------------------------|
 | Nombre, eslogan, moneda, WhatsApp, redes            | `js/config.js` → `BRAND`         |
 | Drop bloqueado: nombre, fecha, clave                | `js/config.js` → `DROP`          |
-| Logo                                                | `assets/images/logo.png` y `logo-sticker.png` |
+| Logo (vectorial)                                    | `assets/images/logo.svg` y `logo-sticker.svg` (tu archivo de Inkscape queda en `logo-original.svg`) |
 | Sonidos y volúmenes                                 | `js/config.js` → `SOUNDS`, `AUDIO` |
 | Productos, precios, tallas, colores, fotos          | `js/data/products.js`            |
 | Colores de la marca y tipografías                   | `css/base.css` → `:root`         |

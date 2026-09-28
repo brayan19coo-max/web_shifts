@@ -9,8 +9,8 @@ export const BRAND = {
   name: "Shift's",
   tagline: 'Shifting your style',
   description: 'Ropa urbana con alma de graffiti. Series cortas, sin temporadas: solo drops.',
-  logo: 'assets/images/logo.png', // logo original (fondo transparente)
-  logoSticker: 'assets/images/logo-sticker.png', // logo con borde blanco (para fondos negros)
+  logo: 'assets/images/logo.svg', // logo vectorial (letras blancas, contorno negro)
+  logoSticker: 'assets/images/logo-sticker.svg', // con borde blanco tipo sticker (para fondos negros)
   locale: 'es-CO',
   currency: 'COP',
   // Envío gratis a partir de este valor (0 para desactivar la barra)
