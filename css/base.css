@@ -1,0 +1,134 @@
+/* =========================================================
+   BASE — variables de diseño, reset y tipografía
+   Cambia aquí los colores y fuentes de la marca.
+   ========================================================= */
+:root {
+  --bg: #0b0b0c;
+  --bg-2: #141416;
+  --bg-3: #1d1d20;
+  --fg: #f2f0ea;
+  --muted: #8d8a82;
+  --line: rgba(242, 240, 234, 0.12);
+  --accent: #d4ff3a;
+  --accent-ink: #0b0b0c;
+  --hot: #ff4d2e;
+  --lilac: #b9a6ff;
+
+  --font-display: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  --font-body: 'Space Grotesk', system-ui, sans-serif;
+
+  --radius: 18px;
+  --radius-sm: 10px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --header-h: 72px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.7, 0, 0.2, 1);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+html.is-locked,
+html.is-loading {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-sm);
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* Cursor personalizado: ocultamos el nativo solo si está activo */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
