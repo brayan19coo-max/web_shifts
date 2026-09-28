@@ -2,6 +2,8 @@
 
 Tienda web interactiva para la marca de ropa urbana **Shift's**, en blanco y negro con estilo graffiti: cursor personalizado, eslogan que suena como instrumento, drop bloqueado con clave, contador y logo girando en 3D, tarjetas con efecto 3D, carrito con animaciones, lookbook con scroll horizontal, música de fondo y efectos de sonido en toda la interfaz.
 
+🌐 **Sitio publicado:** https://brayan19coo-max.github.io/web_shifts/
+
 Hecha con **HTML, CSS y JavaScript puro, organizado en módulos ES**: no necesita frameworks, dependencias ni compilación.
 
 ## Cómo verlo
