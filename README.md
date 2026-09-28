@@ -71,6 +71,12 @@ Todo está en **`js/data/products.js`**. Al principio del archivo hay una planti
 
 Para agregar una categoría nueva, añádela en `CATEGORIES` (el mismo archivo).
 
+**Agotados:** agrega `soldOut: true,` a un producto para mostrarlo con el sello "Sold out" (se ve, pero no se puede comprar), o `soldOutSizes: ['S', 'M'],` para agotar solo algunas tallas.
+
+## Lookbook
+
+Se edita en **`js/data/lookbook.js`**: título, temporada y la lista de looks (nombre, frase, foto y colores de la tarjeta). Las fotos van en `assets/images/lookbook/` (verticales, .jpg o .webp, < 400 KB).
+
 ## Drop bloqueado con clave
 
 - Los productos que tengan `drop: 'drop-02'` no salen en la tienda: aparecen en la sección del drop cuando se desbloquea.
@@ -94,6 +100,7 @@ js/
   main.js                  Punto de entrada: inicializa cada módulo
   config.js                ⭐ Configuración de marca y sonidos
   data/products.js         ⭐ Catálogo
+  data/lookbook.js         ⭐ Looks del lookbook
   core/
     bus.js                 Bus de eventos entre módulos
     store.js               Store reactivo mínimo

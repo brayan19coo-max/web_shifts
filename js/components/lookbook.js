@@ -1,22 +1,42 @@
-import { $, $$, prefersReducedMotion } from '../utils/dom.js';
+import { $, $$, escapeHtml, prefersReducedMotion } from '../utils/dom.js';
 import { clamp } from '../utils/format.js';
 import { garmentSvg } from './product-art.js';
+import { LOOKBOOK } from '../data/lookbook.js';
 import { sound } from '../audio/sound-manager.js';
 
 /**
  * Lookbook con scroll horizontal "anclado": al bajar, los paneles
  * se desplazan hacia el lado. Suena un tick al cambiar de look.
+ * Los looks se definen en js/data/lookbook.js.
  */
 export function initLookbook() {
   const section = $('#lookbook');
   const track = $('[data-look-track]', section);
   const progress = $('[data-look-progress]', section);
+
+  $('[data-look-title]', section).textContent = LOOKBOOK.title;
+  $('[data-look-season]', section).textContent = LOOKBOOK.season;
+
+  track.innerHTML = LOOKBOOK.looks
+    .map((look, i) => {
+      const media = look.image
+        ? `<img src="${escapeHtml(look.image)}" alt="${escapeHtml(look.title)}" loading="lazy">`
+        : garmentSvg(look.art || 'tee', look.color || '#111111');
+      return `
+      <article class="look${look.image ? ' look--photo' : ''}" data-look
+        style="--look-bg:${escapeHtml(look.bg || '#f4f4f4')};--look-fg:${escapeHtml(look.fg || '#0a0a0a')}">
+        <span class="look__num">${String(i + 1).padStart(2, '0')}</span>
+        <div class="look__art">${media}</div>
+        <div class="look__text"><h3>${escapeHtml(look.title)}</h3><p>${escapeHtml(look.text || '')}</p></div>
+      </article>`;
+    })
+    .join('');
   const panels = $$('[data-look]', section);
 
-  panels.forEach((panel) => {
-    const art = $('[data-look-art]', panel);
-    if (art) art.innerHTML = garmentSvg(art.dataset.lookArt, art.dataset.color);
-  });
+  // Recalcular la altura cuando carguen las fotos
+  track.querySelectorAll('img').forEach((img) =>
+    img.addEventListener('load', () => window.dispatchEvent(new Event('resize')), { once: true }),
+  );
 
   if (prefersReducedMotion()) {
     section.classList.add('is-static');

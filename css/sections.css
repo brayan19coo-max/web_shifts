@@ -337,7 +337,7 @@ html.is-entered .hero__letter {
   padding: 0 var(--gutter);
 }
 
-.lookbook__header .section__title span {
+.lookbook__header .section__title .lookbook__season {
   font-family: var(--font-marker);
   color: var(--muted);
   font-size: 0.4em;
@@ -411,6 +411,24 @@ html.is-entered .hero__letter {
 
 .look.is-current .look__art {
   transform: rotate(0) scale(1);
+}
+
+/* Look con foto real: la foto ocupa toda la columna */
+.look--photo .look__art {
+  transform: scale(0.94);
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.look--photo.is-current .look__art {
+  transform: none;
+}
+
+.look__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius);
 }
 
 .look__text h3 {

@@ -1,6 +1,6 @@
 import { $, escapeHtml, lockScroll, trapFocus } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
-import { getProduct } from '../data/products.js';
+import { getProduct, isSizeSoldOut } from '../data/products.js';
 import { addItem } from '../core/cart-store.js';
 import { productVisual } from './product-art.js';
 import { sound } from '../audio/sound-manager.js';
@@ -22,14 +22,15 @@ export function initQuickView() {
 
   const render = () => {
     const singleSize = product.sizes.length === 1;
-    if (singleSize) selection.size = product.sizes[0];
+    const soldOut = Boolean(product.soldOut);
+    if (singleSize && !isSizeSoldOut(product, product.sizes[0])) selection.size = product.sizes[0];
 
     content.innerHTML = `
       <div class="qv__media" data-qv-visual></div>
       <div class="qv__body">
         ${product.tag ? `<span class="qv__tag">${escapeHtml(product.tag)}</span>` : ''}
         <h2 class="qv__name" id="qv-title">${escapeHtml(product.name)}</h2>
-        <p class="qv__price">${formatPrice(product.price)}</p>
+        <p class="qv__price">${soldOut ? `<s>${formatPrice(product.price)}</s> <span class="qv__soldout">Sold out</span>` : formatPrice(product.price)}</p>
         <p class="qv__desc">${escapeHtml(product.description)}</p>
 
         <div class="qv__group">
@@ -46,11 +47,13 @@ export function initQuickView() {
         </div>
 
         <div class="qv__group">
-          <p class="qv__label">Talla ${singleSize ? '' : '<span class="qv__hint" data-qv-hint>— elige una</span>'}</p>
+          <p class="qv__label">Talla ${singleSize || soldOut ? '' : '<span class="qv__hint" data-qv-hint>— elige una</span>'}</p>
           <div class="qv__sizes" data-qv-sizes>
             ${product.sizes
               .map(
-                (s) => `<button type="button" class="size${s === selection.size ? ' is-active' : ''}" data-qv-size="${escapeHtml(s)}"
+                (s) => isSizeSoldOut(product, s)
+                  ? `<button type="button" class="size is-soldout" disabled title="Agotada">${escapeHtml(s)}</button>`
+                  : `<button type="button" class="size${s === selection.size ? ' is-active' : ''}" data-qv-size="${escapeHtml(s)}"
                   aria-pressed="${s === selection.size}" data-sfx="tick" data-sfx-hover="hover">${escapeHtml(s)}</button>`,
               )
               .join('')}
@@ -58,6 +61,7 @@ export function initQuickView() {
         </div>
 
         <div class="qv__actions">
+          ${soldOut ? `<button type="button" class="btn btn--ghost btn--block" disabled>Sold out — agotado</button>` : `
           <div class="qty" aria-label="Cantidad">
             <button type="button" data-qv-qty="-1" aria-label="Menos" data-sfx="tick">−</button>
             <span data-qv-qty-value>${selection.qty}</span>
@@ -65,7 +69,7 @@ export function initQuickView() {
           </div>
           <button type="button" class="btn btn--accent btn--block" data-qv-add data-sfx-hover="hover">
             <span>Agregar al carrito</span><span class="btn__arrow">→</span>
-          </button>
+          </button>`}
         </div>
       </div>`;
     renderVisual();
@@ -125,7 +129,7 @@ export function initQuickView() {
       return;
     }
 
-    if (t.closest('[data-qv-add]')) {
+    if (t.closest('[data-qv-add]') && !product.soldOut) {
       if (!selection.size) {
         sound.play('error');
         const sizes = $('[data-qv-sizes]', content);

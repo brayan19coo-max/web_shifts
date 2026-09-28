@@ -430,6 +430,40 @@ html.cursor-visible .cursor-ring {
   letter-spacing: 0.06em;
 }
 
+.card__stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  padding: 6px 18px;
+  border: 3px solid var(--fg);
+  border-radius: 8px;
+  background: rgba(10, 10, 10, 0.75);
+  font-family: var(--font-marker);
+  font-size: clamp(24px, 3vw, 34px);
+  white-space: nowrap;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  pointer-events: none;
+}
+
+.card--soldout .card__visual {
+  filter: grayscale(1) brightness(0.55);
+}
+
+.card--soldout .card__price s,
+.qv__price s {
+  opacity: 0.6;
+}
+
+.qv__soldout {
+  margin-left: 8px;
+  padding: 3px 10px;
+  border: 2px solid var(--fg);
+  border-radius: 6px;
+  font-family: var(--font-marker);
+  font-size: 16px;
+}
+
 .card__quick {
   position: absolute;
   left: 14px;
@@ -571,6 +605,13 @@ html.cursor-visible .cursor-ring {
 .size:hover {
   border-color: var(--fg);
   transform: translateY(-2px);
+}
+
+.size.is-soldout {
+  opacity: 0.35;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .size.is-active {

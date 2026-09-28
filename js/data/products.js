@@ -22,6 +22,8 @@
  *       'assets/images/productos/hoodie-graffiti-blanco.jpg',
  *     ],
  *     drop: 'drop-02',                   // opcional: lo bloquea en el drop con clave
+ *     soldOut: true,                     // opcional: se muestra "Sold out" y no se puede comprar
+ *     soldOutSizes: ['S', 'M'],          // opcional: solo esas tallas agotadas
  *   },
  *
  * Reglas rápidas:
@@ -169,6 +171,10 @@ export const PRODUCTS = [
 export const CATALOG = PRODUCTS.filter((p) => !p.drop);
 
 export const getDropProducts = (dropId) => PRODUCTS.filter((p) => p.drop === dropId);
+
+/** ¿Está agotada esta talla (o todo el producto)? */
+export const isSizeSoldOut = (product, size) =>
+  Boolean(product.soldOut) || (product.soldOutSizes || []).includes(size);
 
 export function getProduct(id) {
   return PRODUCTS.find((p) => p.id === id);
