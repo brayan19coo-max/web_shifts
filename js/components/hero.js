@@ -1,5 +1,5 @@
 import { $, prefersReducedMotion, escapeHtml } from '../utils/dom.js';
-import { BRAND } from '../config.js';
+import { BRAND, DROP } from '../config.js';
 import { sound } from '../audio/sound-manager.js';
 
 /**
@@ -14,6 +14,16 @@ export function initHero() {
   const title = $('[data-hero-title]', hero);
   const logo = $('[data-hero-logo]', hero);
   $('[data-hero-tagline]', hero).textContent = BRAND.description;
+
+  // Etiqueta superior: anuncia el próximo drop (o que ya salió) y lleva al contador
+  const eyebrow = $('[data-hero-eyebrow-text]', hero);
+  if (eyebrow && DROP) {
+    const release = new Date(DROP.releaseDate);
+    const name = DROP.codename || DROP.name;
+    const date = release.toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: DROP.timeZone });
+    eyebrow.textContent =
+      Date.now() >= release.getTime() ? `${DROP.name} — ${name} · Ya disponible` : `Próximo drop: ${name} · ${date}`;
+  }
 
   logo.src = BRAND.logoSticker;
   logo.alt = BRAND.name;

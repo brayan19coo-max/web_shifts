@@ -8,7 +8,7 @@
 export const BRAND = {
   name: "Shift's",
   tagline: 'Shifting your style',
-  description: 'Ropa urbana con alma de graffiti. Series cortas, sin temporadas: solo drops.',
+  description: 'Ropa urbana con alma de graffiti. Colecciones para tus días de base y drops para tus días de impulso.',
   logo: 'assets/images/logo.svg', // logo vectorial (letras blancas, contorno negro)
   logoSticker: 'assets/images/logo-sticker.svg', // con borde blanco tipo sticker (para fondos negros)
   locale: 'es-CO',
@@ -22,7 +22,7 @@ export const BRAND = {
   crew: {
     url: 'https://whatsapp.com/channel/0029VbCqmWhFXUugU8ZeLL2o',
     perks: [
-      'Primero en enterarte de cada drop',
+      'Primero en enterarte de cada lanzamiento',
       'Claves de acceso anticipado',
       'Detrás de cámaras y sorpresas',
     ],

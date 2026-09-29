@@ -156,6 +156,8 @@
 
 .hero__eyebrow {
   display: inline-flex;
+  color: inherit;
+  transition: border-color 0.3s, background 0.3s;
   align-items: center;
   gap: 10px;
   padding: 8px 14px;
@@ -164,6 +166,13 @@
   font-size: 13px;
   background: rgba(11, 11, 12, 0.4);
   backdrop-filter: blur(6px);
+}
+
+@media (hover: hover) {
+  .hero__eyebrow:hover {
+    border-color: var(--fg);
+    background: rgba(255, 255, 255, 0.06);
+  }
 }
 
 .dot {
