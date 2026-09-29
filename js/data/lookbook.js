@@ -66,13 +66,11 @@ export const LOOKBOOK = {
       image: 'assets/images/lookbook/saint-07.jpg',
     },
     {
-      title: 'Juego sagrado',
-      text: 'Dos tonos, un mismo drop.',
+      title: 'BLACK & LIGHT',
       image: 'assets/images/lookbook/saint-09.jpg',
     },
     {
-      title: 'Tiro bendito',
-      text: 'Saint Mode también se juega.',
+      title: 'Es el fin. ¿O no?',
       image: 'assets/images/lookbook/saint-10.jpg',
     },
   ],
