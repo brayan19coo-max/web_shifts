@@ -57,7 +57,7 @@ export const LOOKBOOK = {
     },
     {
       title: 'Dúo celestial',
-      text: 'Blanco y negro, un mismo culto.',
+      text: 'Two icons, one frequency.',
       image: 'assets/images/lookbook/saint-06.jpg',
     },
     {
