@@ -352,10 +352,13 @@ html.is-entered .hero__letter {
 }
 
 .lookbook__header .section__title .lookbook__season {
+  display: block;
+  margin-top: 0.15em;
   font-family: var(--font-marker);
   color: var(--muted);
-  font-size: 0.4em;
-  vertical-align: top;
+  font-size: 0.32em;
+  line-height: 1.1;
+  text-transform: none;
 }
 
 .lookbook__progress {
@@ -521,6 +524,175 @@ html.is-entered .hero__letter {
 
 .lookbook.is-static .lookbook__hint {
   display: block;
+}
+
+/* ---------- Pie del lookbook ---------- */
+.lookbook__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 var(--gutter);
+}
+
+.lookbook__foot .lookbook__hint {
+  padding: 0;
+}
+
+.lookbook__back {
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 14px;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.lookbook__back[hidden] {
+  display: none;
+}
+
+@media (hover: hover) {
+  .lookbook__back:hover {
+    border-color: var(--fg);
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* ---------- Mazo (lookbook cerrado) ---------- */
+.lookbook:not(.is-open) .lookbook__track,
+.lookbook:not(.is-open) .lookbook__hint,
+.lookbook:not(.is-open) .lookbook__progress {
+  display: none;
+}
+
+.lookbook.is-open .deck {
+  display: none;
+}
+
+.deck {
+  --card-w: min(64vw, 340px);
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+  padding: 20px var(--gutter) 10px;
+}
+
+.deck__stack {
+  position: relative;
+  width: var(--card-w);
+  aspect-ratio: 4 / 5;
+  border-radius: 22px;
+  cursor: pointer;
+  animation: deck-breathe 4s ease-in-out infinite;
+}
+
+.deck__card {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
+  transition: transform 0.5s var(--ease);
+}
+
+/* Reversos: asoman detrás de la portada, girados */
+.deck__card--back {
+  background:
+    url('../assets/images/logo-sticker.svg') center / 46% no-repeat,
+    repeating-linear-gradient(45deg, #151515 0 10px, #1d1d1d 10px 20px);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  transform: rotate(calc(var(--i) * 5deg - 12deg)) translate(calc(var(--i) * 6px - 10px), calc(var(--i) * 3px));
+}
+
+.deck__card--cover {
+  background: #0d0d0d;
+  border: 2px solid #fff;
+  transform: rotate(-2deg);
+}
+
+@media (hover: hover) {
+  .deck__stack:hover .deck__card--back {
+    transform: rotate(calc(var(--i) * 11deg - 24deg)) translate(calc(var(--i) * 26px - 50px), calc(var(--i) * -4px));
+  }
+
+  .deck__stack:hover .deck__card--cover {
+    transform: rotate(1deg) translateY(-10px) scale(1.02);
+  }
+}
+
+.deck__stack:active .deck__card--cover {
+  transform: scale(0.97);
+}
+
+.deck__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Portada generada (mientras no haya foto) */
+.deck__generated {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  justify-items: center;
+  align-items: center;
+  padding: 10% 8% 9%;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.14), transparent 55%),
+    #0d0d0d;
+  text-align: center;
+}
+
+.deck__season {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+}
+
+.deck__halo {
+  width: 46%;
+  aspect-ratio: 3 / 1;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.55), inset 0 0 12px rgba(255, 255, 255, 0.4);
+  align-self: end;
+  margin-bottom: 6%;
+  animation: halo-float 3s ease-in-out infinite;
+}
+
+.deck__name {
+  font-family: var(--font-display);
+  font-size: calc(var(--card-w) * 0.2);
+  line-height: 0.85;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.deck__logo {
+  width: 42%;
+  margin-top: 8%;
+  transform: rotate(-6deg);
+}
+
+.deck__hint {
+  font-family: var(--font-marker);
+  color: var(--muted);
+  font-size: 16px;
+  text-align: center;
+}
+
+@keyframes deck-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes halo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 @media (max-width: 720px) {

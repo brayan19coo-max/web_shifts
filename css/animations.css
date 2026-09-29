@@ -120,6 +120,8 @@
   .grain,
   .dot,
   .loader__logo,
+  .deck__stack,
+  .deck__halo,
   .vault.is-open .vault__glow {
     animation: none !important;
   }

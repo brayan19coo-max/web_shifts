@@ -7,6 +7,9 @@
  * 2. Pon la ruta en `image`. Si un look no tiene `image`, se muestra
  *    el dibujo de la prenda (`art` + `color`).
  *
+ * PORTADA (cover): es la carta de arriba del mazo. Al tocarla, los looks
+ * salen como cartas. Si no tiene `image`, se genera una con el nombre.
+ *
  *   {
  *     title: 'Nombre del look',
  *     text: 'Frase corta con las prendas que usa.',
@@ -19,6 +22,11 @@
 export const LOOKBOOK = {
   title: 'Lookbook',
   season: 'Drop 01 — Saint Mode',
+  cover: {
+    image: null, // p.ej. 'assets/images/lookbook/portada-saint.jpg'
+    title: 'Saint Mode',
+    kicker: 'Drop 01',
+  },
   looks: [
     {
       title: 'Ruido blanco',

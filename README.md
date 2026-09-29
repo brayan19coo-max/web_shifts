@@ -76,7 +76,7 @@ Para agregar una categoría nueva, añádela en `CATEGORIES` (el mismo archivo).
 
 ## Lookbook
 
-Se edita en **`js/data/lookbook.js`**: título, temporada y la lista de looks (nombre, frase, foto y colores de la tarjeta). Las fotos van en `assets/images/lookbook/` (verticales, .jpg o .webp, < 400 KB).
+Se edita en **`js/data/lookbook.js`**: título, temporada, la **portada** (`cover`, la carta de arriba del mazo; al tocarla salen los looks como cartas) y la lista de looks (nombre, frase, foto y colores de la tarjeta). Las fotos van en `assets/images/lookbook/` (verticales, .jpg o .webp, < 400 KB).
 
 ## Drop bloqueado con clave
 
@@ -129,6 +129,7 @@ js/
     quick-view.js          Modal de vista rápida
     cart.js                Carrito lateral, checkout, confeti
     lookbook.js            Carrusel del lookbook (arrastre con mouse / dedo)
+    lookbook-deck.js       Mazo con portada: al tocarla salen los looks como cartas
     manifesto.js           Texto que se ilumina con el scroll
     crew.js                Sección Crew (canal de WhatsApp)
     reveal.js              Animaciones de entrada

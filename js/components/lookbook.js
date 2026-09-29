@@ -3,10 +3,12 @@ import { clamp } from '../utils/format.js';
 import { garmentSvg } from './product-art.js';
 import { LOOKBOOK } from '../data/lookbook.js';
 import { sound } from '../audio/sound-manager.js';
+import { initDeck } from './lookbook-deck.js';
 
 /**
- * Lookbook en carrusel: se arrastra con el mouse (PC) o se desliza con
- * el dedo (celular). Suena un tick al cambiar de look.
+ * Lookbook: empieza como un mazo con la portada del drop; al tocarla
+ * los looks salen como cartas a un carrusel que se arrastra con el mouse
+ * (PC) o se desliza con el dedo (celular). Suena un tick al cambiar de look.
  * Los looks se definen en js/data/lookbook.js.
  */
 export function initLookbook() {
@@ -152,5 +154,16 @@ export function initLookbook() {
 
   section.classList.add('is-static');
   track.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+
+  initDeck({
+    section,
+    track,
+    getPanels: () => panels,
+    cover: LOOKBOOK.cover,
+    season: LOOKBOOK.season,
+    onOpen: () => {
+      current = -1;
+      onScroll();
+    },
+  });
 }
