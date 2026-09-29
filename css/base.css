@@ -13,6 +13,7 @@
   --accent: #f4f4f4;       /* color de acción (botones, etiquetas) */
   --accent-ink: #0a0a0a;   /* texto sobre --accent */
   --danger: #ff5a5a;       /* solo para mensajes de error */
+  --crew: #e3151a;         /* rojo del Crew */
 
   --font-display: 'Anton', Impact, 'Arial Narrow', sans-serif;
   --font-marker: 'Permanent Marker', 'Comic Sans MS', cursive;

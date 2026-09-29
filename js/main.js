@@ -17,7 +17,7 @@ import { initDropLock } from './components/drop-lock.js';
 import { initMarquee } from './components/marquee.js';
 import { initLookbook } from './components/lookbook.js';
 import { initManifesto } from './components/manifesto.js';
-import { initNewsletter } from './components/newsletter.js';
+import { initCrew } from './components/crew.js';
 import { initReveal } from './components/reveal.js';
 import { initToasts } from './components/toast.js';
 
@@ -42,7 +42,7 @@ initCart();
 initDropLock();
 initLookbook();
 initManifesto();
-initNewsletter();
+initCrew();
 
 initLoader().then(() => {
   document.documentElement.classList.add('is-entered');

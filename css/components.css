@@ -32,8 +32,11 @@
   transition: transform 0.45s var(--ease);
 }
 
-.btn:hover::before {
-  transform: none;
+/* Solo con mouse: en táctil el :hover se queda "pegado" tras tocar */
+@media (hover: hover) {
+  .btn:hover::before {
+    transform: none;
+  }
 }
 
 .btn--accent {
@@ -47,16 +50,20 @@
   background: var(--bg);
 }
 
-.btn--accent:hover {
-  color: var(--fg);
+@media (hover: hover) {
+  .btn--accent:hover {
+    color: var(--fg);
+  }
 }
 
 .btn--ghost {
   border: 1px solid var(--line);
 }
 
-.btn--ghost:hover {
-  color: var(--bg);
+@media (hover: hover) {
+  .btn--ghost:hover {
+    color: var(--bg);
+  }
 }
 
 .btn--lg {

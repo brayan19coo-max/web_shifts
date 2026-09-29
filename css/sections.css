@@ -1,5 +1,5 @@
 /* =========================================================
-   SECCIONES — loader, hero, marquee, lookbook, manifiesto, club
+   SECCIONES — loader, hero, marquee, lookbook, manifiesto, crew
    ========================================================= */
 
 /* ---------- Loader ---------- */
@@ -565,8 +565,8 @@ html.is-entered .hero__letter {
   }
 }
 
-/* ---------- Club ---------- */
-.club__inner {
+/* ---------- Crew (canal de WhatsApp) ---------- */
+.crew__inner {
   max-width: 900px;
   margin: 0 auto;
   padding: clamp(40px, 7vw, 90px) clamp(24px, 6vw, 80px);
@@ -578,16 +578,34 @@ html.is-entered .hero__letter {
   overflow: hidden;
 }
 
-.club__inner::before {
+.crew__inner::before {
   content: '';
   position: absolute;
   inset: auto -20% -60% -20%;
   height: 100%;
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1), transparent 60%);
+  background: radial-gradient(ellipse at center, rgba(227, 21, 26, 0.16), transparent 60%);
   pointer-events: none;
 }
 
-.club__title {
+.crew__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 22px;
+}
+
+.dot--red {
+  background: var(--crew);
+  animation-name: pulse-red;
+}
+
+.crew__title {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(48px, 9vw, 120px);
@@ -595,76 +613,70 @@ html.is-entered .hero__letter {
   text-transform: uppercase;
 }
 
-.club__title em {
+.crew__title em {
+  display: inline-block;
   font-family: var(--font-marker);
   font-style: normal;
   text-transform: none;
-  display: inline-block;
+  color: var(--crew);
   transform: rotate(-4deg);
+  text-shadow: 0 0 40px rgba(227, 21, 26, 0.35);
 }
 
-.club__text {
+.crew__text {
   max-width: 460px;
-  margin: 18px auto 32px;
+  margin: 18px auto 24px;
   color: var(--muted);
+  font-size: 18px;
 }
 
-.club__form {
-  position: relative;
+.crew__perks {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 34px;
+}
+
+.crew__perks li {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 6px;
-  border-radius: 999px;
-  background: var(--bg);
+  padding: 8px 14px;
   border: 1px solid var(--line);
-  transition: border-color 0.3s;
+  border-radius: 999px;
+  font-size: 14px;
 }
 
-.club__form:focus-within {
-  border-color: var(--accent);
+.crew__perks li::before {
+  content: '✦';
+  color: var(--crew);
 }
 
-.club__form input {
-  flex: 1;
-  min-width: 0;
-  padding: 0 18px;
-  background: none;
-  border: 0;
-  outline: none;
-  font-size: 16px;
+.btn--crew {
+  background: var(--crew);
+  color: #fff;
+  border: 2px solid var(--crew);
 }
 
-.club__form input[aria-invalid='true'] {
-  color: var(--danger);
+.btn--crew::before {
+  background: var(--bg);
 }
 
-.club__msg {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  right: 0;
-  color: var(--danger);
+@media (hover: hover) {
+  .btn--crew:hover {
+    color: var(--fg);
+  }
+}
+
+.btn__icon {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.crew__note {
+  margin-top: 16px;
+  color: var(--muted);
   font-size: 13px;
-}
-
-.club__done {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: inherit;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 700;
-  opacity: 0;
-  transform: scale(0.9);
-  pointer-events: none;
-  transition: opacity 0.4s, transform 0.5s var(--ease);
-}
-
-.club__form.is-done .club__done {
-  opacity: 1;
-  transform: none;
 }

@@ -219,6 +219,13 @@
   font-size: 14px;
 }
 
+.drop__msg a {
+  color: var(--crew);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .drop__granted {
   display: none;
   font-family: var(--font-marker);

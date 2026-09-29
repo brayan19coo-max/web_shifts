@@ -27,6 +27,7 @@ En VS Code también sirve la extensión **Live Server** (clic derecho en `index.
 |-----------------------------------------------------|----------------------------------|
 | Nombre, eslogan, moneda, WhatsApp, redes            | `js/config.js` → `BRAND`         |
 | Drop bloqueado: nombre, fecha, clave                | `js/config.js` → `DROP`          |
+| Link y beneficios del Crew (WhatsApp)               | `js/config.js` → `BRAND.crew`    |
 | Logo (vectorial)                                    | `assets/images/logo.svg` y `logo-sticker.svg` (tu archivo de Inkscape queda en `logo-original.svg`) |
 | Sonidos y volúmenes                                 | `js/config.js` → `SOUNDS`, `AUDIO` |
 | Productos, precios, tallas, colores, fotos          | `js/data/products.js`            |
@@ -94,7 +95,7 @@ css/
   base.css                 Variables de diseño (colores, fuentes), reset
   layout.css               Header, menú móvil, secciones, footer
   components.css           Botones, cursor, tarjetas, modal, carrito, toasts
-  sections.css             Loader, hero, marquee, lookbook, manifiesto, club
+  sections.css             Loader, hero, marquee, lookbook, manifiesto, crew
   animations.css           Keyframes y revelados al hacer scroll
 js/
   main.js                  Punto de entrada: inicializa cada módulo
@@ -123,7 +124,7 @@ js/
     cart.js                Carrito lateral, checkout, confeti
     lookbook.js            Scroll horizontal anclado
     manifesto.js           Texto que se ilumina con el scroll
-    newsletter.js          Formulario del club
+    crew.js                Sección Crew (canal de WhatsApp)
     reveal.js              Animaciones de entrada
     toast.js               Notificaciones
   utils/                   Helpers de DOM, formato, almacenamiento y sha256

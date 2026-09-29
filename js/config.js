@@ -18,6 +18,15 @@ export const BRAND = {
   // Número de WhatsApp con código de país, sin "+" ni espacios.
   // Si lo dejas vacío, el checkout funciona en modo demostración.
   whatsapp: '573242887471',
+  // Crew: canal de difusión de WhatsApp
+  crew: {
+    url: 'https://whatsapp.com/channel/0029VbCqmWhFXUugU8ZeLL2o',
+    perks: [
+      'Primero en enterarte de cada drop',
+      'Claves de acceso anticipado',
+      'Detrás de cámaras y sorpresas',
+    ],
+  },
   social: {
     instagram: 'https://instagram.com/',
     tiktok: 'https://tiktok.com/',

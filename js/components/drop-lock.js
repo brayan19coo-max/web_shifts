@@ -101,7 +101,11 @@ export function initDropLock() {
     form.classList.remove('is-shake');
     void form.offsetWidth;
     form.classList.add('is-shake');
-    message.textContent = attempt ? 'Clave incorrecta. Pídela en nuestro Instagram 👀' : 'Escribe la clave del drop.';
+    if (attempt) {
+      message.innerHTML = 'Clave incorrecta. Las claves se sueltan en el <a href="#crew">Crew</a> 👀';
+    } else {
+      message.textContent = 'Escribe la clave del drop.';
+    }
     input.select();
   });
 
