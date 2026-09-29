@@ -99,7 +99,7 @@ export const AUDIO = {
   // - volume: 0 a 1, relativo al volumen general de efectos
   // - cooldown: milisegundos mínimos entre una repetición y la siguiente
   perSound: {
-    hover: { volume: 0.45, cooldown: 2000 },
+    hover: { volume: 0.45, cooldown: 1000 },
     tick: { cooldown: 30 },
   },
 };
