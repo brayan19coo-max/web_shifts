@@ -20,6 +20,7 @@ import { initManifesto } from './components/manifesto.js';
 import { initCrew } from './components/crew.js';
 import { initReveal } from './components/reveal.js';
 import { initToasts } from './components/toast.js';
+import { initSwaggy } from './components/swaggy/spot.js';
 
 // Avisa al "rescate" del index.html que el JavaScript sí arrancó
 window.__shiftsBooted = true;
@@ -61,6 +62,7 @@ safe('drop', initDropLock);
 safe('lookbook', initLookbook);
 safe('manifiesto', initManifesto);
 safe('crew', initCrew);
+safe('swaggy', initSwaggy);
 
 const entered = safe('loader', initLoader) || Promise.resolve();
 entered.then(() => {

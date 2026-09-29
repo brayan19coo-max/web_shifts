@@ -91,6 +91,33 @@ export const SOUNDS = {
   ambient: 'assets/sounds/ambient.mp3?v=8160c148',     // música de fondo en loop
 };
 
+/**
+ * SWAGGY — el brother de la marca
+ * -------------------------------------------------------------
+ * Nutria con lentes deportivos oscuros. Vive en "El parche", donde se
+ * puede interactuar con él y entrar al arcade de mini juegos.
+ * Las frases se escogen al azar según lo que pase.
+ */
+export const SWAGGY = {
+  name: 'Swaggy',
+  spotName: 'El parche de Swaggy',
+  phrases: {
+    greet: ['¿Qué más, parce? 😎', 'Uy, llegó el que era.', 'Bienvenido al parche, brother.'],
+    back: ['¡Parce, te extrañé! 🥹', 'Volviste, ¿sí o qué? Eso.'],
+    tap: ['Jaja, ¿qué pasó?', 'Tranqui, tranqui 😂', 'Eso, parce.', '¿Jugamos algo o qué?', 'Aquí, con estilo.'],
+    pet: ['Uff, qué rico 😌', 'Así sí, brother.', 'Sigue, sigue…'],
+    annoyed: ['Oe, no me toques tanto que me despeinas 😤', 'Ya, ya, suave…', 'Parce, respeto con los lentes.'],
+    sleepy: ['…zzz', 'Estaba soñando con el próximo drop…'],
+    invite: ['¿Jugamos? 🕹️', 'Ven al parche 👀'],
+    gameOver: ['Casi, parce. Otra.', 'Nada mal, brother.', 'Esa estuvo cerca 😅'],
+    record: ['¡Récord nuevo! Eres una leyenda 🔥', 'Uy, rompiste el récord 😎'],
+  },
+  // Premio del juego "Atrapa la lata". En null = sin premio.
+  // Ejemplo: { minScore: 60, text: '10 % de descuento en tu próxima compra' }
+  // Quien lo gane recibe un botón para reclamarlo por WhatsApp con su puntaje.
+  prize: null,
+};
+
 /** Volúmenes por defecto (0 a 1). */
 export const AUDIO = {
   sfxVolume: 0.7,

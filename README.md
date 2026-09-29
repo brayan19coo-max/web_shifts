@@ -91,6 +91,14 @@ Drop actual: **Drop 02 — Bonnie & Clyde** · *FUERA DE LA LEY. DENTRO DEL DROP
 - Es un bloqueo "de expectativa": sirve para crear hype, pero alguien con conocimientos técnicos podría saltarlo.
 - Para un drop nuevo: cambia `id`, `name`, `codename`, `subtitle` y `releaseDate` en `DROP` y usa ese mismo `id` en los productos.
 
+## Swaggy — el brother de la marca
+
+Nutria con lentes deportivos oscuros. Botón flotante (abajo a la izquierda) que abre **El parche de Swaggy**:
+- Se puede tocar (reacciona con frases de brother), acariciar (pasar el dedo/mouse por encima) o molestar (tocarlo mucho). Si lo ignoras, se duerme.
+- **Arcade** con mini juegos. Por ahora: **Atrapa la lata** (latas blancas +1, doradas +5, negras con X quitan una vida). El récord se guarda en el navegador de cada persona.
+- Nombre, frases y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje.
+- El dibujo actual es **provisional** (`js/components/swaggy/art.js`). Cuando esté la ilustración oficial se reemplaza por las poses: normal, feliz, molesto, celebrando, dormido.
+
 ## Estructura
 
 ```
@@ -119,6 +127,7 @@ js/
     drop-lock.js           Drop bloqueado: contador, clave, desbloqueo
     logo3d.js              Logo girando en 3D (se puede arrastrar)
     vault.js               Animación de caja fuerte al abrir un drop
+    swaggy/                Swaggy: dibujo (art.js), el parche (spot.js) y juegos (games/)
     cursor.js              Cursor personalizado
     header.js              Cabecera, controles de sonido, menú móvil
     hero.js                Logo musical + parallax
