@@ -136,7 +136,7 @@ js/
   utils/                   Helpers de DOM, formato, almacenamiento y sha256
 tools/
   generar-clave.html       Genera el código de una nueva clave del drop
-  version.py               Pone huellas anti-caché a los JS/CSS en index.html
+  version.py               Pone huellas anti-caché a los JS, CSS y sonidos
 assets/
   sounds/                  Tus sonidos (ver LEEME.md)
   images/                  Logo, favicon y productos/ (tus fotos)
@@ -160,7 +160,7 @@ Cualquier elemento puede sonar solo con atributos:
 
 ## Caché (importante al publicar cambios de código)
 
-Cada archivo JS y CSS lleva en `index.html` una "huella" de su contenido (`?v=...`), para que el navegador nunca mezcle archivos nuevos con copias viejas guardadas. Después de cambiar código, ejecuta:
+Cada archivo JS, CSS y de sonido lleva una "huella" de su contenido (`?v=...`), para que el navegador nunca mezcle archivos nuevos con copias viejas guardadas. Después de cambiar código, ejecuta:
 
 ```bash
 python3 tools/version.py

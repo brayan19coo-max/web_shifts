@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Anti-caché: le pone a cada archivo JS y CSS una "huella" (hash de su
-contenido) en index.html. Así, cuando un archivo cambia, el navegador
+Anti-caché: le pone a cada archivo JS, CSS y de sonido una "huella"
+(hash de su contenido). Así, cuando un archivo cambia, el navegador
 descarga la versión nueva en vez de mezclarla con copias viejas.
 
 Uso (desde la raíz del proyecto), después de cambiar código:
@@ -20,7 +20,29 @@ def fingerprint(path: pathlib.Path) -> str:
     return hashlib.sha1(path.read_bytes()).hexdigest()[:8]
 
 
+def version_sounds() -> int:
+    """Pone huella a las rutas de sonido en js/config.js (assets/sounds/x.mp3?v=...)."""
+    config = ROOT / 'js' / 'config.js'
+    text = config.read_text(encoding='utf-8')
+    count = 0
+
+    def stamp(match: re.Match) -> str:
+        nonlocal count
+        path = ROOT / match.group(1)
+        if not path.exists():
+            return match.group(0)
+        count += 1
+        return f"'{match.group(1)}?v={fingerprint(path)}'"
+
+    # Solo en líneas de código (no en los comentarios de ejemplo)
+    text = re.sub(r"^(?!\s*\*)(.*)$", lambda line: re.sub(
+        r"'(assets/sounds/[\w.-]+\.(?:mp3|ogg|wav))(?:\?v=\w+)?'", stamp, line.group(0)), text, flags=re.M)
+    config.write_text(text, encoding='utf-8')
+    return count
+
+
 def main() -> None:
+    sounds = version_sounds()  # primero: cambia config.js, que luego recibe su propia huella
     html = INDEX.read_text(encoding='utf-8')
 
     # 1) Mapa de importación: cada módulo JS con su huella
@@ -54,7 +76,7 @@ def main() -> None:
 
     INDEX.write_text(html, encoding='utf-8')
     css_count = len(re.findall(r'css/[\w-]+\.css', html))
-    print(f'OK: {len(imports)} módulos JS y {css_count} CSS con huella.')
+    print(f'OK: {len(imports)} módulos JS, {css_count} CSS y {sounds} sonidos con huella.')
 
 
 if __name__ == '__main__':

@@ -75,20 +75,20 @@ export const DROP = {
  * `ambient` es la música de fondo: un loop largo (.mp3).
  */
 export const SOUNDS = {
-  hover: 'assets/sounds/hover.mp3',         // pasar el mouse sobre botones/productos
-  click: 'assets/sounds/click.mp3',         // clic en botones
-  open: 'assets/sounds/open.mp3',           // abrir carrito / vista rápida / menú
-  close: 'assets/sounds/close.mp3',         // cerrar paneles
-  add: 'assets/sounds/add.mp3',             // agregar al carrito
-  remove: 'assets/sounds/remove.mp3',       // quitar del carrito
-  success: 'assets/sounds/success.mp3',     // compra / suscripción exitosa
-  error: 'assets/sounds/error.mp3',         // validación fallida (falta talla, clave incorrecta)
-  whoosh: 'assets/sounds/whoosh.mp3',       // transiciones (filtros, intro)
-  tick: 'assets/sounds/tick.mp3',           // pequeños detalles (colores, cantidades, contador)
-  note: 'assets/sounds/note.mp3',           // letras de "Shifting your style" (se afina por letra)
-  spray: 'assets/sounds/spray.mp3',         // clic en el logo (lata de aerosol)
-  unlock: 'assets/sounds/unlock.mp3',       // drop desbloqueado
-  ambient: 'assets/sounds/ambient.mp3',     // música de fondo en loop
+  hover: 'assets/sounds/hover.mp3?v=709187bb',         // pasar el mouse sobre botones/productos
+  click: 'assets/sounds/click.mp3?v=f39f8c7c',         // clic en botones
+  open: 'assets/sounds/open.mp3?v=5679890c',           // abrir carrito / vista rápida / menú
+  close: 'assets/sounds/close.mp3?v=7b525840',         // cerrar paneles
+  add: 'assets/sounds/add.mp3?v=d36ed1e9',             // agregar al carrito
+  remove: 'assets/sounds/remove.mp3?v=c260218f',       // quitar del carrito
+  success: 'assets/sounds/success.mp3?v=11176881',     // compra / suscripción exitosa
+  error: 'assets/sounds/error.mp3?v=080a2560',         // validación fallida (falta talla, clave incorrecta)
+  whoosh: 'assets/sounds/whoosh.mp3?v=29767df1',       // transiciones (filtros, intro)
+  tick: 'assets/sounds/tick.mp3?v=c3d23c3a',           // pequeños detalles (colores, cantidades, contador)
+  note: 'assets/sounds/note.mp3?v=b1257806',           // letras de "Shifting your style" (se afina por letra)
+  spray: 'assets/sounds/spray.mp3?v=06594c7f',         // clic en el logo (lata de aerosol)
+  unlock: 'assets/sounds/unlock.mp3?v=bed277cb',       // drop desbloqueado
+  ambient: 'assets/sounds/ambient.mp3?v=8160c148',     // música de fondo en loop
 };
 
 /** Volúmenes por defecto (0 a 1). */
