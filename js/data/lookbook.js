@@ -33,7 +33,6 @@ export const LOOKBOOK = {
   looks: [
     {
       title: 'Saint Mode',
-      text: 'Tee negra con la firma Saints Mode al frente.',
       image: 'assets/images/lookbook/saint-01.jpg',
     },
     {

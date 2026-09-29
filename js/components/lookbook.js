@@ -29,7 +29,7 @@ export function initLookbook() {
         style="--look-bg:${escapeHtml(look.bg || '#f4f4f4')};--look-fg:${escapeHtml(look.fg || '#0a0a0a')}">
         <span class="look__num">${String(i + 1).padStart(2, '0')}</span>
         <div class="look__art">${media}</div>
-        <div class="look__text"><h3>${escapeHtml(look.title)}</h3><p>${escapeHtml(look.text || '')}</p></div>
+        <div class="look__text"><h3>${escapeHtml(look.title)}</h3>${look.text ? `<p>${escapeHtml(look.text)}</p>` : ''}</div>
       </article>`;
     })
     .join('');
