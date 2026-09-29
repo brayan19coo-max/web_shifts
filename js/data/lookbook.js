@@ -18,7 +18,7 @@
 
 export const LOOKBOOK = {
   title: 'Lookbook',
-  season: 'Drop 01',
+  season: 'Drop 01 — Saint Mode',
   looks: [
     {
       title: 'Ruido blanco',
