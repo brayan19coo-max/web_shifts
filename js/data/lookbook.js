@@ -46,8 +46,8 @@ export const LOOKBOOK = {
       image: 'assets/images/lookbook/saint-03.jpg',
     },
     {
-      title: 'Ángel caído',
-      text: 'Tee negra con ángel y logo en la espalda.',
+      title: 'Arcangel',
+      text: 'Blessed in the streets.',
       image: 'assets/images/lookbook/saint-04.jpg',
     },
     {
