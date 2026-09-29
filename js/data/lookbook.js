@@ -62,13 +62,8 @@ export const LOOKBOOK = {
     },
     {
       title: 'Señal divina',
-      text: 'Tee blanca con ángel y logo en la espalda.',
+      text: 'El comienzo de algo escrito.',
       image: 'assets/images/lookbook/saint-07.jpg',
-    },
-    {
-      title: 'Confesión',
-      text: 'La espalda también habla.',
-      image: 'assets/images/lookbook/saint-08.jpg',
     },
     {
       title: 'Juego sagrado',
