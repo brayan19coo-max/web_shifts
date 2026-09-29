@@ -52,7 +52,7 @@ export const LOOKBOOK = {
     },
     {
       title: 'Querubín',
-      text: 'Tee negra con querubín al frente.',
+      text: 'No preguntes de dónde vienen las alas.',
       image: 'assets/images/lookbook/saint-05.jpg',
     },
     {
