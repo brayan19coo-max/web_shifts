@@ -37,7 +37,6 @@ export const LOOKBOOK = {
     },
     {
       title: 'Alas',
-      text: 'Tee blanca con alas en la espalda.',
       image: 'assets/images/lookbook/saint-02.jpg',
     },
     {
