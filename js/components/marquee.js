@@ -15,7 +15,8 @@ export function initMarquee() {
   const track = $('.marquee__track', marquee);
 
   // Velocidades en px por segundo (negativo = hacia la izquierda)
-  const BASE_SPEED = prefersReducedMotion() ? 0 : -90;
+  // Con "reducir movimiento" del sistema va más lenta, pero sigue viva
+  const BASE_SPEED = prefersReducedMotion() ? -40 : -90;
   const HOVER_SPEED = BASE_SPEED * 0.4;
   let offset = 0;
   let velocity = BASE_SPEED;

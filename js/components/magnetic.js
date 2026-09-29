@@ -1,8 +1,8 @@
-import { $$, isFinePointer, prefersReducedMotion } from '../utils/dom.js';
+import { $$, isFinePointer } from '../utils/dom.js';
 
 /** Elementos con [data-magnetic] se "pegan" suavemente al cursor. */
 export function initMagnetic(root = document) {
-  if (!isFinePointer() || prefersReducedMotion()) return;
+  if (!isFinePointer()) return;
 
   $$('[data-magnetic]', root).forEach((el) => {
     const strength = Number(el.dataset.magnetic) || 0.35;

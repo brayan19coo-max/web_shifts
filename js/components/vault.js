@@ -1,4 +1,4 @@
-import { html, escapeHtml, lockScroll, prefersReducedMotion } from '../utils/dom.js';
+import { html, escapeHtml, lockScroll } from '../utils/dom.js';
 import { BRAND } from '../config.js';
 import { sound } from '../audio/sound-manager.js';
 
@@ -15,11 +15,6 @@ import { sound } from '../audio/sound-manager.js';
 const BOLTS = 10;
 
 export function playVault({ title = '', subtitle = '' } = {}) {
-  if (prefersReducedMotion()) {
-    sound.play('unlock');
-    return Promise.resolve();
-  }
-
   const bolts = Array.from(
     { length: BOLTS },
     (_, i) => `<span class="vault__bolt" style="--a:${(360 / BOLTS) * i}deg"></span>`,

@@ -1,4 +1,4 @@
-import { html, isFinePointer, prefersReducedMotion } from '../utils/dom.js';
+import { html, isFinePointer } from '../utils/dom.js';
 import { lerp } from '../utils/format.js';
 
 /**
@@ -8,7 +8,7 @@ import { lerp } from '../utils/format.js';
  * Solo se activa con mouse (no en pantallas táctiles).
  */
 export function initCursor() {
-  if (!isFinePointer() || prefersReducedMotion()) return;
+  if (!isFinePointer()) return;
 
   const dot = html('<div class="cursor-dot" aria-hidden="true"></div>');
   const ring = html('<div class="cursor-ring" aria-hidden="true"><span class="cursor-ring__label"></span></div>');

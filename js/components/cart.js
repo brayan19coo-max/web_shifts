@@ -1,4 +1,4 @@
-import { $, escapeHtml, lockScroll, trapFocus, prefersReducedMotion } from '../utils/dom.js';
+import { $, escapeHtml, lockScroll, trapFocus } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
 import { BRAND } from '../config.js';
 import { cartStore, changeQty, removeItem, clearCart, getLines, getTotals } from '../core/cart-store.js';
@@ -144,7 +144,7 @@ export function initCart() {
 /** Anima una "bolita" desde el producto hasta el ícono del carrito. */
 function flyToCart({ from, color }) {
   const target = document.querySelector('[data-open-cart]');
-  if (!from || !target || prefersReducedMotion()) return;
+  if (!from || !target) return;
   const a = from.getBoundingClientRect();
   const b = target.getBoundingClientRect();
   // Si la cabecera está entrando/saliendo, apuntamos a su posición final
@@ -173,7 +173,6 @@ function flyToCart({ from, color }) {
 
 /** Confeti ligero en canvas al completar el pedido. */
 function celebrate() {
-  if (prefersReducedMotion()) return;
   const canvas = document.createElement('canvas');
   canvas.className = 'confetti';
   canvas.width = innerWidth * devicePixelRatio;

@@ -26,8 +26,11 @@ export function initDropLock() {
 
   const products = getDropProducts(DROP.id);
   const release = new Date(DROP.releaseDate).getTime();
-  const storageKey = `${DROP.id}:unlocked`;
-  const vaultSeenKey = `${DROP.id}:vault-seen`;
+  // El estado se liga a la clave actual: si cambias la clave, el drop
+  // vuelve a aparecer bloqueado para todos (y la bóveda se ve de nuevo)
+  const lockId = `${DROP.id}:${DROP.passwordHash.slice(0, 8)}`;
+  const storageKey = `${lockId}:unlocked`;
+  const vaultSeenKey = `${lockId}:vault-seen`;
   const isReleased = () => Date.now() >= release;
 
   const form = $('[data-drop-form]', section);

@@ -1,4 +1,4 @@
-import { html, escapeHtml, isFinePointer, prefersReducedMotion } from '../utils/dom.js';
+import { html, escapeHtml, isFinePointer } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
 import { productVisual } from './product-art.js';
 import { bus } from '../core/bus.js';
@@ -56,7 +56,7 @@ export function createProductCard(product, index = 0) {
 
   card.getColorIndex = () => colorIndex;
 
-  if (isFinePointer() && !prefersReducedMotion()) {
+  if (isFinePointer()) {
     const media = card.querySelector('.card__media');
     media.addEventListener('pointermove', (event) => {
       const rect = media.getBoundingClientRect();

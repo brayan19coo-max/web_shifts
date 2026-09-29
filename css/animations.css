@@ -108,21 +108,19 @@
   40%, 80% { transform: translateX(8px); }
 }
 
-/* Respeta a quienes prefieren menos movimiento */
+/* "Reducir movimiento" del sistema: se calman solo las animaciones
+   decorativas que se repiten solas (fondo, grano, flotado). Lo interactivo
+   de la marca (bóveda, cinta, logo 3D, cursor) sigue funcionando. */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  html {
+    scroll-behavior: auto;
   }
 
-  [data-reveal],
-  html:not(.is-entered) .hero__letter,
-  .hero__logo {
-    opacity: 1;
-    transform: none;
+  .blob,
+  .grain,
+  .dot,
+  .loader__logo,
+  .vault.is-open .vault__glow {
+    animation: none !important;
   }
 }

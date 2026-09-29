@@ -9,7 +9,9 @@ import { prefersReducedMotion } from '../utils/dom.js';
  *
  * Devuelve { spin(boost) } para darle un impulso desde otro módulo.
  */
-export function createLogo3D(container, { layers = 14, depth = 28, speed = 0.6 } = {}) {
+export function createLogo3D(container, { layers = 14, depth = 28, speed: baseSpeed = 0.6 } = {}) {
+  // Con "reducir movimiento" del sistema gira más despacio, pero sigue girando
+  const speed = prefersReducedMotion() ? baseSpeed * 0.4 : baseSpeed;
   container.classList.add('logo3d');
   container.setAttribute('role', 'img');
   container.setAttribute('aria-label', `Logo ${BRAND.name}`);
@@ -38,8 +40,6 @@ export function createLogo3D(container, { layers = 14, depth = 28, speed = 0.6 }
     spinner.append(img);
   }
   container.append(spinner);
-
-  if (prefersReducedMotion()) return { spin() {} };
 
   let angle = 0;
   let velocity = speed;
