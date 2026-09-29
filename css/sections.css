@@ -290,6 +290,14 @@ html.is-entered .hero__letter {
   color: var(--accent-ink);
   transform: rotate(-2deg) scale(1.04);
   margin: 20px 0;
+  cursor: grab;
+  touch-action: pan-y; /* scroll vertical normal; el arrastre horizontal lo maneja JS */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.marquee.is-dragging {
+  cursor: grabbing;
 }
 
 .marquee__track {
@@ -300,11 +308,7 @@ html.is-entered .hero__letter {
   font-size: clamp(24px, 4vw, 44px);
   text-transform: uppercase;
   white-space: nowrap;
-  animation: marquee 22s linear infinite;
-}
-
-.marquee:hover .marquee__track {
-  animation-duration: 60s;
+  will-change: transform;
 }
 
 .marquee i {
@@ -453,18 +457,45 @@ html.is-entered .hero__letter {
   position: static;
   height: auto;
   padding: 80px 0;
+  gap: 18px;
 }
 
 .lookbook.is-static .lookbook__track {
   width: auto;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 6px;
+}
+
+.lookbook.is-static .lookbook__track::-webkit-scrollbar {
+  display: none;
 }
 
 .lookbook.is-static .look {
   scroll-snap-align: center;
-  transform: none;
-  opacity: 1;
+  scroll-snap-stop: always;
+}
+
+/* En carrusel el look activo se resalta sin mover los demás de lugar */
+.lookbook.is-static .look:not(.is-current) {
+  transform: scale(0.95);
+  opacity: 0.7;
+}
+
+.lookbook__hint {
+  display: none;
+  padding: 0 var(--gutter);
+  color: var(--muted);
+  font-family: var(--font-marker);
+  font-size: 15px;
+}
+
+.lookbook.is-static .lookbook__hint {
+  display: block;
 }
 
 @media (max-width: 720px) {
