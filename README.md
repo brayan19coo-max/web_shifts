@@ -95,8 +95,9 @@ Drop actual: **Drop 02 — Bonnie & Clyde** · *FUERA DE LA LEY. DENTRO DEL DROP
 
 Nutria con lentes deportivos oscuros. Botón flotante (abajo a la izquierda) que abre **El parche de Swaggy**:
 - Se puede tocar (reacciona con frases de brother), acariciar (pasar el dedo/mouse por encima) o molestar (tocarlo mucho). Si lo ignoras, se duerme.
+- **Siempre está vivo:** respira, mueve la cola y las orejas, le brillan los lentes y te sigue con la cabeza (también desde el botón flotante). Cada tanto hace algo solo: bailar, saludar, subirse los lentes y guiñar, mirar a los lados, estirarse, saltar o dar una vuelta. Al tocarlo salta, da un mortal o baila; al acariciarlo "ronronea"; si está dormido, se despierta estirándose. Se mueve aunque el celular tenga activado "reducir movimiento".
 - **Arcade** con mini juegos. Por ahora: **Atrapa la lata** (latas blancas +1, doradas +5, negras con X quitan una vida). El récord se guarda en el navegador de cada persona.
-- Nombre, frases y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje.
+- Nombre, frases (una lista por situación: saludo, toque, caricia, molesto, dormido, despertar, cosas que dice solo, juego…) y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje.
 - El dibujo actual es **provisional** (`js/components/swaggy/art.js`). Cuando esté la ilustración oficial se reemplaza por las poses: normal, feliz, molesto, celebrando, dormido.
 
 ## Estructura

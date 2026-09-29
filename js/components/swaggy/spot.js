@@ -11,11 +11,40 @@ import { startCatchGame } from './games/catch-can.js';
  * - Botón flotante con Swaggy asomándose (abajo a la izquierda).
  * - Al abrirlo: Swaggy reacciona si lo tocas, lo acaricias (pasar el
  *   dedo/mouse por encima) o lo tocas demasiado; se duerme si lo ignoras.
+ * - Siempre está vivo: respira, mueve la cola, sigue el cursor con la
+ *   cabeza y cada tanto hace algo por su cuenta (bailar, saludar, subirse
+ *   los lentes, mirar a los lados, dar una vuelta…).
  * - Arcade con los mini juegos (por ahora "Atrapa la lata").
  * - Récords guardados en el navegador de cada persona.
  */
 const KEY = 'swaggy';
 const pick = (list = []) => list[Math.floor(Math.random() * list.length)] || '';
+const rand = (a, b) => a + Math.random() * (b - a);
+const clamp = (v) => Math.max(-1, Math.min(1, v));
+
+// Cuánto dura cada acción (ms)
+const ACTIONS = { look: 2200, glasses: 1900, wave: 1700, dance: 2600, flip: 950, spin: 900, jump: 600, stretch: 1800, purr: 1400 };
+
+/** Hace que Swaggy haga una acción un momento. */
+function doAction(svg, name, ms = ACTIONS[name] || 1200) {
+  if (!svg) return;
+  clearTimeout(svg._actionTimer);
+  delete svg.dataset.action;
+  void svg.getBoundingClientRect();
+  svg.dataset.action = name;
+  svg._actionTimer = setTimeout(() => delete svg.dataset.action, ms);
+}
+
+/** La cabeza (y los ojos) siguen al puntero. */
+function lookAt(svg, x, y) {
+  if (!svg || svg.dataset.mood === 'sleepy') return;
+  const r = svg.getBoundingClientRect();
+  if (!r.width) return;
+  const cx = r.left + r.width / 2;
+  const cy = r.top + r.height * 0.33;
+  svg.style.setProperty('--lx', clamp((x - cx) / 320).toFixed(3));
+  svg.style.setProperty('--ly', clamp((y - cy) / 320).toFixed(3));
+}
 
 export function initSwaggy() {
   const data = storage.get(KEY, { lastVisit: 0, best: {} });
@@ -24,18 +53,50 @@ export function initSwaggy() {
   // ---------- Botón flotante ----------
   const launcher = html(`
     <button type="button" class="swaggy-launcher" aria-label="Abrir ${escapeHtml(SWAGGY.spotName)}" data-cursor="Parche">
-      <span class="swaggy-launcher__peek">${swaggySvg('chill')}</span>
+      <span class="swaggy-launcher__peek">${swaggySvg('chill', { rig: true })}</span>
       <span class="swaggy-launcher__bubble" aria-hidden="true"></span>
     </button>`);
   document.body.append(launcher);
   const launcherBubble = launcher.querySelector('.swaggy-launcher__bubble');
+  const launcherSvg = launcher.querySelector('svg');
+
+  // Te sigue con la mirada por toda la página
+  let lookFrame = 0;
+  let lastPointer = null;
+  window.addEventListener(
+    'pointermove',
+    (event) => {
+      lastPointer = { x: event.clientX, y: event.clientY };
+      if (lookFrame) return;
+      lookFrame = requestAnimationFrame(() => {
+        lookFrame = 0;
+        if (overlay) lookAt(overlay.querySelector('[data-swaggy] svg'), lastPointer.x, lastPointer.y);
+        else lookAt(launcherSvg, lastPointer.x, lastPointer.y);
+      });
+    },
+    { passive: true },
+  );
+
+  // Cada tanto hace algo desde su esquina
+  const launcherLoop = () => {
+    if (!overlay && !document.hidden && document.documentElement.classList.contains('is-entered')) {
+      doAction(launcherSvg, pick(['glasses', 'look', 'jump', 'glasses', 'spin']));
+    }
+    setTimeout(launcherLoop, rand(6000, 11000));
+  };
+  setTimeout(launcherLoop, 5000);
 
   // Invitación una vez por visita, un rato después de entrar
   setTimeout(() => {
-    if (document.querySelector('.parche')) return;
+    if (overlay) return;
     launcherBubble.textContent = pick(phrases.invite);
     launcher.classList.add('is-talking');
-    setTimeout(() => launcher.classList.remove('is-talking'), 5000);
+    launcherSvg.dataset.mood = 'happy';
+    doAction(launcherSvg, 'jump');
+    setTimeout(() => {
+      launcher.classList.remove('is-talking');
+      launcherSvg.dataset.mood = 'chill';
+    }, 5000);
   }, 9000);
 
   launcher.addEventListener('click', () => open());
@@ -61,7 +122,7 @@ export function initSwaggy() {
           <section class="parche__stage">
             <p class="parche__bubble" aria-live="polite"></p>
             <button type="button" class="parche__swaggy" data-swaggy aria-label="Tocar a ${escapeHtml(SWAGGY.name)}" data-cursor="Tócalo">
-              ${swaggySvg('chill')}
+              ${swaggySvg('chill', { rig: true })}
             </button>
             <p class="parche__hint"><span class="only-mouse">Hazle clic o pásale el mouse</span><span class="only-touch">Tócalo o pásale el dedo</span> 🦦</p>
           </section>
@@ -117,7 +178,9 @@ export function initSwaggy() {
     const firstTime = !data.lastVisit;
     data.lastVisit = Date.now();
     storage.set(KEY, data);
-    setTimeout(() => react(away > 2 * 86400000 && !firstTime ? 'party' : 'happy', pick(away > 2 * 86400000 && !firstTime ? phrases.back : phrases.greet), 3200), 350);
+    const isBack = away > 2 * 86400000 && !firstTime;
+    setTimeout(() => react(isBack ? 'party' : 'happy', pick(isBack ? phrases.back : phrases.greet), 3200, isBack ? 'dance' : 'wave'), 350);
+    scheduleIdleAction();
   }
 
   function close() {
@@ -125,6 +188,7 @@ export function initSwaggy() {
     game?.stop();
     game = null;
     clearTimeout(idleTimer);
+    clearTimeout(actionTimer);
     document.removeEventListener('keydown', onKey);
     const el = overlay;
     overlay = null;
@@ -140,12 +204,47 @@ export function initSwaggy() {
   let moodTimer = 0;
   let bubbleTimer = 0;
   let idleTimer = 0;
+  let actionTimer = 0;
+  let busyUntil = 0;
+
+  const stageSvg = () => overlay?.querySelector('[data-swaggy] svg');
 
   function setMood(mood) {
     const btn = overlay?.querySelector('[data-swaggy]');
-    if (!btn) return;
-    btn.innerHTML = swaggySvg(mood);
+    const svg = stageSvg();
+    if (!btn || !svg) return;
+    svg.dataset.mood = mood;
     btn.dataset.mood = mood;
+    if (mood === 'sleepy') {
+      svg.style.setProperty('--lx', '0');
+      svg.style.setProperty('--ly', '0');
+    }
+  }
+
+  function act(name, ms) {
+    const svg = stageSvg();
+    if (!svg) return;
+    const time = ms || ACTIONS[name] || 1200;
+    busyUntil = Date.now() + time;
+    doAction(svg, name, time);
+  }
+
+  // Cuando nadie lo toca, hace cosas por su cuenta
+  function scheduleIdleAction() {
+    clearTimeout(actionTimer);
+    actionTimer = setTimeout(() => {
+      const svg = stageSvg();
+      const home = overlay?.querySelector('.parche__home');
+      if (svg && !home?.hidden && svg.dataset.mood === 'chill' && Date.now() > busyUntil && !document.hidden) {
+        const name = pick(['look', 'glasses', 'wave', 'dance', 'spin', 'jump', 'stretch', 'look', 'glasses', 'dance']);
+        act(name);
+        if (Math.random() < 0.45) {
+          const own = { glasses: phrases.glasses, dance: phrases.dance, stretch: phrases.stretch };
+          say(pick(own[name]?.length && Math.random() < 0.6 ? own[name] : phrases.idle), 2800);
+        }
+      }
+      scheduleIdleAction();
+    }, rand(3500, 7000));
   }
 
   function say(text, ms = 2600) {
@@ -157,15 +256,18 @@ export function initSwaggy() {
     bubbleTimer = setTimeout(() => bubble.classList.remove('is-visible'), ms);
   }
 
-  function react(mood, text, ms = 1400) {
+  function react(mood, text, ms = 1400, action = '') {
     setMood(mood);
     say(text, Math.max(ms, 2200));
     const btn = overlay?.querySelector('[data-swaggy]');
     if (btn) {
       btn.classList.remove('is-bounce', 'is-shake');
       void btn.offsetWidth;
-      btn.classList.add(mood === 'annoyed' ? 'is-shake' : 'is-bounce');
+      if (mood === 'annoyed') btn.classList.add('is-shake');
+      else if (!action) btn.classList.add('is-bounce');
     }
+    if (action) act(action, Math.max(ACTIONS[action] || 0, action === 'dance' || action === 'wave' ? ms : 0));
+    else busyUntil = Date.now() + ms;
     clearTimeout(moodTimer);
     moodTimer = setTimeout(() => setMood('chill'), ms);
     resetIdle();
@@ -189,6 +291,12 @@ export function initSwaggy() {
 
     btn.addEventListener('click', () => {
       const now = Date.now();
+      // Si estaba dormido, se despierta estirándose
+      if (btn.dataset.mood === 'sleepy') {
+        sound.play('whoosh');
+        react('happy', pick(phrases.wake), 1800, 'stretch');
+        return;
+      }
       // Si está molesto, sigue molesto un rato aunque lo sigas tocando
       if (now < annoyedUntil) {
         react('annoyed', pick(phrases.annoyed), 1800);
@@ -204,7 +312,8 @@ export function initSwaggy() {
         react('annoyed', pick(phrases.annoyed), 1800);
       } else {
         sound.play('note', { index: Math.floor(Math.random() * 8) });
-        react(Math.random() < 0.3 ? 'party' : 'happy', pick(phrases.tap));
+        const party = Math.random() < 0.25;
+        react(party ? 'party' : 'happy', pick(phrases.tap), party ? 2200 : 1500, party ? 'dance' : pick(['jump', 'jump', 'flip', 'spin', 'wave']));
       }
     });
 
@@ -217,7 +326,7 @@ export function initSwaggy() {
           petDistance = 0;
           lastPet = Date.now();
           sound.play('success');
-          react('happy', pick(phrases.pet), 1800);
+          react('happy', pick(phrases.pet), 1800, 'purr');
           hearts(btn);
         }
       }
@@ -258,7 +367,7 @@ export function initSwaggy() {
       overlay.classList.remove('is-playing');
       const best = overlay.querySelector('[data-best]');
       if (best) best.textContent = data.best?.catch || 0;
-      react('happy', '¿Otra o qué, parce?');
+      react('happy', pick(phrases.home), 1600, 'wave');
     };
 
     const play = () => {
@@ -288,7 +397,7 @@ export function initSwaggy() {
           )}`
         : '';
       over.innerHTML = `
-        <div class="game__over-swaggy">${swaggySvg(record ? 'party' : 'annoyed')}</div>
+        <div class="game__over-swaggy">${swaggySvg(record ? 'party' : 'annoyed', { rig: true })}</div>
         <p class="game__name">${score} puntos</p>
         <p class="game__msg">${escapeHtml(pick(record ? phrases.record : phrases.gameOver))}</p>
         <p class="game__best">Tu récord: <b>${Math.max(score, prev)}</b></p>

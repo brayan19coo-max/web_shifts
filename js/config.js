@@ -101,16 +101,38 @@ export const SOUNDS = {
 export const SWAGGY = {
   name: 'Swaggy',
   spotName: 'El parche de Swaggy',
+  // Frases: se escoge una al azar. Puedes agregar, quitar o cambiar las que quieras.
   phrases: {
-    greet: ['¿Qué más, parce? 😎', 'Uy, llegó el que era.', 'Bienvenido al parche, brother.'],
-    back: ['¡Parce, te extrañé! 🥹', 'Volviste, ¿sí o qué? Eso.'],
-    tap: ['Jaja, ¿qué pasó?', 'Tranqui, tranqui 😂', 'Eso, parce.', '¿Jugamos algo o qué?', 'Aquí, con estilo.'],
-    pet: ['Uff, qué rico 😌', 'Así sí, brother.', 'Sigue, sigue…'],
-    annoyed: ['Oe, no me toques tanto que me despeinas 😤', 'Ya, ya, suave…', 'Parce, respeto con los lentes.'],
-    sleepy: ['…zzz', 'Estaba soñando con el próximo drop…'],
-    invite: ['¿Jugamos? 🕹️', 'Ven al parche 👀'],
-    gameOver: ['Casi, parce. Otra.', 'Nada mal, brother.', 'Esa estuvo cerca 😅'],
-    record: ['¡Récord nuevo! Eres una leyenda 🔥', 'Uy, rompiste el récord 😎'],
+    // Al entrar al parche
+    greet: ['¡Epa! Llegaste justo a tiempo 😎', 'Bienvenido al parche. Aquí no se entra, se llega.', 'Uy, ese outfit… me gusta cómo vienes.', '¿Qué más pues? Póngase cómodo.'],
+    // Al volver después de 2 días o más
+    back: ['¡Volviste! Te estaba guardando el puesto 🥹', 'Mira quién regresó… el que era.', 'Te demoraste, pero valió la pena.'],
+    // Al tocarlo
+    tap: ['¡Epa! Con cuidado, que estoy recién planchado.', 'Jaja, eso hace cosquillas 😂', '¿Me llamaste? Aquí estoy.', 'Tócame otra vez y te hago un paso.', 'Shifting my style 😎', '¿Ya viste lo que viene en el drop? 👀'],
+    // Al acariciarlo (pasar el dedo/mouse por encima)
+    pet: ['Uff… así sí 😌', 'Eso, justo detrás de la oreja.', 'Con cariño, como hacemos la ropa.'],
+    // Al tocarlo demasiado
+    annoyed: ['¡Ey, ey! Los lentes no se tocan 😤', 'Suave, que me despeinas.', 'Ya, ya… respeto con el brother.', 'Me vas a arrugar el outfit.'],
+    // Cuando se duerme
+    sleepy: ['…zzz', 'Soñando con el próximo drop…', 'Cinco minutos más…'],
+    // Al despertarlo
+    wake: ['¡Estoy despierto! …casi.', '¿Eh? ¿Quién? Ah, eras tú 😅', 'Uy, me dormí. ¿Me perdí de algo?'],
+    // Lo que dice solo, cuando nadie lo toca
+    idle: ['¿Jugamos algo o qué?', 'El arcade está ahí, eh 👉', 'Día de base o día de impulso: ¿qué eres hoy?', 'Estos lentes no me los quito ni para dormir.', 'Fuera de la ley, dentro del drop 🤫', 'Yo con esta cadena y tú con ese estilo… qué combo.'],
+    // Cuando se sube los lentes y guiña
+    glasses: ['Te guiño, pero no le digas a nadie 😉', 'Sí, hay ojos aquí debajo.'],
+    // Cuando baila
+    dance: ['Esta es mi canción 🎶', 'Mira este paso, brother.'],
+    // Cuando se estira
+    stretch: ['Aaaah… estiramiento de nutria.'],
+    // Burbuja del botón flotante
+    invite: ['¿Jugamos? 🕹️', 'Ven al parche 👀', 'Psst… por aquí 🦦', 'Tengo un juego para ti.'],
+    // Al volver del juego al parche
+    home: ['¿Otra o qué?', 'Buena esa. ¿Revancha?', 'Descansa los dedos y vuelve.'],
+    // Al perder en un juego
+    gameOver: ['Casi, casi. Otra más.', 'Nada mal… pero yo sé que das más.', 'Esa estuvo cerca 😅', 'Tranqui, hasta los grandes caen.'],
+    // Al romper el récord
+    record: ['¡Récord nuevo! Eres una leyenda 🔥', 'Rompiste el récord. Respeto 😎', 'Eso merece un aplauso 👏'],
   },
   // Premio del juego "Atrapa la lata". En null = sin premio.
   // Ejemplo: { minScore: 60, text: '10 % de descuento en tu próxima compra' }

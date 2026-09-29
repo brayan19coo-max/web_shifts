@@ -139,7 +139,12 @@ export function startCatchGame(canvas, { onScore, onLives, onEnd } = {}) {
     if (keys.left) player.target -= 520 * dt;
     if (keys.right) player.target += 520 * dt;
     player.target = Math.max(player.w / 2, Math.min(W - player.w / 2, player.target));
+    const prevX = player.x;
     player.x += (player.target - player.x) * Math.min(1, dt * 14);
+    // Se inclina hacia donde corre y rebota al caminar
+    const vx = (player.x - prevX) / Math.max(dt, 0.001);
+    player.tilt = (player.tilt || 0) + (Math.max(-0.28, Math.min(0.28, vx / 1600)) - (player.tilt || 0)) * Math.min(1, dt * 10);
+    player.step = (player.step || 0) + Math.min(Math.abs(vx), 900) * dt * 0.03;
     if (now > player.moodUntil) player.mood = 'happy';
 
     // Dificultad: más rápido y más seguido con el tiempo y el puntaje
@@ -186,7 +191,16 @@ export function startCatchGame(canvas, { onScore, onLives, onEnd } = {}) {
     ctx.fillRect(0, H - 10, W, 10);
     items.forEach(drawCan);
     const img = sprites[player.mood];
-    if (img.complete) ctx.drawImage(img, player.x - player.w / 2, py, player.w, player.h);
+    if (img.complete) {
+      const hop = Math.abs(Math.sin(player.step)) * player.h * 0.05 + Math.sin(now / 400) * player.h * 0.012;
+      const squash = player.mood === 'happy' ? 1 : 1 + Math.sin(now / 60) * 0.03;
+      ctx.save();
+      ctx.translate(player.x, py + player.h);
+      ctx.rotate(player.tilt);
+      ctx.scale(1 / squash, squash);
+      ctx.drawImage(img, -player.w / 2, -player.h - hop, player.w, player.h);
+      ctx.restore();
+    }
     if (flash > 0) {
       ctx.fillStyle = `rgba(227, 21, 26, ${flash * 0.35})`;
       ctx.fillRect(0, 0, W, H);

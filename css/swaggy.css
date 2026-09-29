@@ -499,9 +499,364 @@ html.is-entered .swaggy-launcher.is-hidden {
   to { transform: translateY(-120px) scale(1.2); opacity: 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .parche__swaggy,
-  .swaggy-launcher__peek svg {
-    animation: none !important;
-  }
+
+/* =========================================================
+   SWAGGY ARTICULADO (muñeco de art.js con rig:true)
+   ---------------------------------------------------------
+   data-mood   → chill | happy | annoyed | party | sleepy
+   data-action → look | glasses | wave | dance | flip | spin | stretch | jump | purr
+   --lx / --ly → hacia dónde mira (-1 a 1), lo pone spot.js con el cursor
+   Nota: Swaggy se mueve aunque el sistema tenga "reducir movimiento";
+   es interactivo y es su personalidad (así se acordó).
+   ========================================================= */
+.swaggy {
+  overflow: visible;
+}
+
+.swaggy g,
+.swaggy path,
+.swaggy ellipse,
+.swaggy circle,
+.swaggy text {
+  transform-box: view-box;
+}
+
+/* Variantes por ánimo */
+.swaggy.is-rig .sw-mood {
+  display: none;
+}
+
+.swaggy[data-mood='chill'] .sw-mood[data-m='chill'],
+.swaggy[data-mood='happy'] .sw-mood[data-m='happy'],
+.swaggy[data-mood='annoyed'] .sw-mood[data-m='annoyed'],
+.swaggy[data-mood='party'] .sw-mood[data-m='party'],
+.swaggy[data-mood='sleepy'] .sw-mood[data-m='sleepy'] {
+  display: inline;
+}
+
+/* Brazos cruzados solo cuando está chill y no está haciendo nada con las manos */
+.swaggy.is-rig .sw-arms-crossed {
+  display: none;
+}
+
+.swaggy[data-mood='chill']:not([data-action]) .sw-arms-crossed,
+.swaggy[data-mood='chill'][data-action='look'] .sw-arms-crossed,
+.swaggy[data-mood='chill'][data-action='spin'] .sw-arms-crossed {
+  display: inline;
+}
+
+.swaggy[data-mood='chill']:not([data-action]) .sw-arms-open,
+.swaggy[data-mood='chill'][data-action='look'] .sw-arms-open,
+.swaggy[data-mood='chill'][data-action='spin'] .sw-arms-open {
+  display: none;
+}
+
+/* ---------- Siempre vivo ---------- */
+.swaggy .sw-body {
+  transform-origin: 100px 226px;
+  animation: sw-breathe 3s ease-in-out infinite;
+}
+
+.swaggy .sw-tail {
+  transform-origin: 134px 198px;
+  animation: sw-wag 2.4s ease-in-out infinite;
+}
+
+.swaggy .sw-head {
+  transform-origin: 100px 125px;
+  transform: translate(calc(var(--lx, 0) * 5px), calc(var(--ly, 0) * 4px)) rotate(calc(var(--lx, 0) * 6deg));
+  transition: transform 0.35s ease-out;
+}
+
+.swaggy .sw-head-in {
+  transform-origin: 100px 125px;
+  animation: sw-head-bob 3s ease-in-out infinite;
+}
+
+.swaggy .sw-glasses {
+  transform-origin: 100px 72px;
+  transform: translate(calc(var(--lx, 0) * 2px), calc(var(--ly, 0) * 1.5px));
+  transition: transform 0.35s var(--ease);
+}
+
+.swaggy .sw-pupil {
+  transform: translate(calc(var(--lx, 0) * 3px), calc(var(--ly, 0) * 3px));
+  transition: transform 0.2s;
+}
+
+.swaggy .sw-eye-l { transform-origin: 75px 76px; }
+.swaggy .sw-eye-r { transform-origin: 125px 76px; }
+
+.swaggy .sw-glint {
+  animation: sw-glint 4.5s ease-in-out infinite;
+}
+
+.swaggy .sw-ear-l {
+  transform-origin: 68px 52px;
+  animation: sw-ear-l 6.5s ease-in-out infinite;
+}
+
+.swaggy .sw-ear-r {
+  transform-origin: 132px 52px;
+  animation: sw-ear-r 8.3s ease-in-out infinite;
+}
+
+.swaggy .sw-whiskers {
+  transform-origin: 100px 98px;
+  animation: sw-whiskers 5s ease-in-out infinite;
+}
+
+.swaggy .sw-nose {
+  transform-origin: 100px 87px;
+  animation: sw-sniff 5s ease-in-out infinite;
+}
+
+.swaggy .sw-all {
+  transform-origin: 100px 150px;
+}
+
+.swaggy .sw-arm {
+  transition: transform 0.35s var(--ease);
+}
+
+.swaggy .sw-arm-l { transform-origin: 60px 140px; }
+.swaggy .sw-arm-r { transform-origin: 140px 140px; }
+.swaggy .sw-foot-l { transform-origin: 78px 230px; }
+.swaggy .sw-foot-r { transform-origin: 122px 230px; }
+
+.swaggy .sw-zzz,
+.swaggy .sw-notes {
+  display: none;
+}
+
+/* ---------- Ánimos ---------- */
+.swaggy[data-mood='happy'] .sw-tail { animation-duration: 0.55s; animation-name: sw-wag-fast; }
+.swaggy[data-mood='happy'] .sw-head-in { animation: sw-head-happy 0.7s ease-in-out infinite; }
+.swaggy[data-mood='happy'] .sw-arm-l { transform: rotate(28deg); }
+.swaggy[data-mood='happy'] .sw-arm-r { transform: rotate(-28deg); }
+
+.swaggy[data-mood='party'] .sw-tail { animation: sw-wag-fast 0.4s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-head-in { animation: sw-head-bang 0.45s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-arm-l { animation: sw-pump-l 0.45s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-arm-r { animation: sw-pump-r 0.45s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-foot-r { animation: sw-tap 0.45s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-notes { display: inline; }
+
+.swaggy[data-mood='annoyed'] .sw-tail { animation: sw-thump 0.5s ease-in-out infinite; }
+.swaggy[data-mood='annoyed'] .sw-head-in { animation: sw-grr 0.25s linear infinite; }
+.swaggy[data-mood='annoyed'] .sw-arm-l { transform: rotate(38deg); }
+.swaggy[data-mood='annoyed'] .sw-arm-r { transform: rotate(-38deg); }
+.swaggy[data-mood='annoyed'] .sw-ear-l,
+.swaggy[data-mood='annoyed'] .sw-ear-r { animation: none; transform: rotate(0) scale(0.85); }
+
+.swaggy[data-mood='sleepy'] .sw-body { animation-duration: 4.8s; }
+.swaggy[data-mood='sleepy'] .sw-tail { animation: sw-wag 7s ease-in-out infinite; }
+.swaggy[data-mood='sleepy'] .sw-head-in { animation: sw-nod 4.8s ease-in-out infinite; }
+.swaggy[data-mood='sleepy'] .sw-glint,
+.swaggy[data-mood='sleepy'] .sw-ear-l,
+.swaggy[data-mood='sleepy'] .sw-ear-r,
+.swaggy[data-mood='sleepy'] .sw-whiskers { animation: none; }
+.swaggy[data-mood='sleepy'] .sw-zzz { display: inline; animation: sw-zzz 2.6s ease-in-out infinite; }
+
+/* ---------- Acciones (duran un momento; las pone spot.js) ---------- */
+.swaggy[data-action='look'] .sw-head-in { animation: sw-look 2.2s ease-in-out; }
+
+.swaggy[data-action='glasses'] .sw-glasses { transform: translateY(-27px) rotate(-5deg); }
+.swaggy[data-action='glasses'] .sw-arm-r { transform: rotate(-162deg); }
+.swaggy[data-action='glasses'] .sw-eye-r { animation: sw-wink 1.9s ease-in-out; }
+.swaggy[data-action='glasses'] .sw-glint { animation: none; }
+
+.swaggy[data-action='wave'] .sw-arm-r { animation: sw-wave 0.42s ease-in-out infinite alternate; }
+.swaggy[data-action='wave'] .sw-head-in { animation: sw-head-happy 0.84s ease-in-out infinite; }
+
+.swaggy[data-action='dance'] .sw-all { animation: sw-dance 0.5s ease-in-out infinite; }
+.swaggy[data-action='dance'] .sw-arm-l { animation: sw-pump-l 0.5s ease-in-out infinite; }
+.swaggy[data-action='dance'] .sw-arm-r { animation: sw-pump-r 0.5s ease-in-out infinite 0.25s; }
+.swaggy[data-action='dance'] .sw-foot-l { animation: sw-tap 0.5s ease-in-out infinite; }
+.swaggy[data-action='dance'] .sw-foot-r { animation: sw-tap 0.5s ease-in-out infinite 0.25s; }
+.swaggy[data-action='dance'] .sw-notes { display: inline; }
+.swaggy[data-action='dance'] .sw-tail { animation: sw-wag-fast 0.25s ease-in-out infinite; }
+
+.swaggy[data-action='flip'] .sw-all { animation: sw-flip 0.95s cubic-bezier(0.3, 0.7, 0.3, 1); }
+.swaggy[data-action='flip'] .sw-arm-l { transform: rotate(150deg); }
+.swaggy[data-action='flip'] .sw-arm-r { transform: rotate(-150deg); }
+
+.swaggy[data-action='spin'] .sw-all { animation: sw-spin 0.9s ease-in-out; }
+
+.swaggy[data-action='jump'] .sw-all { animation: sw-jump 0.6s ease-out; }
+
+.swaggy[data-action='stretch'] .sw-body { animation: sw-stretch 1.8s ease-in-out; }
+.swaggy[data-action='stretch'] .sw-arm-l { transform: rotate(148deg); }
+.swaggy[data-action='stretch'] .sw-arm-r { transform: rotate(-148deg); }
+.swaggy[data-action='stretch'] .sw-head-in { animation: sw-yawn 1.8s ease-in-out; }
+
+.swaggy[data-action='purr'] .sw-all { animation: sw-purr 0.16s linear infinite; }
+.swaggy[data-action='purr'] .sw-tail { animation: sw-wag-fast 0.3s ease-in-out infinite; }
+
+.swaggy[data-notes] .sw-notes { display: inline; }
+.swaggy .sw-note-1 { animation: sw-note 1.4s ease-out infinite; }
+.swaggy .sw-note-2 { animation: sw-note 1.4s ease-out infinite 0.7s; }
+
+/* ---------- Keyframes ---------- */
+@keyframes sw-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(0.985, 1.035); }
+}
+
+@keyframes sw-wag {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(9deg); }
+}
+
+@keyframes sw-wag-fast {
+  0%, 100% { transform: rotate(-14deg); }
+  50% { transform: rotate(16deg); }
+}
+
+@keyframes sw-thump {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(-22deg); }
+}
+
+@keyframes sw-head-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-3px) rotate(2.5deg); }
+}
+
+@keyframes sw-head-happy {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg) translateY(-3px); }
+}
+
+@keyframes sw-head-bang {
+  0%, 100% { transform: rotate(-8deg) translateY(0); }
+  50% { transform: rotate(8deg) translateY(4px); }
+}
+
+@keyframes sw-grr {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1.5px) rotate(-1deg); }
+  75% { transform: translateX(1.5px) rotate(1deg); }
+}
+
+@keyframes sw-nod {
+  0%, 100% { transform: rotate(9deg) translateY(7px); }
+  45% { transform: rotate(12deg) translateY(11px); }
+  55% { transform: rotate(4deg) translateY(3px); }
+}
+
+@keyframes sw-look {
+  0%, 100% { transform: none; }
+  20%, 40% { transform: translateX(-7px) rotate(-10deg); }
+  60%, 80% { transform: translateX(7px) rotate(10deg); }
+}
+
+@keyframes sw-yawn {
+  0%, 100% { transform: none; }
+  40%, 70% { transform: rotate(-4deg) translateY(-6px) scale(1.03); }
+}
+
+@keyframes sw-stretch {
+  0%, 100% { transform: none; }
+  40%, 70% { transform: scale(0.96, 1.08); }
+}
+
+@keyframes sw-glint {
+  0%, 55% { transform: translateX(-30px); }
+  75%, 100% { transform: translateX(150px); }
+}
+
+@keyframes sw-ear-l {
+  0%, 86%, 100% { transform: rotate(0); }
+  89% { transform: rotate(-22deg); }
+  92% { transform: rotate(6deg); }
+  95% { transform: rotate(-12deg); }
+}
+
+@keyframes sw-ear-r {
+  0%, 80%, 100% { transform: rotate(0); }
+  84% { transform: rotate(22deg); }
+  88% { transform: rotate(-6deg); }
+}
+
+@keyframes sw-whiskers {
+  0%, 70%, 100% { transform: none; }
+  74% { transform: scaleY(1.2) translateY(-1px); }
+  78% { transform: scaleY(0.9); }
+  82% { transform: scaleY(1.15); }
+}
+
+@keyframes sw-sniff {
+  0%, 70%, 100% { transform: none; }
+  74%, 82% { transform: scale(1.12, 0.9); }
+  78% { transform: scale(0.95, 1.05); }
+}
+
+@keyframes sw-wink {
+  0%, 45%, 70%, 100% { transform: scaleY(1); }
+  55%, 62% { transform: scaleY(0.1); }
+}
+
+@keyframes sw-wave {
+  from { transform: rotate(-115deg); }
+  to { transform: rotate(-155deg); }
+}
+
+@keyframes sw-pump-l {
+  0%, 100% { transform: rotate(118deg); }
+  50% { transform: rotate(148deg); }
+}
+
+@keyframes sw-pump-r {
+  0%, 100% { transform: rotate(-118deg); }
+  50% { transform: rotate(-148deg); }
+}
+
+@keyframes sw-tap {
+  0%, 100% { transform: none; }
+  50% { transform: translateY(-5px) rotate(-8deg); }
+}
+
+@keyframes sw-dance {
+  0%, 100% { transform: translateX(-6px) rotate(-6deg); }
+  50% { transform: translateX(6px) translateY(-6px) rotate(6deg); }
+}
+
+@keyframes sw-flip {
+  0% { transform: none; }
+  15% { transform: translateY(6px) scale(1.05, 0.92); }
+  60% { transform: translateY(-70px) rotate(-360deg); }
+  85% { transform: translateY(4px) rotate(-360deg) scale(1.06, 0.94); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes sw-spin {
+  0%, 100% { transform: scaleX(1); }
+  25% { transform: scaleX(-1) translateY(-8px); }
+  50% { transform: scaleX(1); }
+  75% { transform: scaleX(-1) translateY(-8px); }
+}
+
+@keyframes sw-jump {
+  0%, 100% { transform: none; }
+  20% { transform: scale(1.05, 0.93) translateY(6px); }
+  55% { transform: translateY(-34px) scale(0.97, 1.04); }
+  85% { transform: scale(1.04, 0.96); }
+}
+
+@keyframes sw-purr {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(1.2px) rotate(0.6deg); }
+}
+
+@keyframes sw-zzz {
+  0% { transform: translate(0, 6px); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translate(8px, -14px); opacity: 0; }
+}
+
+@keyframes sw-note {
+  0% { transform: translate(0, 10px) rotate(-10deg); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translate(6px, -26px) rotate(12deg); opacity: 0; }
 }
