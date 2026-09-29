@@ -27,7 +27,7 @@ const state = {
   musicOn: storage.get('musicOn', false),
 };
 
-const MIN_GAP = { hover: 45, tick: 30 };
+const soundSettings = (name) => AUDIO.perSound?.[name] || {};
 
 function ensureContext() {
   if (ctx) return ctx;
@@ -93,18 +93,27 @@ export const sound = {
   play(name, options = {}) {
     if (!ctx || !state.sfxOn || ctx.state !== 'running') return;
 
+    const { volume = 1, cooldown = 0 } = soundSettings(name);
     const now = performance.now();
-    if (MIN_GAP[name] && now - (lastPlayed.get(name) || 0) < MIN_GAP[name]) return;
+    // Espera mínima entre repeticiones (evita que se amontone al pasar rápido)
+    if (cooldown && now - (lastPlayed.get(name) || -Infinity) < cooldown) return;
     lastPlayed.set(name, now);
 
     const buffer = buffers.get(name);
     if (buffer) {
       // Afinación por índice para las notas del logo cuando se usa archivo
       const rate = options.index != null ? 2 ** ((options.index * 2) / 12) : options.rate ?? 1;
-      playBuffer(buffer, sfxBus, { rate });
+      playBuffer(buffer, sfxBus, { rate, volume });
       return;
     }
-    RECIPES[name]?.(ctx, sfxBus, options);
+    const recipe = RECIPES[name];
+    if (!recipe) return;
+    if (volume === 1) return recipe(ctx, sfxBus, options);
+    const gain = ctx.createGain();
+    gain.gain.value = volume;
+    gain.connect(sfxBus);
+    recipe(ctx, gain, options);
+    setTimeout(() => gain.disconnect(), 3000);
   },
 
   get state() {
@@ -173,7 +182,7 @@ export const sound = {
       if (event.pointerType !== 'mouse') return;
       const el = event.target.closest('[data-sfx-hover]');
       if (!el || el.contains(event.relatedTarget)) return;
-      this.play(el.dataset.sfxHover, { rate: 0.9 + Math.random() * 0.2 });
+      this.play(el.dataset.sfxHover);
     });
   },
 };

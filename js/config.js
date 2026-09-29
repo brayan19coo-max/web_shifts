@@ -95,4 +95,11 @@ export const SOUNDS = {
 export const AUDIO = {
   sfxVolume: 0.7,
   musicVolume: 0.35,
+  // Ajustes por sonido:
+  // - volume: 0 a 1, relativo al volumen general de efectos
+  // - cooldown: milisegundos mínimos entre una repetición y la siguiente
+  perSound: {
+    hover: { volume: 0.45, cooldown: 2000 },
+    tick: { cooldown: 30 },
+  },
 };
