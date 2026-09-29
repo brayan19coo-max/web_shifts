@@ -37,14 +37,15 @@ export const BRAND = {
  * DROP BLOQUEADO
  * -------------------------------------------------------------
  * Los productos con `drop: 'drop-02'` (en products.js) quedan ocultos
- * detrás de una clave hasta la fecha de lanzamiento.
+ * detrás de una clave hasta la fecha de lanzamiento. Si todavía no hay
+ * productos con ese drop, al abrirse se muestra "Las piezas se revelan pronto".
  *
  * - releaseDate: fecha y hora del lanzamiento (con zona horaria de Colombia -05:00).
- * - autoUnlock: si es true, el drop se abre solo cuando termina el contador.
+ *   Formato: 'AAAA-MM-DDTHH:MM:00-05:00'  (hora en formato 24 h: 7 p. m. = 19:00)
+ * - autoUnlock: si es true, el drop se abre solo para todos cuando termina el contador.
  * - passwordHash: la clave NO se guarda en texto plano. Para cambiarla, abre
  *   /tools/generar-clave.html en el navegador, escribe tu nueva clave y
- *   pega aquí el código que te da.
- *   Clave actual: SHIFTS2026
+ *   pega aquí el código que te da. La clave no distingue mayúsculas/minúsculas.
  *
  * Nota: es un bloqueo para crear expectativa (acceso anticipado), no una
  * seguridad bancaria; alguien con conocimientos técnicos podría saltarlo.
@@ -52,11 +53,12 @@ export const BRAND = {
 export const DROP = {
   id: 'drop-02',
   name: 'Drop 02',
-  subtitle: 'Acceso anticipado solo con clave',
-  releaseDate: '2026-10-31T20:00:00-05:00',
+  codename: 'Bonnie & Clyde',
+  subtitle: 'FUERA DE LA LEY. DENTRO DEL DROP.',
+  releaseDate: '2026-10-20T19:00:00-05:00',
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
-  passwordHash: 'ca98d1fe58a76e517f6c9650068ed5c61a7e2a643c6a3783ed2baf1562045328',
+  passwordHash: '6c4a1b64aa01374fafc4fc19b9355a13d773750daf0fa9afe4c97450c949485c',
 };
 
 /**

@@ -80,12 +80,16 @@ Se edita en **`js/data/lookbook.js`**: título, temporada y la lista de looks (n
 
 ## Drop bloqueado con clave
 
-- Los productos que tengan `drop: 'drop-02'` no salen en la tienda: aparecen en la sección del drop cuando se desbloquea.
-- **Clave actual: `SHIFTS2026`.** Para cambiarla, abre `http://localhost:8000/tools/generar-clave.html`, escribe la nueva clave y pega el código en `DROP.passwordHash` (en `js/config.js`). La clave nunca queda escrita tal cual en el código.
-- El contador va hasta `DROP.releaseDate`. Si `autoUnlock` está en `true`, el drop se abre solo a esa hora para todo el mundo.
-- Quien pone la clave queda desbloqueado en ese navegador.
-- Es un bloqueo "de expectativa" para acceso anticipado: sirve para crear hype, pero alguien con conocimientos técnicos podría saltarlo. Para un drop secreto de verdad hace falta un servidor.
-- Para un drop nuevo: cambia `id`, `name` y `releaseDate` en `DROP` y usa ese mismo `id` en los productos.
+Drop actual: **Drop 02 — Bonnie & Clyde** · *FUERA DE LA LEY. DENTRO DEL DROP.* · 20 de octubre, 7:00 p. m.
+
+- Se configura en `js/config.js` → `DROP` (nombre, apodo, frase, fecha, clave).
+- Los productos con `drop: 'drop-02'` no salen en la tienda: aparecen en la sección del drop cuando se abre. Si todavía no hay ninguno, se muestra "Las piezas se revelan pronto 👀".
+- **Clave:** se comparte en el Crew. No distingue mayúsculas. Para cambiarla, abre `/tools/generar-clave.html`, escribe la nueva clave y pega el código en `DROP.passwordHash`. La clave nunca queda escrita tal cual en el código.
+- **Animación de bóveda:** se abre una caja fuerte (perilla, manija, pestillos y puerta) al poner la clave correcta, cuando el contador llega a cero con la página abierta y la primera vez que alguien ve el drop ya lanzado. Se puede saltar con clic o Esc.
+- Con `autoUnlock: true`, el drop se abre solo para todos a la hora del lanzamiento.
+- Quien lo desbloquea queda desbloqueado en ese navegador.
+- Es un bloqueo "de expectativa": sirve para crear hype, pero alguien con conocimientos técnicos podría saltarlo.
+- Para un drop nuevo: cambia `id`, `name`, `codename`, `subtitle` y `releaseDate` en `DROP` y usa ese mismo `id` en los productos.
 
 ## Estructura
 
@@ -96,6 +100,7 @@ css/
   layout.css               Header, menú móvil, secciones, footer
   components.css           Botones, cursor, tarjetas, modal, carrito, toasts
   sections.css             Loader, hero, marquee, lookbook, manifiesto, crew
+  drop.css / vault.css     Drop bloqueado y animación de la bóveda
   animations.css           Keyframes y revelados al hacer scroll
 js/
   main.js                  Punto de entrada: inicializa cada módulo
@@ -113,6 +118,7 @@ js/
     loader.js              Pantalla de entrada (con / sin sonido)
     drop-lock.js           Drop bloqueado: contador, clave, desbloqueo
     logo3d.js              Logo girando en 3D (se puede arrastrar)
+    vault.js               Animación de caja fuerte al abrir un drop
     cursor.js              Cursor personalizado
     header.js              Cabecera, controles de sonido, menú móvil
     hero.js                Logo musical + parallax

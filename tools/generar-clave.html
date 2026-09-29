@@ -20,6 +20,7 @@
 <body>
   <main>
     <h1>🔒 Generar clave del drop</h1>
+    <p>La clave no distingue mayúsculas de minúsculas.</p>
     <p>1. Escribe la nueva clave. 2. Copia el código. 3. Pégalo en <code>js/config.js</code> → <code>DROP.passwordHash</code>.</p>
     <input id="key" type="text" placeholder="Nueva clave" autocomplete="off">
     <textarea id="out" rows="3" readonly placeholder="Aquí aparece el código"></textarea>
@@ -32,7 +33,8 @@
     const out = document.getElementById('out');
     const status = document.getElementById('status');
     key.addEventListener('input', () => {
-      out.value = key.value.trim() ? sha256(key.value.trim()) : '';
+      const clave = key.value.trim().toUpperCase();
+      out.value = clave ? sha256(clave) : '';
       status.textContent = '';
     });
     document.getElementById('copy').addEventListener('click', async () => {

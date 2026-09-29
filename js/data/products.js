@@ -128,43 +128,9 @@ export const PRODUCTS = [
     sizes: ['Única'],
   },
 
-  // ---------------- DROP 02 (bloqueado con clave) ----------------
-  {
-    id: 'hoodie-night-shift',
-    name: 'Hoodie Night Shift',
-    category: 'hoodies',
-    type: 'hoodie',
-    price: 219000,
-    tag: 'Drop 02',
-    description: 'Edición limitada numerada. Estampado reflectivo que aparece con el flash.',
-    colors: [NEGRO, CARBON],
-    sizes: SIZES,
-    drop: 'drop-02',
-  },
-  {
-    id: 'tee-outline',
-    name: 'Tee Outline',
-    category: 'camisetas',
-    type: 'tee',
-    price: 99000,
-    tag: 'Drop 02',
-    description: 'Logo en contorno puff print, algodón pesado de 280 g.',
-    colors: [BLANCO, NEGRO],
-    sizes: SIZES,
-    drop: 'drop-02',
-  },
-  {
-    id: 'jacket-varsity',
-    name: 'Varsity Shift',
-    category: 'chaquetas',
-    type: 'jacket',
-    price: 349000,
-    tag: 'Drop 02',
-    description: 'Chaqueta varsity en paño con mangas en cuero sintético y parches bordados.',
-    colors: [NEGRO, BLANCO],
-    sizes: SIZES,
-    drop: 'drop-02',
-  },
+  // ---------------- DROP 02 — Bonnie & Clyde (bloqueado con clave) ----------------
+  // Cuando tengas las piezas, agrégalas aquí con la línea  drop: 'drop-02',
+  // Mientras no haya ninguna, al abrir el drop sale "Las piezas se revelan pronto".
 ];
 
 /** Productos visibles en la tienda principal (sin los de drops bloqueados). */

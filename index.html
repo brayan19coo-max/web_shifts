@@ -19,7 +19,8 @@
   <link rel="stylesheet" href="css/layout.css?v=6f7146b4">
   <link rel="stylesheet" href="css/components.css?v=2ed68624">
   <link rel="stylesheet" href="css/sections.css?v=0ce15421">
-  <link rel="stylesheet" href="css/drop.css?v=5c287c51">
+  <link rel="stylesheet" href="css/vault.css?v=66d28bce">
+  <link rel="stylesheet" href="css/drop.css?v=ba5a64d7">
   <link rel="stylesheet" href="css/animations.css?v=5dbd8071">
 
   <script>
@@ -44,7 +45,7 @@
       "./js/components/cart.js": "./js/components/cart.js?v=bb311e48",
       "./js/components/crew.js": "./js/components/crew.js?v=964c9a34",
       "./js/components/cursor.js": "./js/components/cursor.js?v=554a1def",
-      "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=94d52228",
+      "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=0fd9ee19",
       "./js/components/header.js": "./js/components/header.js?v=40fb4220",
       "./js/components/hero.js": "./js/components/hero.js?v=0803d077",
       "./js/components/loader.js": "./js/components/loader.js?v=172946b4",
@@ -59,12 +60,13 @@
       "./js/components/quick-view.js": "./js/components/quick-view.js?v=6e984fa6",
       "./js/components/reveal.js": "./js/components/reveal.js?v=1d3f83fc",
       "./js/components/toast.js": "./js/components/toast.js?v=f55399e9",
-      "./js/config.js": "./js/config.js?v=ef5e07ba",
+      "./js/components/vault.js": "./js/components/vault.js?v=5f0545dc",
+      "./js/config.js": "./js/config.js?v=721e423d",
       "./js/core/bus.js": "./js/core/bus.js?v=5e70cdf0",
       "./js/core/cart-store.js": "./js/core/cart-store.js?v=0a8191d0",
       "./js/core/store.js": "./js/core/store.js?v=3f80d2ec",
       "./js/data/lookbook.js": "./js/data/lookbook.js?v=a35b3dda",
-      "./js/data/products.js": "./js/data/products.js?v=926947a3",
+      "./js/data/products.js": "./js/data/products.js?v=d630827c",
       "./js/main.js": "./js/main.js?v=f00df231",
       "./js/utils/dom.js": "./js/utils/dom.js?v=9f430828",
       "./js/utils/format.js": "./js/utils/format.js?v=1576479a",
@@ -184,8 +186,9 @@
 
         <div class="drop__info" data-reveal>
           <p class="drop__label"><span class="drop__lock" aria-hidden="true"></span><span class="drop__status-locked">Bloqueado</span><span class="drop__status-open">Desbloqueado</span></p>
-          <h2 class="drop__title" data-drop-name>Drop 02</h2>
-          <p class="drop__subtitle"><span data-drop-subtitle></span> · <span data-drop-count>0</span> piezas</p>
+          <h2 class="drop__title"><span data-drop-name>Drop 02</span>
+            <span class="drop__codename" data-drop-codename></span></h2>
+          <p class="drop__subtitle" data-drop-subtitle></p>
 
           <div class="countdown" aria-label="Tiempo para el lanzamiento">
             <div><span data-unit="days">00</span><small>días</small></div>
@@ -201,10 +204,14 @@
             <button type="submit" class="btn btn--accent" data-sfx-hover="hover"><span>Desbloquear</span><span class="btn__arrow">→</span></button>
           </form>
           <p class="drop__msg" data-drop-msg aria-live="polite"></p>
-          <p class="drop__granted">✓ Acceso concedido. Eres de los primeros.</p>
+          <p class="drop__granted" data-drop-granted>✓ Acceso concedido. Eres de los primeros.</p>
         </div>
       </div>
       <div class="grid drop__grid" data-drop-grid hidden></div>
+      <div class="drop__teaser" data-drop-teaser hidden>
+        <p class="drop__teaser-title">Las piezas se revelan pronto 👀</p>
+        <p class="drop__teaser-text">La bóveda ya está abierta, pero el botín todavía no. Entérate primero en el <a href="#crew">Crew</a>.</p>
+      </div>
     </section>
 
     <!-- ============ LOOKBOOK ============ -->
