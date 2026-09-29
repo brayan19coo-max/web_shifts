@@ -530,7 +530,8 @@ html.is-entered .swaggy-launcher.is-hidden {
 .swaggy[data-mood='happy'] .sw-mood[data-m='happy'],
 .swaggy[data-mood='annoyed'] .sw-mood[data-m='annoyed'],
 .swaggy[data-mood='party'] .sw-mood[data-m='party'],
-.swaggy[data-mood='sleepy'] .sw-mood[data-m='sleepy'] {
+.swaggy[data-mood='sleepy'] .sw-mood[data-m='sleepy'],
+.swaggy[data-mood='sad'] .sw-mood[data-m='sad'] {
   display: inline;
 }
 
@@ -657,6 +658,16 @@ html.is-entered .swaggy-launcher.is-hidden {
 .swaggy[data-mood='sleepy'] .sw-ear-r,
 .swaggy[data-mood='sleepy'] .sw-whiskers { animation: none; }
 .swaggy[data-mood='sleepy'] .sw-zzz { display: inline; animation: sw-zzz 2.6s ease-in-out infinite; }
+
+/* Triste: cabeza gacha, cola quieta, lagrimita */
+.swaggy[data-mood='sad'] .sw-head-in { animation: sw-sad 2.6s ease-in-out infinite; }
+.swaggy[data-mood='sad'] .sw-tail { animation: sw-wag 6s ease-in-out infinite; }
+.swaggy[data-mood='sad'] .sw-glint,
+.swaggy[data-mood='sad'] .sw-ear-l,
+.swaggy[data-mood='sad'] .sw-ear-r { animation: none; }
+.swaggy[data-mood='sad'] .sw-ear-l { transform: rotate(-25deg); }
+.swaggy[data-mood='sad'] .sw-ear-r { transform: rotate(25deg); }
+.swaggy .sw-tear { animation: sw-tear 1.6s ease-in infinite; }
 
 /* ---------- Acciones (duran un momento; las pone spot.js) ---------- */
 .swaggy[data-action='look'] .sw-head-in { animation: sw-look 2.2s ease-in-out; }
@@ -849,6 +860,17 @@ html.is-entered .swaggy-launcher.is-hidden {
   50% { transform: translateX(1.2px) rotate(0.6deg); }
 }
 
+@keyframes sw-sad {
+  0%, 100% { transform: rotate(6deg) translateY(6px); }
+  50% { transform: rotate(3deg) translateY(8px); }
+}
+
+@keyframes sw-tear {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(26px); opacity: 0; }
+}
+
 @keyframes sw-zzz {
   0% { transform: translate(0, 6px); opacity: 0; }
   30% { opacity: 1; }
@@ -859,4 +881,119 @@ html.is-entered .swaggy-launcher.is-hidden {
   0% { transform: translate(0, 10px) rotate(-10deg); opacity: 0; }
   25% { opacity: 1; }
   100% { transform: translate(6px, -26px) rotate(12deg); opacity: 0; }
+}
+
+/* =========================================================
+   SWAGGY POR LA PÁGINA (roam.js)
+   ========================================================= */
+.swaggy-roam {
+  --w: clamp(96px, 12vw, 150px);
+  position: fixed;
+  z-index: 85; /* encima del carrito, debajo del parche */
+  width: var(--w);
+  height: calc(var(--w) * 1.2);
+  pointer-events: none;
+}
+
+.swaggy-roam[data-side='right'] { right: 0; top: 42%; }
+.swaggy-roam[data-side='left'] { left: 0; top: 42%; }
+.swaggy-roam[data-side='bottom'] { left: 50%; bottom: 0; margin-left: calc(var(--w) / -2); }
+
+.swaggy-roam__fig {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.swaggy-roam.is-in .swaggy-roam__fig {
+  pointer-events: auto;
+}
+
+.swaggy-roam__fig svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
+}
+
+.swaggy-roam[data-side='right'] .swaggy-roam__fig { transform: translateX(115%) rotate(-22deg); transform-origin: 100% 100%; }
+.swaggy-roam[data-side='right'].is-in .swaggy-roam__fig { transform: translateX(34%) rotate(-22deg); }
+.swaggy-roam[data-side='left'] .swaggy-roam__fig { transform: translateX(-115%) rotate(22deg); transform-origin: 0 100%; }
+.swaggy-roam[data-side='left'].is-in .swaggy-roam__fig { transform: translateX(-34%) rotate(22deg); }
+.swaggy-roam[data-side='bottom'] .swaggy-roam__fig { transform: translateY(110%); }
+.swaggy-roam[data-side='bottom'].is-in .swaggy-roam__fig { transform: translateY(40%); }
+
+.swaggy-roam__bubble {
+  position: absolute;
+  top: -6px;
+  max-width: min(64vw, 260px);
+  width: max-content;
+  padding: 9px 13px;
+  border-radius: 14px;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--font-marker);
+  font-size: clamp(14px, 1.5vw, 17px);
+  line-height: 1.2;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.25s, transform 0.35s var(--ease);
+}
+
+.swaggy-roam[data-side='right'] .swaggy-roam__bubble { right: 62%; transform-origin: right bottom; }
+.swaggy-roam[data-side='left'] .swaggy-roam__bubble { left: 62%; transform-origin: left bottom; }
+.swaggy-roam[data-side='bottom'] .swaggy-roam__bubble { top: auto; bottom: 66%; left: 50%; translate: -50% 0; transform-origin: center bottom; }
+
+.swaggy-roam.is-talking .swaggy-roam__bubble {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Swaggy escondido ---------- */
+.swaggy-secret {
+  position: absolute;
+  bottom: 0;
+  z-index: 3;
+  width: 58px;
+  height: 34px;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.swaggy-secret__peek {
+  position: absolute;
+  inset: 0;
+}
+
+/* Solo asoman las orejas y los lentes, y de vez en cuando se esconde */
+.swaggy-secret__peek svg {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 150%;
+  translate: -50% 0;
+  animation: swaggy-hide-peek 7s ease-in-out infinite;
+}
+
+.swaggy-secret.is-found .swaggy-secret__peek svg {
+  animation: swaggy-found 1.3s ease-in forwards;
+}
+
+@media (hover: hover) {
+  .swaggy-secret:hover .swaggy-secret__peek svg {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes swaggy-hide-peek {
+  0%, 40%, 62%, 85%, 100% { transform: translateY(-9%); }
+  48%, 54% { transform: translateY(38%); }
+  75% { transform: translateY(-16%) rotate(-6deg); }
+}
+
+@keyframes swaggy-found {
+  0% { transform: translateY(-9%); }
+  25% { transform: translateY(-20%) rotate(-8deg); }
+  100% { transform: translateY(110%); }
 }

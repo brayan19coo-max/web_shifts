@@ -133,6 +133,25 @@ export const SWAGGY = {
     gameOver: ['Casi, casi. Otra más.', 'Nada mal… pero yo sé que das más.', 'Esa estuvo cerca 😅', 'Tranqui, hasta los grandes caen.'],
     // Al romper el récord
     record: ['¡Récord nuevo! Eres una leyenda 🔥', 'Rompiste el récord. Respeto 😎', 'Eso merece un aplauso 👏'],
+
+    // ----- Swaggy por la página -----
+    // Cuando se asoma al llegar a cada sección (una vez por visita)
+    sections: {
+      tienda: ['Pilas con esto, que se va rápido 👀', 'Aquí está lo bueno.', 'Yo me llevaría todo, pero no tengo bolsillos.'],
+      drop: ['Shhh… aquí se guarda lo que viene 🤫', '¿Tienes la clave? Yo no he dicho nada.'],
+      lookbook: ['Toca la portada y mira las cartas 🃏', 'Saint Mode… qué fotos, brother.'],
+      nosotros: ['Léela, que la escribimos con cariño.', 'Esta es la historia del parche.'],
+      crew: ['En el Crew sueltan las claves primero 🤫', 'Únete al Crew, nos vemos allá.'],
+      footer: ['¿Ya te vas? Vuelve pronto 🦦', 'Llegaste al final… o al comienzo 😎'],
+    },
+    // Carrito
+    cartAdd: ['¡Buena elección! 🔥', 'Eso te va a quedar brutal.', 'Uy, ese es de los míos.'],
+    cartRemove: ['Nooo, ¿por qué? 🥲', 'Me dolió, pero te entiendo.', 'Bueno… él se lo pierde.'],
+    checkout: ['¡Eso! Nos vemos en WhatsApp 🥳', 'Pedido listo. ¡A estrenar! 🔥'],
+    // Dentro de la bóveda cuando se abre el drop
+    vault: ['Fuera de la ley 😎', 'Yo no vi nada… 🤫'],
+    // Swaggy escondido: lo que dice cuando alguien lo encuentra
+    secret: ['¡Me encontraste! 👀', 'Shhh… no le digas a nadie que me escondo aquí.', 'Pista: las claves se sueltan en el Crew 🤫', 'Pista: el drop se abre solo cuando llega la hora ⏰'],
   },
   // Premio del juego "Atrapa la lata". En null = sin premio.
   // Ejemplo: { minScore: 60, text: '10 % de descuento en tu próxima compra' }

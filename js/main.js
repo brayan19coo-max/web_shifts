@@ -21,6 +21,7 @@ import { initCrew } from './components/crew.js';
 import { initReveal } from './components/reveal.js';
 import { initToasts } from './components/toast.js';
 import { initSwaggy } from './components/swaggy/spot.js';
+import { initSwaggyRoam } from './components/swaggy/roam.js';
 
 // Avisa al "rescate" del index.html que el JavaScript sí arrancó
 window.__shiftsBooted = true;
@@ -63,6 +64,7 @@ safe('lookbook', initLookbook);
 safe('manifiesto', initManifesto);
 safe('crew', initCrew);
 safe('swaggy', initSwaggy);
+safe('swaggy por la página', initSwaggyRoam);
 
 const entered = safe('loader', initLoader) || Promise.resolve();
 entered.then(() => {

@@ -123,6 +123,7 @@ export function initCart() {
     sound.play('success');
     toast(BRAND.whatsapp ? 'Te llevamos a WhatsApp para confirmar ✨' : 'Pedido de prueba realizado ✨', 'success', 3500);
     celebrate();
+    bus.emit('cart:checkout');
     clearCart();
     close();
   });

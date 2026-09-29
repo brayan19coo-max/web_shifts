@@ -5,7 +5,7 @@
  * Cuando esté la ilustración oficial, se reemplaza este dibujo
  * (mismos nombres de ánimo y de partes).
  *
- * Ánimos: 'chill' | 'happy' | 'annoyed' | 'party' | 'sleepy'
+ * Ánimos: 'chill' | 'happy' | 'annoyed' | 'party' | 'sleepy' | 'sad'
  *
  * Dos modos:
  * - swaggySvg(mood)            → dibujo quieto de un solo ánimo (canvas, miniaturas).
@@ -22,7 +22,7 @@ const INK = '#0a0a0a';
 const RED = '#e3151a';
 const WHITE = '#f4f4f4';
 
-export const MOODS = ['chill', 'happy', 'annoyed', 'party', 'sleepy'];
+export const MOODS = ['chill', 'happy', 'annoyed', 'party', 'sleepy', 'sad'];
 
 const MOUTHS = {
   chill: `<path d="M88 104 Q100 110 114 101" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/>`,
@@ -30,6 +30,8 @@ const MOUTHS = {
   annoyed: `<path d="M89 107 Q100 101 111 107" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/>`,
   party: `<ellipse cx="100" cy="106" rx="11" ry="10" fill="${INK}"/><ellipse cx="100" cy="110" rx="6" ry="4" fill="${RED}"/>`,
   sleepy: `<ellipse cx="100" cy="105" rx="4" ry="3.5" fill="${INK}"/>`,
+  sad: `<path d="M89 108 Q100 99 111 108" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/>
+        <path class="sw-tear" d="M142 84 q-5 8 0 11 q5 -3 0 -11 Z" fill="#8fd3ff"/>`,
 };
 
 const BROWS = {
@@ -38,6 +40,7 @@ const BROWS = {
   annoyed: `<path d="M60 52 L86 60 M114 60 L140 52" stroke="${INK}" stroke-width="4.5" stroke-linecap="round"/>`,
   party: `<path d="M60 52 Q72 44 84 50 M116 50 Q128 44 140 52" fill="none" stroke="${FUR_DARK}" stroke-width="4" stroke-linecap="round"/>`,
   sleepy: `<path d="M60 60 L84 60 M116 60 L140 60" stroke="${FUR_DARK}" stroke-width="4" stroke-linecap="round"/>`,
+  sad: `<path d="M60 58 L84 51 M116 51 L140 58" stroke="${FUR_DARK}" stroke-width="4" stroke-linecap="round"/>`,
 };
 
 // Brazo suelto (hacia abajo). Arriba / saludando se logra rotándolo con CSS.
@@ -49,7 +52,7 @@ const ARMS_CROSSED = `
   <path d="M140 160 Q100 184 60 160" fill="none" stroke="${FUR}" stroke-width="17" stroke-linecap="round"/>`;
 
 // Rotaciones de los brazos para el dibujo quieto (en el muñeco las pone el CSS)
-const STATIC_ARM_ROT = { party: [160, -160], happy: [0, 0], annoyed: [0, 0], sleepy: [0, 0] };
+const STATIC_ARM_ROT = { party: [160, -160], happy: [0, 0], annoyed: [0, 0], sleepy: [0, 0], sad: [0, 0] };
 
 const LENS = 'M47 66 Q100 54 153 66 L151 80 Q130 92 107 81 L100 77 L93 81 Q70 92 49 80 Z';
 

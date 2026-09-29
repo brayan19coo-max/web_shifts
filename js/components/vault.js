@@ -1,6 +1,7 @@
 import { html, escapeHtml, lockScroll } from '../utils/dom.js';
-import { BRAND } from '../config.js';
+import { BRAND, SWAGGY } from '../config.js';
 import { sound } from '../audio/sound-manager.js';
+import { swaggySvg } from './swaggy/art.js';
 
 /**
  * Animación de caja fuerte abriéndose (pantalla completa).
@@ -8,11 +9,13 @@ import { sound } from '../audio/sound-manager.js';
  * 1. Aparece la bóveda cerrada.
  * 2. La perilla gira a la derecha, a la izquierda y a la derecha (clics).
  * 3. La manija gira y los pestillos se retraen ("clack").
- * 4. La puerta se abre y adentro brilla el logo con el nombre del drop.
+ * 4. La puerta se abre y adentro brilla el logo con el nombre del drop,
+ *    y Swaggy se asoma bailando con cara de "fuera de la ley".
  * Se puede saltar con un clic o con Esc. Devuelve una promesa que se
  * resuelve cuando termina.
  */
 const BOLTS = 10;
+const pickPhrase = (list = []) => list[Math.floor(Math.random() * list.length)] || '';
 
 export function playVault({ title = '', subtitle = '' } = {}) {
   const bolts = Array.from(
@@ -44,6 +47,10 @@ export function playVault({ title = '', subtitle = '' } = {}) {
           <span class="vault__hinge vault__hinge--top"></span>
           <span class="vault__hinge vault__hinge--bottom"></span>
         </div>
+      </div>
+      <div class="vault__swaggy" aria-hidden="true">
+        <p class="vault__swaggy-say">${escapeHtml(pickPhrase(SWAGGY.phrases?.vault))}</p>
+        ${swaggySvg('party', { rig: true })}
       </div>
       <p class="vault__caption" aria-live="polite">Abriendo la bóveda…</p>
       <button type="button" class="vault__skip">Saltar →</button>
