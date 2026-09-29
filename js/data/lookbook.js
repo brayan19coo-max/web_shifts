@@ -37,6 +37,7 @@ export const LOOKBOOK = {
     },
     {
       title: 'Alas',
+      text: 'Donde otros ven límites, nosotros vemos camino.',
       image: 'assets/images/lookbook/saint-02.jpg',
     },
     {
