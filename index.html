@@ -15,14 +15,66 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/base.css?v=20260929b">
-  <link rel="stylesheet" href="css/layout.css?v=20260929b">
-  <link rel="stylesheet" href="css/components.css?v=20260929b">
-  <link rel="stylesheet" href="css/sections.css?v=20260929b">
-  <link rel="stylesheet" href="css/drop.css?v=20260929b">
-  <link rel="stylesheet" href="css/animations.css?v=20260929b">
+  <link rel="stylesheet" href="css/base.css?v=ddb6b04e">
+  <link rel="stylesheet" href="css/layout.css?v=6f7146b4">
+  <link rel="stylesheet" href="css/components.css?v=2ed68624">
+  <link rel="stylesheet" href="css/sections.css?v=0ce15421">
+  <link rel="stylesheet" href="css/drop.css?v=5c287c51">
+  <link rel="stylesheet" href="css/animations.css?v=5dbd8071">
 
-  <script type="module" src="js/main.js?v=20260929b"></script>
+  <script>
+    // Rescate: si el JavaScript no arranca (p.ej. archivos viejos en caché),
+    // en vez de quedarse congelado el loader ofrece recargar la página.
+    setTimeout(function () {
+      if (window.__shiftsBooted) return;
+      var box = document.querySelector('[data-loader-actions]');
+      var loader = document.getElementById('loader');
+      if (!box || !loader) return;
+      loader.classList.add('is-ready');
+      box.innerHTML = '<p class="loader__hint">Algo no cargó bien. Toca para intentar de nuevo.</p>' +
+        '<button type="button" class="btn btn--accent" onclick="location.reload()">Recargar página</button>';
+    }, 6000);
+  </script>
+  <!-- importmap:start (generado por tools/version.py, no editar a mano) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "./js/audio/sound-manager.js": "./js/audio/sound-manager.js?v=5e606542",
+      "./js/audio/synth.js": "./js/audio/synth.js?v=681a6b64",
+      "./js/components/cart.js": "./js/components/cart.js?v=bb311e48",
+      "./js/components/crew.js": "./js/components/crew.js?v=964c9a34",
+      "./js/components/cursor.js": "./js/components/cursor.js?v=554a1def",
+      "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=94d52228",
+      "./js/components/header.js": "./js/components/header.js?v=40fb4220",
+      "./js/components/hero.js": "./js/components/hero.js?v=0803d077",
+      "./js/components/loader.js": "./js/components/loader.js?v=172946b4",
+      "./js/components/logo3d.js": "./js/components/logo3d.js?v=c342c8a5",
+      "./js/components/lookbook.js": "./js/components/lookbook.js?v=72dcbba5",
+      "./js/components/magnetic.js": "./js/components/magnetic.js?v=e167b62a",
+      "./js/components/manifesto.js": "./js/components/manifesto.js?v=b0ba1172",
+      "./js/components/marquee.js": "./js/components/marquee.js?v=26208575",
+      "./js/components/product-art.js": "./js/components/product-art.js?v=623dc8ea",
+      "./js/components/product-card.js": "./js/components/product-card.js?v=ac946a97",
+      "./js/components/product-grid.js": "./js/components/product-grid.js?v=92202891",
+      "./js/components/quick-view.js": "./js/components/quick-view.js?v=6e984fa6",
+      "./js/components/reveal.js": "./js/components/reveal.js?v=1d3f83fc",
+      "./js/components/toast.js": "./js/components/toast.js?v=f55399e9",
+      "./js/config.js": "./js/config.js?v=ef5e07ba",
+      "./js/core/bus.js": "./js/core/bus.js?v=5e70cdf0",
+      "./js/core/cart-store.js": "./js/core/cart-store.js?v=0a8191d0",
+      "./js/core/store.js": "./js/core/store.js?v=3f80d2ec",
+      "./js/data/lookbook.js": "./js/data/lookbook.js?v=a35b3dda",
+      "./js/data/products.js": "./js/data/products.js?v=926947a3",
+      "./js/main.js": "./js/main.js?v=f00df231",
+      "./js/utils/dom.js": "./js/utils/dom.js?v=9f430828",
+      "./js/utils/format.js": "./js/utils/format.js?v=1576479a",
+      "./js/utils/sha256.js": "./js/utils/sha256.js?v=eef59daa",
+      "./js/utils/storage.js": "./js/utils/storage.js?v=d7949e69"
+    }
+  }
+  </script>
+  <!-- importmap:end -->
+  <script type="module" src="js/main.js?v=f00df231"></script>
 </head>
 <body>
   <a class="skip-link" href="#tienda">Saltar a la tienda</a>

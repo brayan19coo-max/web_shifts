@@ -130,6 +130,7 @@ js/
   utils/                   Helpers de DOM, formato, almacenamiento y sha256
 tools/
   generar-clave.html       Genera el código de una nueva clave del drop
+  version.py               Pone huellas anti-caché a los JS/CSS en index.html
 assets/
   sounds/                  Tus sonidos (ver LEEME.md)
   images/                  Logo, favicon y productos/ (tus fotos)
@@ -150,6 +151,18 @@ Cualquier elemento puede sonar solo con atributos:
 - Navegable con teclado (foco visible, `Esc` cierra paneles, foco atrapado en modales).
 - Respeta `prefers-reduced-motion`: se desactivan animaciones fuertes y el lookbook pasa a un carrusel normal.
 - El sonido siempre es opcional, se puede apagar desde la cabecera y la preferencia se recuerda.
+
+## Caché (importante al publicar cambios de código)
+
+Cada archivo JS y CSS lleva en `index.html` una "huella" de su contenido (`?v=...`), para que el navegador nunca mezcle archivos nuevos con copias viejas guardadas. Después de cambiar código, ejecuta:
+
+```bash
+python3 tools/version.py
+```
+
+Si solo editas datos (productos, lookbook) desde GitHub y no corres el script, el cambio puede tardar hasta ~10 minutos en verse (lo que dura el caché de GitHub Pages).
+
+Además, cada módulo se inicia aislado: si uno falla, el resto del sitio sigue funcionando, y si el JavaScript no arranca, la pantalla de entrada ofrece recargar.
 
 ## Publicarlo gratis
 

@@ -6,10 +6,11 @@ export function initCrew() {
   const section = $('#crew');
   if (!section) return;
 
+  const crew = BRAND.crew || {};
   const link = $('[data-crew-link]', section);
-  link.href = BRAND.crew.url;
+  if (crew.url) link.href = crew.url;
 
-  $('[data-crew-perks]', section).innerHTML = BRAND.crew.perks
+  $('[data-crew-perks]', section).innerHTML = (crew.perks || [])
     .map((perk) => `<li>${escapeHtml(perk)}</li>`)
     .join('');
 }

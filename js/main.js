@@ -21,30 +21,49 @@ import { initCrew } from './components/crew.js';
 import { initReveal } from './components/reveal.js';
 import { initToasts } from './components/toast.js';
 
-document.title = `${BRAND.name} — ${BRAND.tagline}`;
-document.querySelectorAll('[data-social]').forEach((el) => {
-  const url = BRAND.social[el.dataset.social];
-  if (url) el.href = url;
-  else el.closest('li')?.remove();
+// Avisa al "rescate" del index.html que el JavaScript sí arrancó
+window.__shiftsBooted = true;
+
+/**
+ * Ejecuta cada módulo aislado: si uno falla (p.ej. por un archivo viejo
+ * en caché), el resto de la página sigue funcionando.
+ */
+function safe(name, fn) {
+  try {
+    return fn();
+  } catch (error) {
+    console.error(`[${name}] no se pudo iniciar:`, error);
+    return undefined;
+  }
+}
+
+safe('marca', () => {
+  document.title = `${BRAND.name} — ${BRAND.tagline}`;
+  document.querySelectorAll('[data-social]').forEach((el) => {
+    const url = BRAND.social?.[el.dataset.social];
+    if (url) el.href = url;
+    else el.closest('li')?.remove();
+  });
+  document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = new Date().getFullYear()));
 });
-document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = new Date().getFullYear()));
 
-sound.bindDeclarative();
-initToasts();
-initCursor();
-initHeader();
-initHero();
-initMagnetic();
-initMarquee();
-initProductGrid();
-initQuickView();
-initCart();
-initDropLock();
-initLookbook();
-initManifesto();
-initCrew();
+safe('sonido', () => sound.bindDeclarative());
+safe('toasts', initToasts);
+safe('cursor', initCursor);
+safe('header', initHeader);
+safe('hero', initHero);
+safe('magnetic', initMagnetic);
+safe('marquee', initMarquee);
+safe('tienda', initProductGrid);
+safe('vista rápida', initQuickView);
+safe('carrito', initCart);
+safe('drop', initDropLock);
+safe('lookbook', initLookbook);
+safe('manifiesto', initManifesto);
+safe('crew', initCrew);
 
-initLoader().then(() => {
+const entered = safe('loader', initLoader) || Promise.resolve();
+entered.then(() => {
   document.documentElement.classList.add('is-entered');
-  initReveal();
+  safe('reveal', initReveal);
 });
