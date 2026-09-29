@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="css/base.css?v=ddb6b04e">
   <link rel="stylesheet" href="css/layout.css?v=6f7146b4">
   <link rel="stylesheet" href="css/components.css?v=2ed68624">
-  <link rel="stylesheet" href="css/sections.css?v=0ce15421">
+  <link rel="stylesheet" href="css/sections.css?v=c27e03cc">
   <link rel="stylesheet" href="css/vault.css?v=66d28bce">
   <link rel="stylesheet" href="css/drop.css?v=ba5a64d7">
   <link rel="stylesheet" href="css/animations.css?v=3a8090fe">
@@ -50,7 +50,7 @@
       "./js/components/hero.js": "./js/components/hero.js?v=0803d077",
       "./js/components/loader.js": "./js/components/loader.js?v=172946b4",
       "./js/components/logo3d.js": "./js/components/logo3d.js?v=91dddf14",
-      "./js/components/lookbook.js": "./js/components/lookbook.js?v=72dcbba5",
+      "./js/components/lookbook.js": "./js/components/lookbook.js?v=5dbfff41",
       "./js/components/magnetic.js": "./js/components/magnetic.js?v=f62cf8eb",
       "./js/components/manifesto.js": "./js/components/manifesto.js?v=b0ba1172",
       "./js/components/marquee.js": "./js/components/marquee.js?v=251a2a8a",
@@ -221,8 +221,8 @@
           <h2 class="section__title"><span data-look-title>Lookbook</span> <span class="lookbook__season" data-look-season></span></h2>
           <div class="lookbook__progress"><span data-look-progress></span></div>
         </div>
-        <div class="lookbook__track" data-look-track></div>
-        <p class="lookbook__hint" aria-hidden="true">← desliza para ver más looks →</p>
+        <div class="lookbook__track" data-look-track data-cursor="Arrastra"></div>
+        <p class="lookbook__hint" aria-hidden="true">← <span class="only-mouse">arrastra</span><span class="only-touch">desliza</span> para ver más looks →</p>
       </div>
     </section>
 

@@ -5,8 +5,8 @@ import { LOOKBOOK } from '../data/lookbook.js';
 import { sound } from '../audio/sound-manager.js';
 
 /**
- * Lookbook con scroll horizontal "anclado": al bajar, los paneles
- * se desplazan hacia el lado. Suena un tick al cambiar de look.
+ * Lookbook en carrusel: se arrastra con el mouse (PC) o se desliza con
+ * el dedo (celular). Suena un tick al cambiar de look.
  * Los looks se definen en js/data/lookbook.js.
  */
 export function initLookbook() {
@@ -46,12 +46,10 @@ export function initLookbook() {
     panels.forEach((panel, i) => panel.classList.toggle('is-current', i === index));
   };
 
-  // ---------- Modo carrusel (celular / táctil / menos movimiento) ----------
-  // Scroll horizontal nativo con el dedo, que se "imanta" a cada look.
-  const onCarouselScroll = () => {
-    const max = track.scrollWidth - track.clientWidth;
-    const p = max > 0 ? track.scrollLeft / max : 0;
-    progress.style.transform = `scaleX(${p})`;
+  // ---------- Carrusel ----------
+  // Celular: se desliza con el dedo (scroll nativo que se "imanta" a cada look).
+  // PC: se agarra y se arrastra con el mouse, con inercia al soltar.
+  const nearestIndex = () => {
     const center = track.scrollLeft + track.clientWidth / 2;
     let index = 0;
     let best = Infinity;
@@ -62,60 +60,97 @@ export function initLookbook() {
         index = i;
       }
     });
-    setCurrent(index, true);
+    return index;
   };
 
-  // ---------- Modo escritorio: scroll vertical que mueve los looks de lado ----------
-  let ticking = false;
-  const updatePinned = () => {
-    ticking = false;
-    const rect = section.getBoundingClientRect();
-    const scrollable = section.offsetHeight - innerHeight;
-    const p = clamp(-rect.top / scrollable, 0, 1);
-    const distance = track.scrollWidth - innerWidth;
-    track.style.transform = `translate3d(${-p * distance}px, 0, 0)`;
-    progress.style.transform = `scaleX(${p})`;
-    setCurrent(Math.round(p * (panels.length - 1)), rect.top < 0 && rect.bottom > innerHeight);
-  };
-  const onWindowScroll = () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(updatePinned);
-    }
-  };
-  const setPinnedHeight = () => {
-    section.style.height = `${track.scrollWidth - innerWidth + innerHeight}px`;
-    updatePinned();
+  const onScroll = () => {
+    const max = track.scrollWidth - track.clientWidth;
+    progress.style.transform = `scaleX(${max > 0 ? track.scrollLeft / max : 0})`;
+    setCurrent(nearestIndex(), true);
   };
 
-  // ---------- Elegir modo según el dispositivo ----------
-  const carouselQuery = window.matchMedia('(max-width: 900px), (pointer: coarse)');
-  let mode = null;
-
-  const applyMode = () => {
-    const next = carouselQuery.matches || prefersReducedMotion() ? 'carousel' : 'pinned';
-    if (next === mode) return;
-    mode = next;
-    current = -1;
-
-    if (mode === 'carousel') {
-      window.removeEventListener('scroll', onWindowScroll);
-      window.removeEventListener('resize', setPinnedHeight);
-      section.classList.add('is-static');
-      section.style.height = '';
-      track.style.transform = '';
-      track.addEventListener('scroll', onCarouselScroll, { passive: true });
-      onCarouselScroll();
-    } else {
-      track.removeEventListener('scroll', onCarouselScroll);
-      section.classList.remove('is-static');
-      track.scrollLeft = 0;
-      window.addEventListener('scroll', onWindowScroll, { passive: true });
-      window.addEventListener('resize', setPinnedHeight);
-      setPinnedHeight();
-    }
+  const scrollToPanel = (index) => {
+    const panel = panels[clamp(index, 0, panels.length - 1)];
+    const left = panel.offsetLeft + panel.offsetWidth / 2 - track.clientWidth / 2;
+    track.scrollTo({ left, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   };
 
-  carouselQuery.addEventListener('change', applyMode);
-  applyMode();
+  // --- Arrastre con mouse ---
+  let dragging = false;
+  let moved = false;
+  let startX = 0;
+  let startScroll = 0;
+  let lastX = 0;
+  let lastTime = 0;
+  let velocity = 0; // px por ms
+  let inertiaFrame = 0;
+
+  const stopInertia = () => cancelAnimationFrame(inertiaFrame);
+
+  track.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'mouse' || event.button !== 0) return;
+    event.preventDefault(); // evita seleccionar texto o arrastrar imágenes
+    stopInertia();
+    dragging = true;
+    moved = false;
+    startX = lastX = event.clientX;
+    startScroll = track.scrollLeft;
+    lastTime = performance.now();
+    velocity = 0;
+    track.setPointerCapture(event.pointerId);
+    section.classList.add('is-dragging');
+  });
+
+  track.addEventListener('pointermove', (event) => {
+    if (!dragging) return;
+    const now = performance.now();
+    if (Math.abs(event.clientX - startX) > 4) moved = true;
+    track.scrollLeft = startScroll - (event.clientX - startX);
+    velocity = (event.clientX - lastX) / Math.max(1, now - lastTime);
+    lastX = event.clientX;
+    lastTime = now;
+  });
+
+  const release = () => {
+    if (!dragging) return;
+    dragging = false;
+    if (performance.now() - lastTime > 80) velocity = 0;
+
+    // Inercia corta y luego se imanta al look más cercano
+    let v = velocity * 16; // px por frame
+    const glide = () => {
+      if (Math.abs(v) < 0.5) {
+        scrollToPanel(nearestIndex());
+        // El imán vuelve cuando termina de acomodarse
+        setTimeout(() => {
+          if (!dragging) section.classList.remove('is-dragging');
+        }, 450);
+        return;
+      }
+      track.scrollLeft -= v;
+      v *= 0.92;
+      inertiaFrame = requestAnimationFrame(glide);
+    };
+    glide();
+  };
+  track.addEventListener('pointerup', release);
+  track.addEventListener('pointercancel', release);
+
+  // Si fue arrastre, que no cuente como clic
+  track.addEventListener(
+    'click',
+    (event) => {
+      if (moved) {
+        event.preventDefault();
+        event.stopPropagation();
+        moved = false;
+      }
+    },
+    true,
+  );
+  track.addEventListener('dragstart', (event) => event.preventDefault());
+
+  section.classList.add('is-static');
+  track.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 }

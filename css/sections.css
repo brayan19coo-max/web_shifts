@@ -317,6 +317,7 @@ html.is-entered .hero__letter {
 
 /* ---------- Lookbook ---------- */
 .lookbook {
+  --look-w: min(78vw, 880px);
   position: relative;
   height: 400vh;
 }
@@ -374,7 +375,7 @@ html.is-entered .hero__letter {
 .look {
   position: relative;
   flex: none;
-  width: min(78vw, 880px);
+  width: var(--look-w);
   height: min(62vh, 560px);
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -462,6 +463,8 @@ html.is-entered .hero__letter {
 
 .lookbook.is-static .lookbook__track {
   width: auto;
+  /* margen para que el primer y el último look también queden centrados */
+  padding-inline: max(var(--gutter), calc((100% - var(--look-w)) / 2));
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
@@ -469,6 +472,19 @@ html.is-entered .hero__letter {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding-bottom: 6px;
+}
+
+/* PC: se agarra con el mouse */
+@media (hover: hover) and (pointer: fine) {
+  .lookbook.is-static .lookbook__track {
+    cursor: grab;
+    user-select: none;
+  }
+
+  .lookbook.is-dragging .lookbook__track {
+    cursor: grabbing;
+    scroll-snap-type: none; /* mientras se arrastra, sin imán */
+  }
 }
 
 .lookbook.is-static .lookbook__track::-webkit-scrollbar {
@@ -499,8 +515,11 @@ html.is-entered .hero__letter {
 }
 
 @media (max-width: 720px) {
+  .lookbook {
+    --look-w: 84vw;
+  }
+
   .look {
-    width: 84vw;
     height: min(70svh, 560px);
     grid-template-columns: 1fr;
     grid-template-rows: 1fr auto;

@@ -128,7 +128,7 @@ js/
     product-grid.js        Grilla y filtros
     quick-view.js          Modal de vista rápida
     cart.js                Carrito lateral, checkout, confeti
-    lookbook.js            Scroll horizontal anclado
+    lookbook.js            Carrusel del lookbook (arrastre con mouse / dedo)
     manifesto.js           Texto que se ilumina con el scroll
     crew.js                Sección Crew (canal de WhatsApp)
     reveal.js              Animaciones de entrada
