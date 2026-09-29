@@ -41,7 +41,7 @@ export const LOOKBOOK = {
     },
     {
       title: 'Devoción',
-      text: 'Tee negra con el logo Shift\'s en script.',
+      text: 'Por lo que somos.',
       image: 'assets/images/lookbook/saint-03.jpg',
     },
     {
