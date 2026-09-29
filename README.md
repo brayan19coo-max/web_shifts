@@ -76,7 +76,7 @@ Para agregar una categoría nueva, añádela en `CATEGORIES` (el mismo archivo).
 
 ## Lookbook
 
-Se edita en **`js/data/lookbook.js`**: título, temporada, la **portada** (`cover`, la carta de arriba del mazo; al tocarla salen los looks como cartas) y la lista de looks (nombre, frase, foto y colores de la tarjeta). Las fotos van en `assets/images/lookbook/` (verticales, .jpg o .webp, < 400 KB).
+Se edita en **`js/data/lookbook.js`**: título, temporada, la **portada** (`cover`, la carta de arriba del mazo; al tocarla salen los looks como cartas) y la lista de looks (nombre, frase, foto y colores de la tarjeta). Las fotos van en `assets/images/lookbook/` (verticales, .jpg o .webp, < 400 KB). Las del Drop 01 (Saint Mode) son de @crisstian._s y se optimizaron de 35 MB a 1.5 MB (1000×1500 px).
 
 ## Drop bloqueado con clave
 

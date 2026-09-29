@@ -526,6 +526,80 @@ html.is-entered .hero__letter {
   display: block;
 }
 
+/* ---------- Looks con foto: cartas verticales ---------- */
+.lookbook.has-photos {
+  --look-w: min(72vw, 380px, 42svh);
+}
+
+.lookbook .look--photo {
+  display: block;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  padding: 0;
+  background: #111;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.lookbook .look--photo .look__art {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  border-radius: 0;
+  transform: none;
+}
+
+.lookbook .look--photo .look__art img {
+  border-radius: 0;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.lookbook .look--photo .look__text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 60px 20px 18px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+  color: #fff;
+}
+
+.lookbook .look--photo .look__text h3 {
+  font-size: clamp(26px, 2.6vw, 36px);
+  margin-bottom: 6px;
+}
+
+.lookbook .look--photo .look__text p {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.lookbook .look--photo .look__num {
+  top: 12px;
+  right: 16px;
+  bottom: auto;
+  font-family: var(--font-marker);
+  font-size: 22px;
+  color: #fff;
+  opacity: 0.9;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.lookbook__credit {
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lookbook__credit:hover {
+  color: var(--fg);
+}
+
+.lookbook__credit[hidden] {
+  display: none;
+}
+
 /* ---------- Pie del lookbook ---------- */
 .lookbook__foot {
   display: flex;
@@ -629,6 +703,36 @@ html.is-entered .hero__letter {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  -webkit-user-drag: none;
+}
+
+/* Portada horizontal: el mazo entero se vuelve horizontal */
+.deck--landscape {
+  --card-w: min(86vw, 580px, 80svh);
+  gap: clamp(36px, 6vw, 64px);
+}
+
+.deck--landscape .deck__stack {
+  aspect-ratio: 3 / 2;
+}
+
+/* Nombre sobre la foto de portada */
+.deck__overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: grid;
+  gap: 4px;
+  padding: 40px 20px 16px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+  text-align: left;
+}
+
+.deck__overlay-name {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 0.9;
+  text-transform: uppercase;
+  color: #fff;
 }
 
 /* Portada generada (mientras no haya foto) */

@@ -14,7 +14,12 @@ const BACK_CARDS = 3;
 
 function coverMarkup(cover, season) {
   if (cover.image) {
-    return `<img class="deck__photo" src="${escapeHtml(cover.image)}" alt="${escapeHtml(cover.title || season)}">`;
+    return `
+      <img class="deck__photo" src="${escapeHtml(cover.image)}" alt="${escapeHtml(cover.title || season)}">
+      <span class="deck__overlay">
+        <span class="deck__season">${escapeHtml(cover.kicker || '')}</span>
+        <span class="deck__overlay-name">${escapeHtml(cover.title || season)}</span>
+      </span>`;
   }
   // Portada generada mientras no haya foto: aureola + nombre + logo
   return `
@@ -47,6 +52,15 @@ export function initDeck({ section, track, getPanels, onOpen, cover = {}, season
     <p class="deck__hint"><span class="only-mouse">Haz clic en</span><span class="only-touch">Toca</span> la portada para abrir el lookbook</p>`;
 
   const stack = $('[data-deck-open]', deck);
+
+  // Si la foto de portada es horizontal, el mazo entero se vuelve horizontal
+  const photo = $('.deck__photo', deck);
+  const checkOrientation = () =>
+    deck.classList.toggle('deck--landscape', photo.naturalWidth > photo.naturalHeight);
+  if (photo) {
+    if (photo.complete && photo.naturalWidth) checkOrientation();
+    else photo.addEventListener('load', checkOrientation, { once: true });
+  }
   let busy = false;
 
   const open = () => {

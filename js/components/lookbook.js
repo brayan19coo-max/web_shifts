@@ -35,6 +35,17 @@ export function initLookbook() {
     .join('');
   const panels = $$('[data-look]', section);
 
+  // Si todos los looks tienen foto, las cartas son verticales
+  section.classList.toggle('has-photos', LOOKBOOK.looks.every((look) => look.image));
+
+  // Crédito del fotógrafo
+  const credit = $('[data-look-credit]', section);
+  if (credit && LOOKBOOK.credit?.label) {
+    credit.textContent = LOOKBOOK.credit.label;
+    if (LOOKBOOK.credit.url) credit.href = LOOKBOOK.credit.url;
+    credit.hidden = false;
+  }
+
   // Recalcular medidas cuando carguen las fotos
   track.querySelectorAll('img').forEach((img) =>
     img.addEventListener('load', () => window.dispatchEvent(new Event('resize')), { once: true }),

@@ -14,51 +14,72 @@
  *     title: 'Nombre del look',
  *     text: 'Frase corta con las prendas que usa.',
  *     image: 'assets/images/lookbook/look-01.jpg',
- *     bg: '#f4f4f4',          // color de fondo de la tarjeta
- *     fg: '#0a0a0a',          // color del texto
  *   },
+ *
+ * Con foto, la carta es vertical y la foto la ocupa completa. Sin foto se
+ * muestra el dibujo de la prenda (art + color) sobre el color bg/fg.
  */
 
 export const LOOKBOOK = {
   title: 'Lookbook',
   season: 'Drop 01 — Saint Mode',
+  // Crédito de las fotos (se muestra debajo del lookbook)
+  credit: { label: 'Fotos: @crisstian._s', url: 'https://instagram.com/crisstian._s' },
   cover: {
-    image: null, // p.ej. 'assets/images/lookbook/portada-saint.jpg'
+    image: 'assets/images/lookbook/portada-saint.jpg',
     title: 'Saint Mode',
     kicker: 'Drop 01',
   },
   looks: [
     {
-      title: 'Ruido blanco',
-      text: 'Capas pesadas para noches largas. Hoodie Bomb + Cargo Throw-Up.',
-      art: 'hoodie',
-      color: '#111111',
-      bg: '#f4f4f4',
-      fg: '#0a0a0a',
+      title: 'Saint Mode',
+      text: 'Tee negra con la firma Saints Mode al frente.',
+      image: 'assets/images/lookbook/saint-01.jpg',
     },
     {
-      title: 'Señal perdida',
-      text: 'Nylon que corta el viento. Chaqueta Crew sobre Tee Tag.',
-      art: 'jacket',
-      color: '#f4f4f4',
-      bg: '#1a1a1a',
-      fg: '#f4f4f4',
+      title: 'Alas',
+      text: 'Tee blanca con alas en la espalda.',
+      image: 'assets/images/lookbook/saint-02.jpg',
     },
     {
-      title: 'Frecuencia baja',
-      text: 'Lo básico, pero con peso. Tee Wall y Gorra Piece.',
-      art: 'tee',
-      color: '#0a0a0a',
-      bg: '#8a8a8a',
-      fg: '#0a0a0a',
+      title: 'Devoción',
+      text: 'Tee negra con el logo Shift\'s en script.',
+      image: 'assets/images/lookbook/saint-03.jpg',
     },
     {
-      title: 'Modo avión',
-      text: 'Todo lo que necesitas, nada más. Cargo negro + Tote Can.',
-      art: 'pants',
-      color: '#111111',
-      bg: '#f4f4f4',
-      fg: '#0a0a0a',
+      title: 'Ángel caído',
+      text: 'Tee negra con ángel y logo en la espalda.',
+      image: 'assets/images/lookbook/saint-04.jpg',
+    },
+    {
+      title: 'Querubín',
+      text: 'Tee negra con querubín al frente.',
+      image: 'assets/images/lookbook/saint-05.jpg',
+    },
+    {
+      title: 'Dúo celestial',
+      text: 'Blanco y negro, un mismo culto.',
+      image: 'assets/images/lookbook/saint-06.jpg',
+    },
+    {
+      title: 'Señal divina',
+      text: 'Tee blanca con ángel y logo en la espalda.',
+      image: 'assets/images/lookbook/saint-07.jpg',
+    },
+    {
+      title: 'Confesión',
+      text: 'La espalda también habla.',
+      image: 'assets/images/lookbook/saint-08.jpg',
+    },
+    {
+      title: 'Juego sagrado',
+      text: 'Dos tonos, un mismo drop.',
+      image: 'assets/images/lookbook/saint-09.jpg',
+    },
+    {
+      title: 'Tiro bendito',
+      text: 'Saint Mode también se juega.',
+      image: 'assets/images/lookbook/saint-10.jpg',
     },
   ],
 };
