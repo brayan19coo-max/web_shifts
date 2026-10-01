@@ -2,7 +2,7 @@ import { html, escapeHtml, lockScroll, trapFocus } from '../../utils/dom.js';
 import { storage } from '../../utils/storage.js';
 import { BRAND, SWAGGY } from '../../config.js';
 import { sound } from '../../audio/sound-manager.js';
-import { swaggySvg } from './art.js';
+import { swaggySvg, talk } from './art.js';
 import { startCatchGame } from './games/catch-can.js';
 
 /**
@@ -23,7 +23,7 @@ const rand = (a, b) => a + Math.random() * (b - a);
 const clamp = (v) => Math.max(-1, Math.min(1, v));
 
 // Cuánto dura cada acción (ms)
-const ACTIONS = { look: 2200, glasses: 1900, wave: 1700, dance: 2600, flip: 950, spin: 900, jump: 600, stretch: 1800, purr: 1400 };
+const ACTIONS = { surprise: 700, look: 2200, glasses: 1900, wave: 1700, dance: 2600, flip: 950, spin: 900, jump: 600, stretch: 1800, purr: 1400 };
 
 /** Hace que Swaggy haga una acción un momento. */
 function doAction(svg, name, ms = ACTIONS[name] || 1200) {
@@ -91,6 +91,7 @@ export function initSwaggy() {
     if (overlay) return;
     launcherBubble.textContent = pick(phrases.invite);
     launcher.classList.add('is-talking');
+    talk(launcherSvg, launcherBubble.textContent);
     launcherSvg.dataset.mood = 'happy';
     doAction(launcherSvg, 'jump');
     setTimeout(() => {
@@ -252,6 +253,7 @@ export function initSwaggy() {
     if (!bubble || !text) return;
     bubble.textContent = text;
     bubble.classList.add('is-visible');
+    if (stageSvg()?.dataset.mood !== 'sleepy') talk(stageSvg(), text);
     clearTimeout(bubbleTimer);
     bubbleTimer = setTimeout(() => bubble.classList.remove('is-visible'), ms);
   }
@@ -313,7 +315,7 @@ export function initSwaggy() {
       } else {
         sound.play('note', { index: Math.floor(Math.random() * 8) });
         const party = Math.random() < 0.25;
-        react(party ? 'party' : 'happy', pick(phrases.tap), party ? 2200 : 1500, party ? 'dance' : pick(['jump', 'jump', 'flip', 'spin', 'wave']));
+        react(party ? 'party' : 'happy', pick(phrases.tap), party ? 2200 : 1500, party ? 'dance' : pick(['jump', 'surprise', 'flip', 'spin', 'wave', 'surprise']));
       }
     });
 

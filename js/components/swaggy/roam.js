@@ -4,7 +4,7 @@ import { SWAGGY } from '../../config.js';
 import { sound } from '../../audio/sound-manager.js';
 import { bus } from '../../core/bus.js';
 import { cartStore, getTotals } from '../../core/cart-store.js';
-import { swaggySvg } from './art.js';
+import { swaggySvg, talk } from './art.js';
 import { toast } from '../toast.js';
 
 /**
@@ -75,6 +75,7 @@ export function initSwaggyRoam() {
     bubble.textContent = text;
     setTimeout(() => {
       roam.classList.toggle('is-talking', !!text);
+      talk(svg, text);
       if (action) act(action, action === 'dance' ? ms : 1600);
     }, wasIn ? 0 : 420);
     lastShow = Date.now();
@@ -94,6 +95,7 @@ export function initSwaggyRoam() {
     act(pick(['flip', 'spin', 'jump']), 950);
     bubble.textContent = pick(phrases.tap);
     roam.classList.add('is-talking');
+    talk(svg, bubble.textContent);
     clearTimeout(hideTimer);
     hideTimer = setTimeout(hide, 2200);
   });

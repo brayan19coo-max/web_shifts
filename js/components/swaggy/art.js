@@ -9,8 +9,9 @@
  *
  * Dos modos:
  * - swaggySvg(mood)            → dibujo quieto de un solo ánimo (canvas, miniaturas).
- * - swaggySvg(mood, {rig:true}) → "muñeco articulado": cola, cuerpo, brazos,
- *   cabeza, orejas, bigotes, ojos, lentes y brillo son grupos separados que
+ * - swaggySvg(mood, {rig:true}) → "muñeco articulado": cola (3 partes), cuerpo,
+ *   brazos (hombro, codo y mano), cabeza, orejas, bigotes, cejas, cachetes,
+ *   ojos, lentes, boca y brillo son grupos separados que
  *   se animan con CSS (css/swaggy.css). El ánimo se cambia con el atributo
  *   data-mood y las acciones con data-action, sin volver a dibujarlo.
  */
@@ -43,16 +44,57 @@ const BROWS = {
   sad: `<path d="M60 58 L84 51 M116 51 L140 58" stroke="${FUR_DARK}" stroke-width="4" stroke-linecap="round"/>`,
 };
 
-// Brazo suelto (hacia abajo). Arriba / saludando se logra rotándolo con CSS.
-const ARM_L = `<path d="M60 140 Q46 168 56 196" fill="none" stroke="${FUR}" stroke-width="16" stroke-linecap="round"/>`;
-const ARM_R = `<path d="M140 140 Q154 168 144 196" fill="none" stroke="${FUR}" stroke-width="16" stroke-linecap="round"/>`;
+// Brazos articulados: hombro → codo → mano (cada uno gira desde su punto).
+// Las poses del muñeco las pone el CSS con variables (--shL, --elL, --hdL…).
+const JOINTS = {
+  l: { sh: [60, 140], el: [50, 167], wr: [54, 190] },
+  r: { sh: [140, 140], el: [150, 167], wr: [146, 190] },
+};
+
+function armMarkup(side, pose = [0, 0, 0], rig = false) {
+  const j = JOINTS[side];
+  const [sh, el, hd] = pose;
+  const t = (deg, [x, y]) => (rig || !deg ? '' : ` transform="rotate(${deg} ${x} ${y})"`);
+  const toe = side === 'l' ? -1 : 1;
+  return `
+    <g class="sw-arm sw-sh-${side}"${t(sh, j.sh)}>
+      <path d="M${j.sh} L${j.el}" stroke="${FUR}" stroke-width="16" stroke-linecap="round"/>
+      <g class="sw-el-${side}"${t(el, j.el)}>
+        <path d="M${j.el} L${j.wr}" stroke="${FUR}" stroke-width="14.5" stroke-linecap="round"/>
+        <g class="sw-hd-${side}"${t(hd, j.wr)}>
+          <ellipse cx="${j.wr[0] + toe}" cy="${j.wr[1] + 5}" rx="9" ry="8" fill="${FUR_DARK}"/>
+          <path d="M${j.wr[0] - 4 + toe} ${j.wr[1] + 9} v3 M${j.wr[0] + toe} ${j.wr[1] + 10} v3 M${j.wr[0] + 4 + toe} ${j.wr[1] + 9} v3" stroke="${INK}" stroke-width="1.4" stroke-linecap="round" opacity="0.6"/>
+        </g>
+      </g>
+    </g>`;
+}
 
 const ARMS_CROSSED = `
   <path d="M60 148 Q100 176 140 150" fill="none" stroke="${FUR_DARK}" stroke-width="17" stroke-linecap="round"/>
   <path d="M140 160 Q100 184 60 160" fill="none" stroke="${FUR}" stroke-width="17" stroke-linecap="round"/>`;
 
-// Rotaciones de los brazos para el dibujo quieto (en el muñeco las pone el CSS)
-const STATIC_ARM_ROT = { party: [160, -160], happy: [0, 0], annoyed: [0, 0], sleepy: [0, 0], sad: [0, 0] };
+// Poses de brazo para el dibujo quieto [hombro, codo, mano] (izquierdo; el derecho es espejo)
+const STATIC_POSE = {
+  happy: [20, 15, 10],
+  annoyed: [26, -56, 0],
+  party: [125, 12, 0],
+  sleepy: [-6, -12, 0],
+  sad: [-12, -25, 0],
+};
+
+const CHEEKS = `<g class="sw-cheeks" fill="${RED}" opacity="0.28"><ellipse cx="66" cy="100" rx="8" ry="4.5"/><ellipse cx="134" cy="100" rx="8" ry="4.5"/></g>`;
+
+// Cola en tres partes: cada una gira desde donde se une con la anterior
+const TAIL = `
+  <g class="sw-tail">
+    <path d="M132 196 Q148 210 163 204" fill="none" stroke="${FUR_DARK}" stroke-width="15" stroke-linecap="round"/>
+    <g class="sw-tail-2">
+      <path d="M163 204 Q178 198 183 186" fill="none" stroke="${FUR_DARK}" stroke-width="12.5" stroke-linecap="round"/>
+      <g class="sw-tail-3">
+        <path d="M183 186 Q187 174 179 166" fill="none" stroke="${FUR_DARK}" stroke-width="9.5" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>`;
 
 const LENS = 'M47 66 Q100 54 153 66 L151 80 Q130 92 107 81 L100 77 L93 81 Q70 92 49 80 Z';
 
@@ -72,15 +114,12 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
   if (rig) {
     arms = `
       <g class="sw-arms-crossed">${ARMS_CROSSED}</g>
-      <g class="sw-arms-open">
-        <g class="sw-arm sw-arm-l">${ARM_L}</g>
-        <g class="sw-arm sw-arm-r">${ARM_R}</g>
-      </g>`;
+      <g class="sw-arms-open">${armMarkup('l', [0, 0, 0], true)}${armMarkup('r', [0, 0, 0], true)}</g>`;
   } else if (mood === 'chill') {
     arms = ARMS_CROSSED;
   } else {
-    const [l, r] = STATIC_ARM_ROT[mood] || [0, 0];
-    arms = `<g transform="rotate(${l} 60 140)">${ARM_L}</g><g transform="rotate(${r} 140 140)">${ARM_R}</g>`;
+    const pose = STATIC_POSE[mood] || [0, 0, 0];
+    arms = armMarkup('l', pose) + armMarkup('r', pose.map((d) => -d));
   }
 
   const zzz = `<g class="sw-zzz" fill="${WHITE}" font-family="Arial Black, Arial, sans-serif" font-weight="900">
@@ -107,7 +146,7 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
   return `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" class="${rig ? 'swaggy is-rig ' : ''}${className}" data-mood="${mood}" role="img" aria-label="Swaggy">
  <g class="sw-all">
-  <g class="sw-tail"><path d="M138 206 Q190 214 186 176 Q184 164 174 170 Q176 196 132 190 Z" fill="${FUR_DARK}"/></g>
+  ${TAIL}
   <g class="sw-body">
     <ellipse cx="100" cy="164" rx="52" ry="62" fill="${FUR}"/>
     <ellipse cx="100" cy="176" rx="32" ry="42" fill="${BELLY}"/>
@@ -129,6 +168,7 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
     <ellipse class="sw-nose" cx="100" cy="87" rx="9.5" ry="6.5" fill="${INK}"/>
     <path class="sw-whiskers" d="M72 96 L52 92 M72 101 L52 104 M128 96 L148 92 M128 101 L148 104" stroke="${INK}" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/>
     ${eyes}
+    ${rig || mood === 'happy' || mood === 'party' ? CHEEKS : ''}
     <g class="sw-brows">${variants(BROWS)}</g>
     <g class="sw-glasses">
       <path d="${LENS}" fill="${INK}"/>
@@ -142,6 +182,14 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
   ${extras}
  </g>
 </svg>`;
+}
+
+/** Mueve la boca del muñeco mientras "dice" un texto (según lo largo que sea). */
+export function talk(svg, text = '') {
+  if (!svg || !text) return;
+  clearTimeout(svg._talkTimer);
+  svg.dataset.talking = '';
+  svg._talkTimer = setTimeout(() => delete svg.dataset.talking, Math.min(2600, 300 + text.length * 45));
 }
 
 /** Imagen de Swaggy (para dibujar en canvas). */

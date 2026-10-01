@@ -7,8 +7,12 @@
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" width="800" height="960" viewBox="0 0 200 240">
 <sodipodi:namedview pagecolor="#9a9a9a" inkscape:pagecheckerboard="true"/>
-<g inkscape:groupmode="layer" id="cola" inkscape:label="01 · cola">
-<path d="M138 206 Q190 214 186 176 Q184 164 174 170 Q176 196 132 190 Z" fill="#26262a"/>
+<g inkscape:groupmode="layer" id="cola" inkscape:label="01 · COLA (3 partes, una dentro de otra)">
+<path d="M132 196 Q148 210 163 204" fill="none" stroke="#26262a" stroke-width="15" stroke-linecap="round"/><g inkscape:groupmode="layer" id="cola-2" inkscape:label="cola · mitad">
+<path d="M163 204 Q178 198 183 186" fill="none" stroke="#26262a" stroke-width="12.5" stroke-linecap="round"/><g inkscape:groupmode="layer" id="cola-3" inkscape:label="cola · punta">
+<path d="M183 186 Q187 174 179 166" fill="none" stroke="#26262a" stroke-width="9.5" stroke-linecap="round"/>
+</g>
+</g>
 </g>
 <g inkscape:groupmode="layer" id="cuerpo" inkscape:label="02 · cuerpo (con barriga)">
 <ellipse cx="100" cy="164" rx="52" ry="62" fill="#3b3b3f"/><ellipse cx="100" cy="176" rx="32" ry="42" fill="#d8d6d0"/>
@@ -25,11 +29,19 @@
 <g inkscape:groupmode="layer" id="brazos-cruzados" inkscape:label="06 · brazos cruzados (pose normal)" style="display:none">
 <path d="M60 148 Q100 176 140 150" fill="none" stroke="#26262a" stroke-width="17" stroke-linecap="round"/><path d="M140 160 Q100 184 60 160" fill="none" stroke="#3b3b3f" stroke-width="17" stroke-linecap="round"/>
 </g>
-<g inkscape:groupmode="layer" id="brazo-izq" inkscape:label="07 · brazo izquierdo (colgando)">
-<path d="M60 140 Q46 168 56 196" fill="none" stroke="#3b3b3f" stroke-width="16" stroke-linecap="round"/>
+<g inkscape:groupmode="layer" id="brazo-izq" inkscape:label="07 · BRAZO izquierdo (colgando; 3 partes, una dentro de otra)">
+<path d="M60 140 L50 167" stroke="#3b3b3f" stroke-width="16" stroke-linecap="round"/><g inkscape:groupmode="layer" id="antebrazo-izq" inkscape:label="antebrazo izquierdo">
+<path d="M50 167 L54 190" stroke="#3b3b3f" stroke-width="14.5" stroke-linecap="round"/><g inkscape:groupmode="layer" id="mano-izq" inkscape:label="mano izquierdo">
+<ellipse cx="53" cy="195" rx="9" ry="8" fill="#26262a"/>
 </g>
-<g inkscape:groupmode="layer" id="brazo-der" inkscape:label="08 · brazo derecho (colgando)">
-<path d="M140 140 Q154 168 144 196" fill="none" stroke="#3b3b3f" stroke-width="16" stroke-linecap="round"/>
+</g>
+</g>
+<g inkscape:groupmode="layer" id="brazo-der" inkscape:label="08 · BRAZO derecho (colgando; 3 partes, una dentro de otra)">
+<path d="M140 140 L150 167" stroke="#3b3b3f" stroke-width="16" stroke-linecap="round"/><g inkscape:groupmode="layer" id="antebrazo-der" inkscape:label="antebrazo derecho">
+<path d="M150 167 L146 190" stroke="#3b3b3f" stroke-width="14.5" stroke-linecap="round"/><g inkscape:groupmode="layer" id="mano-der" inkscape:label="mano derecho">
+<ellipse cx="147" cy="195" rx="9" ry="8" fill="#26262a"/>
+</g>
+</g>
 </g>
 <g inkscape:groupmode="layer" id="cabeza-todo" inkscape:label="09 · CABEZA (todo lo de adentro se mueve junto)">
 <g inkscape:groupmode="layer" id="oreja-izq" inkscape:label="oreja izquierda">
@@ -56,6 +68,9 @@
 <ellipse cx="125" cy="76" rx="8" ry="8.5" fill="#f4f4f4"/><g inkscape:groupmode="layer" id="pupila-der" inkscape:label="pupila derecha">
 <circle cx="124" cy="77" r="4" fill="#0a0a0a"/>
 </g>
+</g>
+<g inkscape:groupmode="layer" id="cachetes" inkscape:label="cachetes (se sonroja)">
+<g fill="#e3151a" opacity="0.3"><ellipse cx="66" cy="100" rx="8" ry="4.5"/><ellipse cx="134" cy="100" rx="8" ry="4.5"/></g>
 </g>
 <g inkscape:groupmode="layer" id="cejas" inkscape:label="cejas (una capa por ánimo)">
 <g inkscape:groupmode="layer" id="cejas-chill" inkscape:label="cejas · normal">
@@ -113,7 +128,13 @@
 </g>
 </g>
 <g inkscape:groupmode="layer" id="guia" inkscape:label="00 · GUÍA: puntos de giro (no dibujar aquí; se puede borrar)" sodipodi:insensitive="true">
-<circle cx="134" cy="198" r="2.2" fill="#ff2bd6"/><text x="137" y="195" font-size="5" font-family="Arial" fill="#ff2bd6">cola</text>
+<circle cx="132" cy="196" r="2.2" fill="#ff2bd6"/><text x="135" y="193" font-size="5" font-family="Arial" fill="#ff2bd6">cola</text>
+<circle cx="163" cy="204" r="2.2" fill="#ff2bd6"/><text x="166" y="201" font-size="5" font-family="Arial" fill="#ff2bd6">cola 2</text>
+<circle cx="183" cy="186" r="2.2" fill="#ff2bd6"/><text x="186" y="183" font-size="5" font-family="Arial" fill="#ff2bd6">cola 3</text>
+<circle cx="50" cy="167" r="2.2" fill="#ff2bd6"/><text x="53" y="164" font-size="5" font-family="Arial" fill="#ff2bd6">codo izq</text>
+<circle cx="150" cy="167" r="2.2" fill="#ff2bd6"/><text x="153" y="164" font-size="5" font-family="Arial" fill="#ff2bd6">codo der</text>
+<circle cx="54" cy="190" r="2.2" fill="#ff2bd6"/><text x="57" y="187" font-size="5" font-family="Arial" fill="#ff2bd6">muñeca izq</text>
+<circle cx="146" cy="190" r="2.2" fill="#ff2bd6"/><text x="149" y="187" font-size="5" font-family="Arial" fill="#ff2bd6">muñeca der</text>
 <circle cx="100" cy="226" r="2.2" fill="#ff2bd6"/><text x="103" y="223" font-size="5" font-family="Arial" fill="#ff2bd6">cuerpo</text>
 <circle cx="60" cy="140" r="2.2" fill="#ff2bd6"/><text x="63" y="137" font-size="5" font-family="Arial" fill="#ff2bd6">hombro izq</text>
 <circle cx="140" cy="140" r="2.2" fill="#ff2bd6"/><text x="143" y="137" font-size="5" font-family="Arial" fill="#ff2bd6">hombro der</text>

@@ -616,12 +616,7 @@ html.is-entered .swaggy-launcher.is-hidden {
   transform-origin: 100px 150px;
 }
 
-.swaggy .sw-arm {
-  transition: transform 0.35s var(--ease);
-}
 
-.swaggy .sw-arm-l { transform-origin: 60px 140px; }
-.swaggy .sw-arm-r { transform-origin: 140px 140px; }
 .swaggy .sw-foot-l { transform-origin: 78px 230px; }
 .swaggy .sw-foot-r { transform-origin: 122px 230px; }
 
@@ -633,20 +628,14 @@ html.is-entered .swaggy-launcher.is-hidden {
 /* ---------- Ánimos ---------- */
 .swaggy[data-mood='happy'] .sw-tail { animation-duration: 0.55s; animation-name: sw-wag-fast; }
 .swaggy[data-mood='happy'] .sw-head-in { animation: sw-head-happy 0.7s ease-in-out infinite; }
-.swaggy[data-mood='happy'] .sw-arm-l { transform: rotate(28deg); }
-.swaggy[data-mood='happy'] .sw-arm-r { transform: rotate(-28deg); }
 
 .swaggy[data-mood='party'] .sw-tail { animation: sw-wag-fast 0.4s ease-in-out infinite; }
 .swaggy[data-mood='party'] .sw-head-in { animation: sw-head-bang 0.45s ease-in-out infinite; }
-.swaggy[data-mood='party'] .sw-arm-l { animation: sw-pump-l 0.45s ease-in-out infinite; }
-.swaggy[data-mood='party'] .sw-arm-r { animation: sw-pump-r 0.45s ease-in-out infinite; }
 .swaggy[data-mood='party'] .sw-foot-r { animation: sw-tap 0.45s ease-in-out infinite; }
 .swaggy[data-mood='party'] .sw-notes { display: inline; }
 
 .swaggy[data-mood='annoyed'] .sw-tail { animation: sw-thump 0.5s ease-in-out infinite; }
 .swaggy[data-mood='annoyed'] .sw-head-in { animation: sw-grr 0.25s linear infinite; }
-.swaggy[data-mood='annoyed'] .sw-arm-l { transform: rotate(38deg); }
-.swaggy[data-mood='annoyed'] .sw-arm-r { transform: rotate(-38deg); }
 .swaggy[data-mood='annoyed'] .sw-ear-l,
 .swaggy[data-mood='annoyed'] .sw-ear-r { animation: none; transform: rotate(0) scale(0.85); }
 
@@ -673,32 +662,24 @@ html.is-entered .swaggy-launcher.is-hidden {
 .swaggy[data-action='look'] .sw-head-in { animation: sw-look 2.2s ease-in-out; }
 
 .swaggy[data-action='glasses'] .sw-glasses { transform: translateY(-27px) rotate(-5deg); }
-.swaggy[data-action='glasses'] .sw-arm-r { transform: rotate(-162deg); }
 .swaggy[data-action='glasses'] .sw-eye-r { animation: sw-wink 1.9s ease-in-out; }
 .swaggy[data-action='glasses'] .sw-glint { animation: none; }
 
-.swaggy[data-action='wave'] .sw-arm-r { animation: sw-wave 0.42s ease-in-out infinite alternate; }
 .swaggy[data-action='wave'] .sw-head-in { animation: sw-head-happy 0.84s ease-in-out infinite; }
 
 .swaggy[data-action='dance'] .sw-all { animation: sw-dance 0.5s ease-in-out infinite; }
-.swaggy[data-action='dance'] .sw-arm-l { animation: sw-pump-l 0.5s ease-in-out infinite; }
-.swaggy[data-action='dance'] .sw-arm-r { animation: sw-pump-r 0.5s ease-in-out infinite 0.25s; }
 .swaggy[data-action='dance'] .sw-foot-l { animation: sw-tap 0.5s ease-in-out infinite; }
 .swaggy[data-action='dance'] .sw-foot-r { animation: sw-tap 0.5s ease-in-out infinite 0.25s; }
 .swaggy[data-action='dance'] .sw-notes { display: inline; }
 .swaggy[data-action='dance'] .sw-tail { animation: sw-wag-fast 0.25s ease-in-out infinite; }
 
 .swaggy[data-action='flip'] .sw-all { animation: sw-flip 0.95s cubic-bezier(0.3, 0.7, 0.3, 1); }
-.swaggy[data-action='flip'] .sw-arm-l { transform: rotate(150deg); }
-.swaggy[data-action='flip'] .sw-arm-r { transform: rotate(-150deg); }
 
 .swaggy[data-action='spin'] .sw-all { animation: sw-spin 0.9s ease-in-out; }
 
 .swaggy[data-action='jump'] .sw-all { animation: sw-jump 0.6s ease-out; }
 
 .swaggy[data-action='stretch'] .sw-body { animation: sw-stretch 1.8s ease-in-out; }
-.swaggy[data-action='stretch'] .sw-arm-l { transform: rotate(148deg); }
-.swaggy[data-action='stretch'] .sw-arm-r { transform: rotate(-148deg); }
 .swaggy[data-action='stretch'] .sw-head-in { animation: sw-yawn 1.8s ease-in-out; }
 
 .swaggy[data-action='purr'] .sw-all { animation: sw-purr 0.16s linear infinite; }
@@ -806,21 +787,6 @@ html.is-entered .swaggy-launcher.is-hidden {
 @keyframes sw-wink {
   0%, 45%, 70%, 100% { transform: scaleY(1); }
   55%, 62% { transform: scaleY(0.1); }
-}
-
-@keyframes sw-wave {
-  from { transform: rotate(-115deg); }
-  to { transform: rotate(-155deg); }
-}
-
-@keyframes sw-pump-l {
-  0%, 100% { transform: rotate(118deg); }
-  50% { transform: rotate(148deg); }
-}
-
-@keyframes sw-pump-r {
-  0%, 100% { transform: rotate(-118deg); }
-  50% { transform: rotate(-148deg); }
 }
 
 @keyframes sw-tap {
@@ -996,4 +962,115 @@ html.is-entered .swaggy-launcher.is-hidden {
   0% { transform: translateY(-9%); }
   25% { transform: translateY(-20%) rotate(-8deg); }
   100% { transform: translateY(110%); }
+}
+
+/* =========================================================
+   ARTICULACIONES (brazos con hombro/codo/mano, cola en 3 partes,
+   cachetes, cejas que se levantan, boca que habla)
+   Las poses se definen con variables: --shL/--elL/--hdL (izquierdo)
+   y --shR/--elR/--hdR (derecho), en grados.
+   ========================================================= */
+.swaggy .sw-sh-l, .swaggy .sw-el-l, .swaggy .sw-hd-l,
+.swaggy .sw-sh-r, .swaggy .sw-el-r, .swaggy .sw-hd-r {
+  transition: transform 0.4s cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+
+.swaggy .sw-sh-l { transform-origin: 60px 140px; transform: rotate(var(--shL, 0deg)); }
+.swaggy .sw-el-l { transform-origin: 50px 167px; transform: rotate(var(--elL, 0deg)); }
+.swaggy .sw-hd-l { transform-origin: 54px 190px; transform: rotate(var(--hdL, 0deg)); }
+.swaggy .sw-sh-r { transform-origin: 140px 140px; transform: rotate(var(--shR, 0deg)); }
+.swaggy .sw-el-r { transform-origin: 150px 167px; transform: rotate(var(--elR, 0deg)); }
+.swaggy .sw-hd-r { transform-origin: 146px 190px; transform: rotate(var(--hdR, 0deg)); }
+
+/* Poses por ánimo */
+.swaggy[data-mood='happy'] { --shL: 20deg; --elL: 15deg; --hdL: 10deg; --shR: -20deg; --elR: -15deg; --hdR: -10deg; }
+.swaggy[data-mood='annoyed'] { --shL: 26deg; --elL: -56deg; --shR: -26deg; --elR: 56deg; }
+.swaggy[data-mood='party'] { --shL: 125deg; --elL: 12deg; --shR: -125deg; --elR: -12deg; }
+.swaggy[data-mood='sleepy'] { --shL: -6deg; --elL: -12deg; --shR: 6deg; --elR: 12deg; }
+.swaggy[data-mood='sad'] { --shL: -12deg; --elL: -25deg; --hdL: -15deg; --shR: 12deg; --elR: 25deg; --hdR: 15deg; }
+
+/* Poses por acción */
+.swaggy[data-action='wave'] { --shR: -120deg; --elR: -40deg; }
+.swaggy[data-action='glasses'] { --shR: -156deg; --elR: -22deg; --hdR: -30deg; }
+.swaggy[data-action='flip'] { --shL: 135deg; --shR: -135deg; --elL: -20deg; --elR: 20deg; }
+.swaggy[data-action='stretch'] { --shL: 140deg; --shR: -140deg; --elL: -25deg; --elR: 25deg; --hdL: 0deg; --hdR: 0deg; }
+.swaggy[data-action='jump'] { --shL: 60deg; --elL: 40deg; --shR: -60deg; --elR: -40deg; }
+.swaggy[data-action='purr'] { --shL: -12deg; --elL: -40deg; --shR: 12deg; --elR: 40deg; }
+.swaggy[data-action='surprise'] { --shL: 70deg; --elL: 60deg; --hdL: 20deg; --shR: -70deg; --elR: -60deg; --hdR: -20deg; }
+
+/* Saludar: el codo y la mano se mueven, no todo el brazo */
+.swaggy[data-action='wave'] .sw-el-r { animation: sw-wave-el 0.5s ease-in-out infinite alternate; }
+.swaggy[data-action='wave'] .sw-hd-r { animation: sw-wave-hd 0.25s ease-in-out infinite alternate; }
+
+/* Celebrar y bailar: brazos arriba bombeando, codos y manos sueltos */
+.swaggy[data-mood='party'] .sw-sh-l { animation: sw-pump-sh-l 0.45s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-sh-r { animation: sw-pump-sh-r 0.45s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-el-l { animation: sw-party-el-l 0.45s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-el-r { animation: sw-party-el-r 0.45s ease-in-out infinite; }
+.swaggy[data-mood='party'] .sw-hd-l,
+.swaggy[data-mood='party'] .sw-hd-r { animation: sw-flick 0.225s ease-in-out infinite alternate; }
+
+.swaggy[data-action='dance'] .sw-sh-l { animation: sw-dance-sh-l 1s ease-in-out infinite; }
+.swaggy[data-action='dance'] .sw-sh-r { animation: sw-dance-sh-r 1s ease-in-out infinite; }
+.swaggy[data-action='dance'] .sw-el-l { animation: sw-pump-el-l 0.5s ease-in-out infinite; }
+.swaggy[data-action='dance'] .sw-el-r { animation: sw-pump-el-r 0.5s ease-in-out infinite 0.25s; }
+.swaggy[data-action='dance'] .sw-hd-l,
+.swaggy[data-action='dance'] .sw-hd-r { animation: sw-flick 0.25s ease-in-out infinite alternate; }
+
+/* Feliz: manitos que se mueven */
+.swaggy[data-mood='happy'] .sw-hd-l,
+.swaggy[data-mood='happy'] .sw-hd-r { animation: sw-flick 0.35s ease-in-out infinite alternate; }
+
+/* Molesto: golpea el piso con el pie */
+.swaggy[data-mood='annoyed'] .sw-foot-r { animation: sw-tap 0.3s ease-in-out infinite; }
+
+/* ---------- Cola en 3 partes: la ola se propaga hasta la punta ---------- */
+.swaggy .sw-tail { transform-origin: 132px 196px; }
+.swaggy .sw-tail-2 { transform-origin: 163px 204px; animation: sw-wag 2.4s ease-in-out infinite 0.2s; }
+.swaggy .sw-tail-3 { transform-origin: 183px 186px; animation: sw-wag 2.4s ease-in-out infinite 0.4s; }
+.swaggy[data-mood='happy'] .sw-tail-2, .swaggy[data-mood='party'] .sw-tail-2,
+.swaggy[data-action='dance'] .sw-tail-2, .swaggy[data-action='purr'] .sw-tail-2 { animation: sw-wag-fast 0.45s ease-in-out infinite 0.08s; }
+.swaggy[data-mood='happy'] .sw-tail-3, .swaggy[data-mood='party'] .sw-tail-3,
+.swaggy[data-action='dance'] .sw-tail-3, .swaggy[data-action='purr'] .sw-tail-3 { animation: sw-wag-fast 0.45s ease-in-out infinite 0.16s; }
+.swaggy[data-mood='annoyed'] .sw-tail-2, .swaggy[data-mood='annoyed'] .sw-tail-3 { animation: sw-thump 0.5s ease-in-out infinite 0.06s; }
+.swaggy[data-mood='sleepy'] .sw-tail-2, .swaggy[data-mood='sleepy'] .sw-tail-3,
+.swaggy[data-mood='sad'] .sw-tail-2, .swaggy[data-mood='sad'] .sw-tail-3 { animation: sw-wag 6s ease-in-out infinite 0.5s; }
+
+/* ---------- Cachetes (se sonroja) ---------- */
+.swaggy .sw-cheeks { opacity: 0; transition: opacity 0.4s; }
+.swaggy[data-mood='happy'] .sw-cheeks,
+.swaggy[data-mood='party'] .sw-cheeks,
+.swaggy[data-action='purr'] .sw-cheeks { opacity: 0.32; }
+
+/* ---------- Cejas que se levantan ---------- */
+.swaggy .sw-brows { transform-origin: 100px 56px; transition: transform 0.25s var(--ease); }
+.swaggy[data-action='surprise'] .sw-brows,
+.swaggy[data-action='look'] .sw-brows { transform: translateY(-5px); }
+.swaggy[data-action='surprise'] .sw-ear-l,
+.swaggy[data-action='surprise'] .sw-ear-r { animation: none; transform: translateY(-4px) scale(1.12); }
+.swaggy[data-action='surprise'] .sw-all { animation: sw-jump 0.5s ease-out; }
+
+/* ---------- Habla: la boca se mueve mientras sale la burbuja ---------- */
+.swaggy .sw-mouth { transform-origin: 100px 104px; }
+.swaggy[data-talking] .sw-mouth { animation: sw-talk 0.18s ease-in-out infinite alternate; }
+
+/* ---------- Peso: se balancea un poquito cuando está quieto ---------- */
+.swaggy[data-mood='chill']:not([data-action]) .sw-all { animation: sw-sway 6s ease-in-out infinite; }
+
+@keyframes sw-wave-el { from { transform: rotate(-15deg); } to { transform: rotate(-65deg); } }
+@keyframes sw-wave-hd { from { transform: rotate(-25deg); } to { transform: rotate(25deg); } }
+@keyframes sw-flick { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
+@keyframes sw-pump-sh-l { 0%, 100% { transform: rotate(115deg); } 50% { transform: rotate(140deg); } }
+@keyframes sw-pump-sh-r { 0%, 100% { transform: rotate(-115deg); } 50% { transform: rotate(-140deg); } }
+@keyframes sw-pump-el-l { 0%, 100% { transform: rotate(10deg); } 50% { transform: rotate(55deg); } }
+@keyframes sw-pump-el-r { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(-55deg); } }
+@keyframes sw-dance-sh-l { 0%, 100% { transform: rotate(130deg); } 50% { transform: rotate(60deg); } }
+@keyframes sw-dance-sh-r { 0%, 100% { transform: rotate(-60deg); } 50% { transform: rotate(-130deg); } }
+@keyframes sw-party-el-l { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(22deg); } }
+@keyframes sw-party-el-r { 0%, 100% { transform: rotate(5deg); } 50% { transform: rotate(-22deg); } }
+@keyframes sw-talk { from { transform: scaleY(1); } to { transform: scale(1.06, 0.55); } }
+@keyframes sw-sway {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(-1.5deg) translateX(-1px); }
+  70% { transform: rotate(1.5deg) translateX(1px); }
 }
