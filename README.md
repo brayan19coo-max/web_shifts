@@ -102,8 +102,8 @@ Nutria con lentes deportivos oscuros. Botón flotante (abajo a la izquierda) que
   - **Tap the Drop:** para el contador del lanzamiento lo más cerca de 00.000. Combos, y desde la ronda 4 los números se esconden.
   - **Stack Drop:** apila prendas dobladas; lo que sobresale se corta. Caídas perfectas = combo. El paisaje sube con la torre: calle → edificios → azoteas → nubes (con viento) → espacio.
   - **Combo Spray:** une 3 o más latas del mismo color en 60 s; cadenas y bombas de pintura suman tiempo.
-  - **Esquiva al guardia:** mantén presionado para pintar el muro y suelta cuando el guardia voltee.
-  - **Ritmo Shift's:** toca los 3 carriles al ritmo; cada acierto suena una nota y el beat se acelera.
+  - **Esquiva al guardia:** mantén presionado para pintar el muro y suelta cuando el guardia voltee. Cada 2 muros cambia el escenario; desde el muro 3 hay un perro que se despierta con el ruido y desde el muro 5 una cámara de seguridad que barre el muro.
+  - **Ritmo Shift's:** toca los 3 carriles al ritmo; cada acierto suena una nota y el beat se acelera. La tarima cambia con la velocidad (garaje → block party → disco → tarima → festival) con público que salta al beat.
   - **Escape del muro:** corre y salta conos, canecas y vallas (doble salto). Cada 300 puntos cambia el escenario (barrio → puente → metro → azoteas → tormenta → neón), cada uno con su propio obstáculo.
   - Los fondos de los escenarios están en `js/components/swaggy/games/scenes.js`; la lista de sprites para el arte final, en `assets/images/juegos/LEEME.md`.
   - **Atrapa la lata:** atrapa las latas buenas y esquiva las negras.

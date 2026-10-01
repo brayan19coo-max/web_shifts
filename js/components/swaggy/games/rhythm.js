@@ -1,6 +1,10 @@
 import { swaggyImage } from '../art.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, drawCan, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
+import { drawSceneBanner, rnd } from './scenes.js';
+
+// Tarimas: cambian cada 2 subidas de velocidad (cada 32 tiempos)
+const STAGES = ['El garaje', 'Block party', 'La disco', 'La tarima', 'El festival'];
 
 /**
  * Mini juego "Ritmo Shift's"
@@ -12,6 +16,8 @@ import { createKit, drawCan, bigText, createParticles, createPopups, createShake
  *   - Cada lata que se te pasa baja tu energía; si llega a 0, se acaba.
  *   - Cada 16 tiempos el beat va más rápido y caen más latas.
  *   - Cada acierto suena una nota: entre mejor lo hagas, mejor suena.
+ *   - La tarima cambia con la velocidad: garaje → block party → disco →
+ *     tarima → festival (con público, luces y láseres al ritmo).
  * Devuelve { stop() }.
  */
 const LANES = 3;
@@ -48,6 +54,135 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
   let lastCount = 4;
   const notes = [];
   const pressed = new Array(LANES).fill(0);
+  let stage = 0;
+  let stageAge = 10;
+  let hype = 0; // el público se prende con los combos
+
+  // ---------- Escenario ----------
+  const drawStage = (W, H, hitY, pulse, beatPhase) => {
+    const k = stage;
+    // fondo
+    const bgs = [['#121010', '#1d1612'], ['#0b0f1c', '#1b1430'], ['#0a0612', '#22082a'], ['#05050a', '#1a0505'], ['#020208', '#120a24']];
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, bgs[k][0]);
+    g.addColorStop(1, bgs[k][1]);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    if (k === 0) {
+      // garaje: ladrillo y un bombillo que se mece
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      for (let y = 0; y < H; y += 22) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+      const sw = Math.sin(t * 1.4) * 0.25;
+      const bx = W / 2 + Math.sin(sw) * H * 0.25;
+      const by = Math.cos(sw) * H * 0.25;
+      ctx.strokeStyle = '#333';
+      ctx.beginPath();
+      ctx.moveTo(W / 2, 0);
+      ctx.lineTo(bx, by);
+      ctx.stroke();
+      const lg = ctx.createRadialGradient(bx, by, 4, bx, by, H * 0.8);
+      lg.addColorStop(0, `rgba(255,214,140,${0.25 + pulse * 0.1})`);
+      lg.addColorStop(1, 'rgba(255,214,140,0)');
+      ctx.fillStyle = lg;
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#ffd68c';
+      ctx.beginPath();
+      ctx.arc(bx, by, 7, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (k === 1) {
+      // block party: guirnaldas de bombillos
+      for (let row = 0; row < 2; row++) {
+        const y0 = H * (0.1 + row * 0.12);
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.beginPath();
+        ctx.moveTo(0, y0);
+        ctx.quadraticCurveTo(W / 2, y0 + H * 0.08, W, y0);
+        ctx.stroke();
+        for (let i = 0; i <= 14; i++) {
+          const x = (W * i) / 14;
+          const y = y0 + Math.sin((Math.PI * i) / 14) * H * 0.04;
+          const on = (i + Math.floor(beatCount / 1)) % 3 !== row;
+          ctx.fillStyle = on ? ['#ffd68c', '#e3151a', '#f4f4f4'][(i + row) % 3] : '#333';
+          ctx.beginPath();
+          ctx.arc(x, y + 6, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+    if (k === 2) {
+      // disco: bola de espejos y puntos de luz que giran
+      const bx = W / 2;
+      const by = H * 0.12;
+      for (let i = 0; i < 40; i++) {
+        const a = rnd(i) * Math.PI * 2 + t * 0.6;
+        const d = (0.2 + rnd(i * 3) * 0.8) * Math.max(W, H) * 0.6;
+        ctx.fillStyle = `rgba(${i % 3 ? '255,255,255' : '227,21,26'},${0.15 + pulse * 0.25})`;
+        ctx.fillRect(bx + Math.cos(a) * d, by + Math.abs(Math.sin(a)) * d, 4, 4);
+      }
+      ctx.fillStyle = '#c9c9c9';
+      ctx.beginPath();
+      ctx.arc(bx, by, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#777';
+      for (let i = -18; i < 18; i += 6) {
+        ctx.beginPath();
+        ctx.moveTo(bx - 18, by + i);
+        ctx.lineTo(bx + 18, by + i);
+        ctx.stroke();
+      }
+    }
+    if (k >= 3) {
+      // tarima / festival: reflectores que barren
+      for (let i = 0; i < 4; i++) {
+        const x = W * (0.12 + i * 0.25);
+        const a = Math.PI / 2 + Math.sin(t * (0.8 + i * 0.2) + i) * 0.5;
+        ctx.fillStyle = i % 2 ? `rgba(227,21,26,${0.12 + pulse * 0.1})` : `rgba(255,255,255,${0.08 + pulse * 0.08})`;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + Math.cos(a - 0.12) * H * 1.2, Math.sin(a - 0.12) * H * 1.2);
+        ctx.lineTo(x + Math.cos(a + 0.12) * H * 1.2, Math.sin(a + 0.12) * H * 1.2);
+        ctx.fill();
+      }
+      // pantalla gigante con el logo
+      bigText(ctx, "SHIFT'S", W / 2, H * 0.12, Math.min(60, W * 0.12), { fill: `rgba(244,244,244,${0.12 + pulse * 0.2})`, stroke: 'transparent' });
+    }
+    if (k === 4) {
+      // láseres
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 6; i++) {
+        const a = Math.sin(t * 1.3 + i) * 0.9;
+        ctx.strokeStyle = i % 2 ? 'rgba(227,21,26,0.6)' : 'rgba(160,255,200,0.45)';
+        ctx.beginPath();
+        ctx.moveTo(W / 2, H);
+        ctx.lineTo(W / 2 + Math.sin(a) * H * 1.5, H - Math.cos(a) * H * 1.5);
+        ctx.stroke();
+      }
+    }
+    // público: cabezas y brazos que saltan al beat
+    if (k >= 1) {
+      const n = Math.floor(W / 26);
+      const jump = Math.max(0, Math.sin(beatPhase * Math.PI)) ;
+      for (let i = 0; i < n; i++) {
+        const x = (i + 0.5) * (W / n);
+        const hop = jump * (6 + rnd(i) * 10) * (0.5 + hype);
+        const y = H - 18 - hop - rnd(i * 3) * 12;
+        ctx.fillStyle = '#050505';
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(x - 13, y + 8, 26, 30);
+        if (rnd(i * 7) < 0.3 + hype * 0.5) {
+          ctx.fillRect(x + 6, y - 22 - hop * 0.3, 4, 22);
+        }
+      }
+    }
+  };
 
   const travel = () => Math.max(0.95, 1.5 - (bpm - 96) * 0.008); // segundos que tarda en caer
   const mult = () => Math.min(4, 1 + Math.floor(combo / 10) * 0.5);
@@ -61,6 +196,16 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
       if (beatCount % 16 === 0) {
         bpm = Math.min(156, bpm + 6);
         beatLen = 60 / bpm;
+      }
+      // la tarima cambia cuando esos tiempos llegan a sonar
+      if (beatCount % 32 === 0 && stage < STAGES.length - 1) {
+        const at2 = at;
+        setTimeout(() => {
+          if (over) return;
+          stage += 1;
+          stageAge = 0;
+          sound.play('unlock');
+        }, Math.max(0, (at2 - t) * 1000));
       }
       // el primer compás de cada 4 es más tranquilo
       const density = Math.min(0.92, 0.55 + level * 0.07);
@@ -140,6 +285,8 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
   kit.loop((dt) => {
     const { W, H } = view;
     if (!over) t += dt;
+    stageAge += dt;
+    hype = Math.max(0, Math.min(1, hype + (combo >= 10 ? 0.3 : -0.4) * dt));
     const { lx, lw, width, hitY } = layout();
 
     // cuenta regresiva con el metrónomo
@@ -187,8 +334,7 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
     const pulse = 1 - beatPhase;
     ctx.save();
     shake.apply(ctx, dt);
-    ctx.fillStyle = '#0b0b0b';
-    ctx.fillRect(0, 0, W, H);
+    drawStage(W, H, hitY, pulse, beatPhase);
     // luces al ritmo
     const glow = ctx.createRadialGradient(W / 2, hitY, 10, W / 2, hitY, H);
     glow.addColorStop(0, `rgba(227,21,26,${0.05 + pulse * 0.12})`);
@@ -273,6 +419,7 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
     ctx.textAlign = 'right';
     ctx.fillText(`${Math.round(bpm)} BPM`, lx + width, 32);
 
+    if (stage > 0) drawSceneBanner(ctx, W, H, STAGES[stage], stageAge);
     if (t < 0) {
       const c = Math.ceil(-t / 0.6);
       bigText(ctx, c > 3 ? '¿LISTO?' : String(c), W / 2, H * 0.42, Math.min(80, W * 0.18), { fill: COLORS.white });
