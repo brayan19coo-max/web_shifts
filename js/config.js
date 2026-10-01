@@ -139,7 +139,7 @@ export const SWAGGY = {
     sections: {
       tienda: ['Pilas con esto, que se va rápido 👀', 'Aquí está lo bueno.', 'Yo me llevaría todo, pero no tengo bolsillos.'],
       drop: ['Shhh… aquí se guarda lo que viene 🤫', '¿Tienes la clave? Yo no he dicho nada.'],
-      lookbook: ['Toca la portada y mira las cartas 🃏', 'Saint Mode… qué fotos, brother.'],
+      lookbook: ['Toca la portada y mira las cartas 🃏', 'Qué fotos, brother. Míralas todas.'],
       nosotros: ['Léela, que la escribimos con cariño.', 'Esta es la historia del parche.'],
       crew: ['En el Crew sueltan las claves primero 🤫', 'Únete al Crew, nos vemos allá.'],
       footer: ['¿Ya te vas? Vuelve pronto 🦦', 'Llegaste al final… o al comienzo 😎'],
@@ -155,7 +155,7 @@ export const SWAGGY = {
   },
   // Premio de los mini juegos. En null = sin premio.
   // Ejemplo: { minScore: 60, text: '10 % de descuento en tu próxima compra' }
-  // Para que aplique a un solo juego, agrega game: 'catch' | 'runner'.
+  // Para que aplique a un solo juego, agrega game: 'flap' | 'tapdrop' | 'stack' | 'combo' | 'guard' | 'rhythm' | 'runner' | 'catch'.
   // Quien lo gane recibe un botón para reclamarlo por WhatsApp con su puntaje.
   prize: null,
 };
