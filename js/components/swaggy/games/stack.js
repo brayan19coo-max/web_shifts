@@ -1,4 +1,4 @@
-import { swaggyImage } from '../art.js';
+import { frames, frame } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
 import { skyline, rnd, drawSceneBanner } from './scenes.js';
@@ -46,7 +46,6 @@ const GOLD = { kind: 'hoodie', fill: '#f2c14e', ink: '#0a0a0a', print: '#0a0a0a'
 export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
-  const sprites = { happy: swaggyImage('happy'), party: swaggyImage('party'), annoyed: swaggyImage('annoyed') };
   const particles = createParticles();
   const popups = createPopups();
   const shake = createShake();
@@ -366,7 +365,10 @@ export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
       ctx.restore();
     });
     // Swaggy animando desde abajo
-    const img = sprites[mood];
+    const img =
+      mood === 'party' ? frame('celebrar', now / 1000, 6)
+        : mood === 'annoyed' ? frames('triste')[0]
+          : frame(stack.length > 15 ? 'nervioso' : 'quieto', now / 1000, stack.length > 15 ? 8 : 2);
     if (img.complete) {
       const sw = Math.min(110, H * 0.22, W * 0.24);
       const hop = mood === 'party' ? Math.abs(Math.sin(now / 110)) * 12 : Math.sin(now / 400) * 2;

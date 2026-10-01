@@ -96,12 +96,33 @@ const TAIL = `
     </g>
   </g>`;
 
+// Cola con ángulos propios en cada parte (para las poses de los juegos)
+function tailMarkup([a = 0, b = 0, c = 0] = []) {
+  const r = (deg, x, y) => (deg ? ` transform="rotate(${deg} ${x} ${y})"` : '');
+  return `
+  <g class="sw-tail"${r(a, 132, 196)}>
+    <path d="M132 196 Q148 210 163 204" fill="none" stroke="${FUR_DARK}" stroke-width="15" stroke-linecap="round"/>
+    <g class="sw-tail-2"${r(b, 163, 204)}>
+      <path d="M163 204 Q178 198 183 186" fill="none" stroke="${FUR_DARK}" stroke-width="12.5" stroke-linecap="round"/>
+      <g class="sw-tail-3"${r(c, 183, 186)}>
+        <path d="M183 186 Q187 174 179 166" fill="none" stroke="${FUR_DARK}" stroke-width="9.5" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>`;
+}
+
 const LENS = 'M47 66 Q100 54 153 66 L151 80 Q130 92 107 81 L100 77 L93 81 Q70 92 49 80 Z';
 
 let uid = 0;
 
 /** Devuelve el SVG de Swaggy como string. */
-export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) {
+/**
+ * pose (solo en el dibujo quieto), para los cuadros de animación de los juegos:
+ *   arms: 'crossed' | { l: [hombro, codo, mano], r: [...] } (grados)
+ *   feet: [[dx, dy], [dx, dy]] · tail: [base, mitad, punta] · head: [giro, dx, dy]
+ *   body: [escalaX, escalaY] · glasses: subirse los lentes (px hacia arriba)
+ */
+export function swaggySvg(mood = 'chill', { className = '', rig = false, pose = null } = {}) {
   const id = `sw${++uid}`;
 
   // En el muñeco van todas las variantes y el CSS muestra la del ánimo actual
@@ -115,6 +136,10 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
     arms = `
       <g class="sw-arms-crossed">${ARMS_CROSSED}</g>
       <g class="sw-arms-open">${armMarkup('l', [0, 0, 0], true)}${armMarkup('r', [0, 0, 0], true)}</g>`;
+  } else if (pose?.arms === 'crossed') {
+    arms = ARMS_CROSSED;
+  } else if (pose?.arms) {
+    arms = armMarkup('l', pose.arms.l || [0, 0, 0]) + armMarkup('r', pose.arms.r || [0, 0, 0]);
   } else if (mood === 'chill') {
     arms = ARMS_CROSSED;
   } else {
@@ -130,7 +155,7 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
   const extras = rig ? zzz + notes : mood === 'sleepy' ? zzz : '';
 
   // Ojos (solo se ven cuando se sube los lentes)
-  const eyes = rig
+  const eyes = rig || pose?.glasses
     ? `<g class="sw-eyes">
         <g class="sw-eye sw-eye-l"><ellipse cx="75" cy="76" rx="8" ry="8.5" fill="${WHITE}"/><circle class="sw-pupil" cx="76" cy="77" r="4" fill="${INK}"/></g>
         <g class="sw-eye sw-eye-r"><ellipse cx="125" cy="76" rx="8" ry="8.5" fill="${WHITE}"/><circle class="sw-pupil" cx="124" cy="77" r="4" fill="${INK}"/></g>
@@ -146,8 +171,8 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
   return `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" class="${rig ? 'swaggy is-rig ' : ''}${className}" data-mood="${mood}" role="img" aria-label="Swaggy">
  <g class="sw-all">
-  ${TAIL}
-  <g class="sw-body">
+  ${pose?.tail ? tailMarkup(pose.tail) : TAIL}
+  <g class="sw-body"${pose?.body ? ` transform="translate(100 226) scale(${pose.body[0]} ${pose.body[1]}) translate(-100 -226)"` : ''}>
     <ellipse cx="100" cy="164" rx="52" ry="62" fill="${FUR}"/>
     <ellipse cx="100" cy="176" rx="32" ry="42" fill="${BELLY}"/>
     <g class="sw-chain">
@@ -156,11 +181,11 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
     </g>
   </g>
   <g class="sw-feet">
-    <ellipse class="sw-foot-l" cx="78" cy="224" rx="17" ry="9" fill="${FUR_DARK}"/>
-    <ellipse class="sw-foot-r" cx="122" cy="224" rx="17" ry="9" fill="${FUR_DARK}"/>
+    <ellipse class="sw-foot-l" cx="${78 + (pose?.feet?.[0]?.[0] || 0)}" cy="${224 + (pose?.feet?.[0]?.[1] || 0)}" rx="17" ry="9" fill="${FUR_DARK}"/>
+    <ellipse class="sw-foot-r" cx="${122 + (pose?.feet?.[1]?.[0] || 0)}" cy="${224 + (pose?.feet?.[1]?.[1] || 0)}" rx="17" ry="9" fill="${FUR_DARK}"/>
   </g>
   ${arms}
-  <g class="sw-head"><g class="sw-head-in">
+  <g class="sw-head"${pose?.head ? ` transform="translate(${pose.head[1] || 0} ${pose.head[2] || 0}) rotate(${pose.head[0] || 0} 100 125)"` : ''}><g class="sw-head-in">
     <circle class="sw-ear sw-ear-l" cx="62" cy="44" r="11" fill="${FUR_DARK}"/>
     <circle class="sw-ear sw-ear-r" cx="138" cy="44" r="11" fill="${FUR_DARK}"/>
     <circle cx="100" cy="78" r="47" fill="${FUR}"/>
@@ -170,7 +195,7 @@ export function swaggySvg(mood = 'chill', { className = '', rig = false } = {}) 
     ${eyes}
     ${rig || mood === 'happy' || mood === 'party' ? CHEEKS : ''}
     <g class="sw-brows">${variants(BROWS)}</g>
-    <g class="sw-glasses">
+    <g class="sw-glasses"${pose?.glasses ? ` transform="translate(0 ${-pose.glasses}) rotate(-5 100 72)"` : ''}>
       <path d="${LENS}" fill="${INK}"/>
       <path d="M58 68 Q74 64 86 67" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
       <path d="M114 67 Q126 64 140 67" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.45"/>

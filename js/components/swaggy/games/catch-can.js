@@ -1,4 +1,4 @@
-import { swaggyImage } from '../art.js';
+import { frames, frame as poseFrame } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 
 /**
@@ -15,7 +15,6 @@ const LIVES = 3;
 
 export function startCatchGame(canvas, { onScore, onLives, onEnd } = {}) {
   const ctx = canvas.getContext('2d');
-  const sprites = { happy: swaggyImage('happy'), annoyed: swaggyImage('annoyed'), party: swaggyImage('party') };
 
   let W = 0;
   let H = 0;
@@ -143,6 +142,7 @@ export function startCatchGame(canvas, { onScore, onLives, onEnd } = {}) {
     player.x += (player.target - player.x) * Math.min(1, dt * 14);
     // Se inclina hacia donde corre y rebota al caminar
     const vx = (player.x - prevX) / Math.max(dt, 0.001);
+    player.vx = vx;
     player.tilt = (player.tilt || 0) + (Math.max(-0.28, Math.min(0.28, vx / 1600)) - (player.tilt || 0)) * Math.min(1, dt * 10);
     player.step = (player.step || 0) + Math.min(Math.abs(vx), 900) * dt * 0.03;
     if (now > player.moodUntil) player.mood = 'happy';
@@ -190,7 +190,12 @@ export function startCatchGame(canvas, { onScore, onLives, onEnd } = {}) {
     ctx.fillStyle = 'rgba(255,255,255,0.06)';
     ctx.fillRect(0, H - 10, W, 10);
     items.forEach(drawCan);
-    const img = sprites[player.mood];
+    const moving = Math.abs(player.vx || 0) > 40;
+    const img =
+      player.mood === 'annoyed' ? poseFrame('golpe', now / 1000, 10)
+        : player.mood === 'party' ? frames('atrapar')[0]
+          : moving ? frames('caminar')[Math.floor(player.step * 1.3) % 4]
+            : poseFrame('quieto', now / 1000, 2);
     if (img.complete) {
       const hop = Math.abs(Math.sin(player.step)) * player.h * 0.05 + Math.sin(now / 400) * player.h * 0.012;
       const squash = player.mood === 'happy' ? 1 : 1 + Math.sin(now / 60) * 0.03;

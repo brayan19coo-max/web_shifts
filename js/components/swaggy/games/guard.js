@@ -1,4 +1,4 @@
-import { swaggyImage } from '../art.js';
+import { frames, frame } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, drawCan, drawBrickWall, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
 import { drawScene, drawSceneBanner } from './scenes.js';
@@ -31,7 +31,6 @@ const WORDS = ["SHIFT'S", 'SWAGGY', 'CREW', 'B&C', 'DROP 02', 'STYLE', 'LEY', 'P
 export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
-  const sprites = { chill: swaggyImage('chill'), happy: swaggyImage('happy'), annoyed: swaggyImage('annoyed'), party: swaggyImage('party') };
   const particles = createParticles();
   const popups = createPopups();
   const shake = createShake();
@@ -458,12 +457,19 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd } = {})
     const sw = Math.min(130, u * 0.3);
     const sh = sw * 1.2;
     const sx = Math.min(Math.max(tipX - sw * 0.2, sw * 0.6), portrait ? W * 0.5 : W * 0.55);
-    const img = sprites[mood];
+    const img =
+      mood === 'annoyed' ? frame('golpe', t, 10)
+        : mood === 'party' ? frame('celebrar', t, 6)
+          : spraying ? frame('pintar', t, 9)
+            : guard.state === 'look' ? frame('disimular', t, 2)
+              : frame('quieto', t, 2);
     const bob = spraying ? Math.sin(t * 30) * 1.5 : Math.sin(t * 2) * 2;
     if (img.complete) ctx.drawImage(img, sx - sw / 2, floor - sh + bob, sw, sh);
-    const canX = sx + sw * 0.38;
-    const canY = floor - sh * 0.62;
-    drawCan(ctx, canX, canY, sw * 0.12, COLORS.white, { rot: spraying ? -0.9 : -0.2 });
+    // la lata va en la mano: estirada al pintar, abajo si está quieto, escondida si disimula
+    const hiding = !spraying && guard.state === 'look';
+    const canX = spraying ? sx + sw * 0.41 : sx + sw * 0.25;
+    const canY = spraying ? floor - sh * 0.56 : floor - sh * 0.2;
+    if (!hiding) drawCan(ctx, canX, canY, sw * 0.12, COLORS.white, { rot: spraying ? -0.9 : -0.2 });
     if (spraying && caughtT <= 0) {
       for (let i = 0; i < 3; i++) particles.spray(canX, canY - sw * 0.1, Math.random() < 0.6 ? COLORS.red : COLORS.white, 1, 1);
       // nube de pintura hacia el muro

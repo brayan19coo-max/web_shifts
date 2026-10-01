@@ -1,4 +1,4 @@
-import { swaggyImage } from '../art.js';
+import { frames, frame } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, drawCan, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
 import { drawSceneBanner, rnd } from './scenes.js';
@@ -32,8 +32,6 @@ const WINDOWS = [
 export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
-  const dance = [swaggyImage('party'), swaggyImage('happy')];
-  const sad = swaggyImage('annoyed');
   const particles = createParticles();
   const popups = createPopups();
   const shake = createShake();
@@ -391,7 +389,11 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
     // Swaggy bailando al lado (si hay espacio) o pequeño arriba
     const roomy = W - width > 260;
     const sw = roomy ? Math.min(150, H * 0.32) : Math.min(70, W * 0.18);
-    const img = t - lastMiss < 0.5 ? sad : dance[Math.floor(Math.max(0, t) / beatLen) % 2];
+    // 2 cuadros por tiempo: el baile va exacto con el beat
+    const step = Math.floor((Math.max(0, t) / beatLen) * 2);
+    const missed = t - lastMiss < 0.5;
+    const img = missed ? frame('golpe', t, 10) : frames('bailar')[step % 4];
+    const img2 = missed ? img : frames('bailar')[(step + 2) % 4];
     if (img.complete) {
       const sx = roomy ? lx - sw - 30 : W - sw - 6;
       const sy = roomy ? hitY - sw * 1.2 : 34;
@@ -401,7 +403,7 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
       ctx.scale(1 + pulse * 0.04, 1 - pulse * 0.05);
       ctx.drawImage(img, -sw / 2, -sw * 1.2, sw, sw * 1.2);
       ctx.restore();
-      if (roomy) ctx.drawImage(img, W - (lx - sw - 30) - sw, sy, sw, sw * 1.2);
+      if (roomy && img2.complete) ctx.drawImage(img2, W - (lx - sw - 30) - sw, sy, sw, sw * 1.2);
     }
 
     particles.draw(ctx);

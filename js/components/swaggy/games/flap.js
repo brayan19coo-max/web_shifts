@@ -1,4 +1,4 @@
-import { swaggyImage } from '../art.js';
+import { frames, frame } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, drawCan, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
 import { drawScene, drawSceneBanner, SCENES } from './scenes.js';
@@ -28,7 +28,6 @@ const WALL_STYLE = {
 export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
-  const sprites = { up: swaggyImage('party'), down: swaggyImage('happy'), dead: swaggyImage('annoyed') };
   const particles = createParticles();
   const popups = createPopups();
   const shake = createShake();
@@ -158,7 +157,10 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
   };
 
   const drawBird = (now) => {
-    const img = state === 'dead' ? sprites.dead : bird.flapT > 0 ? sprites.up : sprites.down;
+    const img =
+      state === 'dead' ? frame('golpe', now / 1000, 10)
+        : bird.flapT > 0 ? frames('aletear')[bird.flapT > 0.09 ? 0 : 1]
+          : frame('planear', now / 1000, 4);
     if (!img.complete) return;
     const w = bird.r * 2.4;
     const h = w * 1.2;

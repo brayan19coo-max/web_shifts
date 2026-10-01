@@ -1,4 +1,4 @@
-import { swaggyImage } from '../art.js';
+import { frames, frame as poseFrame } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { drawScene, drawSceneBanner, SCENES } from './scenes.js';
 
@@ -30,7 +30,6 @@ const SCENE_OBSTACLE = {
 
 export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
   const ctx = canvas.getContext('2d');
-  const sprites = { run: swaggyImage('happy'), air: swaggyImage('party'), hit: swaggyImage('annoyed') };
 
   let W = 0;
   let H = 0;
@@ -86,6 +85,7 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
     } else if (player.jumps < 2) {
       player.vy = -u * 1.95;
       player.jumps = 2;
+      player.spinT = 0;
       sound.play('tick');
     }
     player.holding = true;
@@ -329,10 +329,16 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
   const drawPlayer = (now) => {
     const hit = now < player.hitUntil;
     if (hit && Math.floor(now / 90) % 2) return; // parpadea cuando lo golpean
-    const img = hit ? sprites.hit : player.y < 0 ? sprites.air : sprites.run;
-    if (!img.complete) return;
     const px = W * 0.16;
     const onGround = player.y === 0;
+    const spinning = !onGround && player.jumps === 2 && player.spinT < 0.45;
+    // cuadro de animación según lo que esté haciendo
+    let img;
+    if (hit) img = poseFrame('golpe', now / 1000, 10);
+    else if (spinning) img = frames('recoger')[0];
+    else if (!onGround) img = frames(player.vy < 0 ? 'saltar' : 'caer')[0];
+    else img = frames('correr')[Math.floor(player.step / (Math.PI / 2)) % 4];
+    if (!img.complete) return;
     const bob = onGround ? Math.abs(Math.sin(player.step)) * player.h * 0.06 : 0;
     const tilt = onGround ? 0.1 + Math.sin(player.step * 2) * 0.04 : Math.max(-0.3, Math.min(0.3, player.vy / (unit() * 8)));
     // sombra
@@ -344,6 +350,12 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
     ctx.save();
     ctx.translate(px, ground + player.y - bob);
     ctx.rotate(tilt);
+    if (spinning) {
+      // voltereta del doble salto (gira alrededor del centro del cuerpo)
+      ctx.translate(0, -player.h / 2);
+      ctx.rotate((-player.spinT / 0.45) * Math.PI * 2);
+      ctx.translate(0, player.h / 2);
+    }
     const squash = onGround ? 1 - Math.abs(Math.sin(player.step)) * 0.04 : 1.05;
     ctx.scale(1 / squash, squash);
     ctx.drawImage(img, -player.w / 2, -player.h, player.w, player.h);
@@ -371,6 +383,7 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
       player.jumps = 0;
     }
     if (player.y === 0) player.step += dt * v * 0.045;
+    player.spinT = (player.spinT ?? 9) + dt;
 
     // mundo
     wallOffset += v * 0.35 * dt;

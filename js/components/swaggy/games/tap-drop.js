@@ -1,4 +1,4 @@
-import { swaggyImage } from '../art.js';
+import { frames, frame } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, bigText, createParticles, createShake, COLORS } from './kit.js';
 
@@ -25,7 +25,6 @@ const GRADES = [
 export function startTapDropGame(canvas, { onScore, onLives, onInfo, onEnd } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
-  const sprites = { chill: swaggyImage('chill'), party: swaggyImage('party'), annoyed: swaggyImage('annoyed'), happy: swaggyImage('happy') };
   const particles = createParticles();
   const shake = createShake();
 
@@ -215,7 +214,11 @@ export function startTapDropGame(canvas, { onScore, onLives, onInfo, onEnd } = {
     }
 
     // Swaggy mirando el contador
-    const img = sprites[mood];
+    const img =
+      mood === 'party' ? frame('celebrar', now / 1000, 6)
+        : mood === 'annoyed' ? frame('golpe', now / 1000, 8)
+          : mood === 'happy' ? frame('quieto', now / 1000, 2)
+            : frame('nervioso', now / 1000, state === 'run' ? 10 : 3);
     if (img.complete) {
       const sw = Math.min(140, H * 0.28, W * 0.3);
       const sh = sw * 1.2;
