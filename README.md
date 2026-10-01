@@ -100,7 +100,6 @@ Nutria con lentes deportivos oscuros. Botón flotante (abajo a la izquierda) que
 - **Arcade** con mini juegos (el récord de cada uno se guarda en el navegador de cada persona):
   - **Atrapa la lata:** latas blancas +1, doradas +5; las negras con X quitan una vida.
   - **Escape del muro:** Swaggy corre frente a un muro de graffiti y salta conos, canecas y vallas (mantener = salto más alto, doble salto en el aire). Latas en el aire +5, doradas +15.
-  - **Memoria Saint Mode:** 6 parejas con las fotos del lookbook. +10 por pareja, −2 por fallo y bono por rapidez.
   - Para agregar más juegos: `js/components/swaggy/games/index.js`.
 - Nombre, frases (una lista por situación: saludo, toque, caricia, molesto, dormido, despertar, cosas que dice solo, juego…) y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje (con `game: 'runner'`, por ejemplo, aplica solo a ese juego).
 - El dibujo actual es **provisional** (`js/components/swaggy/art.js`). Cuando esté la ilustración oficial se reemplaza por las poses: normal, feliz, molesto, celebrando, dormido.

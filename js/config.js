@@ -155,7 +155,7 @@ export const SWAGGY = {
   },
   // Premio de los mini juegos. En null = sin premio.
   // Ejemplo: { minScore: 60, text: '10 % de descuento en tu próxima compra' }
-  // Para que aplique a un solo juego, agrega game: 'catch' | 'runner' | 'memory'.
+  // Para que aplique a un solo juego, agrega game: 'catch' | 'runner'.
   // Quien lo gane recibe un botón para reclamarlo por WhatsApp con su puntaje.
   prize: null,
 };

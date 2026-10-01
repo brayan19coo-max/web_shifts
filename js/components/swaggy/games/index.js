@@ -1,6 +1,5 @@
 import { startCatchGame } from './catch-can.js';
 import { startRunnerGame } from './runner.js';
-import { startMemoryGame } from './memory.js';
 
 /**
  * ARCADE DE SWAGGY
@@ -47,23 +46,6 @@ export const GAMES = [
       ['can can--white', 'Lata en el aire: +5'],
       ['can can--gold', 'Lata dorada: +15'],
       ['rule-icon', '🏁 Entre más lejos llegues, más puntos'],
-    ],
-  },
-  {
-    id: 'memory',
-    name: 'Memoria Saint Mode',
-    icon: '🧠',
-    kind: 'dom',
-    lives: false,
-    start: startMemoryGame,
-    controls: {
-      mouse: 'Voltea las cartas de a dos y encuentra las parejas del Drop 01.',
-      touch: 'Voltea las cartas de a dos y encuentra las parejas del Drop 01.',
-    },
-    rules: [
-      ['rule-icon', '🃏 Cada pareja: +10'],
-      ['rule-icon', '❌ Cada fallo: −2'],
-      ['rule-icon', '⏱ Termina rápido para ganar bono (hasta +40)'],
     ],
   },
 ];
