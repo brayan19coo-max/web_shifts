@@ -98,13 +98,14 @@ Nutria con lentes deportivos oscuros. Botón flotante (abajo a la izquierda) que
 - **Siempre está vivo:** está articulado (hombro, codo y mano; cola de 3 partes que se menea como ola), mueve la boca cuando habla, se sonroja, levanta las cejas cuando se sorprende, respira, mueve las orejas, le brillan los lentes y te sigue con la cabeza (también desde el botón flotante). Cada tanto hace algo solo: bailar, saludar, subirse los lentes y guiñar, mirar a los lados, estirarse, saltar o dar una vuelta. Al tocarlo salta, da un mortal o baila; al acariciarlo "ronronea"; si está dormido, se despierta estirándose. Se mueve aunque el celular tenga activado "reducir movimiento".
 - **Por toda la página:** se asoma por un borde al llegar a cada sección (una vez por visita), celebra cuando agregas algo al carrito, se pone triste si lo quitas, baila cuando haces el pedido y sale en la bóveda cuando se abre el drop. Además está **escondido** en algún lugar (solo asoman las orejas y los lentes): si lo encuentras y lo tocas, te dice algo o te da una pista y se esconde en otro lado. Código en `js/components/swaggy/roam.js`.
 - **Arcade** con 8 mini juegos (el récord de cada uno se guarda en el navegador de cada persona):
-  - **Swaggy Flap:** vuela con la lata de propulsor entre muros; un toque = un impulso. Un golpe y se acaba.
+  - **Swaggy Flap:** vuela con la lata de propulsor entre muros; un toque = un impulso. Un golpe y se acaba. Cada 10 muros cambia el escenario (barrio → azoteas → metro → neón → tormenta) y desde el metro hay muros que suben y bajan.
   - **Tap the Drop:** para el contador del lanzamiento lo más cerca de 00.000. Combos, y desde la ronda 4 los números se esconden.
-  - **Stack Drop:** apila prendas dobladas; lo que sobresale se corta. Caídas perfectas = combo.
+  - **Stack Drop:** apila prendas dobladas; lo que sobresale se corta. Caídas perfectas = combo. El paisaje sube con la torre: calle → edificios → azoteas → nubes (con viento) → espacio.
   - **Combo Spray:** une 3 o más latas del mismo color en 60 s; cadenas y bombas de pintura suman tiempo.
   - **Esquiva al guardia:** mantén presionado para pintar el muro y suelta cuando el guardia voltee.
   - **Ritmo Shift's:** toca los 3 carriles al ritmo; cada acierto suena una nota y el beat se acelera.
-  - **Escape del muro:** corre y salta conos, canecas y vallas (doble salto).
+  - **Escape del muro:** corre y salta conos, canecas y vallas (doble salto). Cada 300 puntos cambia el escenario (barrio → puente → metro → azoteas → tormenta → neón), cada uno con su propio obstáculo.
+  - Los fondos de los escenarios están en `js/components/swaggy/games/scenes.js`; la lista de sprites para el arte final, en `assets/images/juegos/LEEME.md`.
   - **Atrapa la lata:** atrapa las latas buenas y esquiva las negras.
   - Para agregar más juegos: `js/components/swaggy/games/index.js`.
 - Nombre, frases (una lista por situación: saludo, toque, caricia, molesto, dormido, despertar, cosas que dice solo, juego…) y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje (con `game: 'runner'`, por ejemplo, aplica solo a ese juego).

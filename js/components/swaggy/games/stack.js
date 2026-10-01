@@ -1,6 +1,23 @@
 import { swaggyImage } from '../art.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
+import { skyline, rnd, drawSceneBanner } from './scenes.js';
+
+// Alturas: cada 10 prendas cambia el paisaje
+const ALTITUDES = ['La calle', 'Los edificios', 'Las azoteas', 'Las nubes', 'El espacio'];
+// color del cielo según la altura (cada 10 prendas)
+const SKY = [
+  ['#0b0b12', '#141018'],
+  ['#0f1328', '#1d1838'],
+  ['#2a1238', '#ff7a45'],
+  ['#3d5a8f', '#9fb6dc'],
+  ['#000004', '#0b0820'],
+];
+const mix = (a, b, k) => {
+  const pa = a.match(/\w\w/g).map((x) => parseInt(x, 16));
+  const pb = b.match(/\w\w/g).map((x) => parseInt(x, 16));
+  return `rgb(${pa.map((v, i) => Math.round(v + (pb[i] - v) * k)).join(',')})`;
+};
 
 /**
  * Mini juego "Stack Drop"
@@ -12,6 +29,8 @@ import { createKit, bigText, createParticles, createPopups, createShake, COLORS 
  *     seguidas la prenda vuelve a crecer un poco.
  *   - Si la sueltas por fuera de la pila, se acaba.
  *   - Cada vez se mueve más rápido.
+ *   - Cada 10 prendas cambia el paisaje: calle → edificios → azoteas →
+ *     nubes (con ráfagas de viento) → espacio.
  * Devuelve { stop() }.
  */
 const STYLES = [
@@ -45,6 +64,9 @@ export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
   let moodT = 0;
   let dropping = null;
   let endT = 0;
+  let altAge = 10;
+  let altSmooth = 0;
+  let t = 0;
 
   const baseW = () => Math.min(view.W * 0.5, 260);
   stack.push({ x: view.W / 2 - baseW() / 2, w: baseW(), style: null });
@@ -113,8 +135,9 @@ export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
     onScore?.(score);
     onInfo?.(`${stack.length - 1} prendas${combo > 1 ? ` · Combo x${combo}` : ''}`);
     if ((stack.length - 1) % 10 === 0) {
-      popups.add(`¡${stack.length - 1} PRENDAS!`, view.W / 2, view.H * 0.25, { color: COLORS.red, size: 30, life: 1.3 });
+      popups.add(`¡${stack.length - 1} PRENDAS!`, view.W / 2, view.H * 0.4, { color: COLORS.red, size: 30, life: 1.3 });
       sound.play('unlock');
+      altAge = 0;
     }
     spawn();
   };
@@ -199,11 +222,15 @@ export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
   };
 
   kit.loop((dt, now) => {
+    t += dt;
+    altAge += dt;
     const { W, H } = view;
     const h = bh();
 
     if (current && state === 'play') {
-      current.x += dir * speed() * dt;
+      // en las nubes y el espacio hay ráfagas: la velocidad cambia
+      const gust = stack.length > 30 ? 1 + Math.sin(t * 2.3) * 0.45 : 1;
+      current.x += dir * speed() * gust * dt;
       if (current.x + current.w > W) dir = -1;
       if (current.x < 0) dir = 1;
     }
@@ -244,13 +271,59 @@ export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
     // ---------- Dibujo ----------
     ctx.save();
     shake.apply(ctx, dt);
-    // cielo de noche que se va aclarando con la altura
-    const k = Math.min(1, stack.length / 40);
+    // paisaje según la altura
+    // 0 = calle, 1 = edificios… (sigue a la cantidad de prendas, suavizado)
+    altSmooth += ((stack.length - 1) / 10 - altSmooth) * Math.min(1, dt * 2);
+    const alt = Math.max(0, altSmooth);
+    const ai = Math.min(SKY.length - 1, Math.floor(alt));
+    const ak = Math.min(1, alt - ai);
+    const nx = SKY[Math.min(SKY.length - 1, ai + 1)];
     const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, `rgb(${12 + k * 40}, ${12 + k * 8}, ${14 + k * 12})`);
-    g.addColorStop(1, '#0b0b0b');
+    g.addColorStop(0, mix(SKY[ai][0], nx[0], ak));
+    g.addColorStop(1, mix(SKY[ai][1], nx[1], ak));
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
+    // estrellas (desde las azoteas, más en el espacio)
+    const starA = Math.max(0, Math.min(1, alt - 2.6));
+    if (starA > 0 || alt < 1.2) {
+      const a2 = alt < 1.2 ? 0.4 : starA;
+      for (let i = 0; i < 90; i++) {
+        const tw = 0.5 + 0.5 * Math.sin(t * (1 + rnd(i)) + i);
+        ctx.fillStyle = `rgba(255,255,255,${a2 * tw * (0.3 + rnd(i * 3) * 0.7)})`;
+        ctx.fillRect(rnd(i * 5) * W, rnd(i * 7) * H, 1.8, 1.8);
+      }
+    }
+    // luna / planeta en el espacio
+    if (alt > 3.5) {
+      const py = H * 0.25 + (5 - alt) * 40;
+      ctx.fillStyle = '#e3151a';
+      ctx.beginPath();
+      ctx.arc(W * 0.78, py, Math.min(W, H) * 0.09, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(244,244,244,0.7)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(W * 0.78, py, Math.min(W, H) * 0.16, Math.min(W, H) * 0.035, -0.3, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    // ciudad: edificios que se van quedando abajo mientras sube la torre
+    const floorY = H * 0.86;
+    skyline(ctx, { W, base: floorY + cam * 0.5, offset: 0, seed: 61, slot: Math.max(60, W * 0.11), minH: H * 0.3, maxH: H * 0.8, color: '#141522', windows: 0.25 });
+    skyline(ctx, { W, base: floorY + cam * 0.6, offset: 30, seed: 67, slot: Math.max(70, W * 0.14), minH: H * 0.2, maxH: H * 0.55, color: '#0d0d14', windows: 0.18, tanks: true, antennas: true });
+    // nubes alrededor de la altura 30
+    const cloudBase = floorY - 30 * h + cam * 0.8;
+    for (let i = 0; i < 9; i++) {
+      const cy = cloudBase + (rnd(i * 3) - 0.5) * H * 0.9;
+      if (cy < -80 || cy > H + 80) continue;
+      const cx = ((rnd(i) * W * 1.4 + t * (8 + rnd(i * 5) * 14)) % (W * 1.4)) - W * 0.2;
+      const r = 26 + rnd(i * 7) * 40;
+      ctx.fillStyle = 'rgba(240,244,255,0.85)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.arc(cx + r * 0.9, cy + r * 0.15, r * 0.75, 0, Math.PI * 2);
+      ctx.arc(cx - r * 0.9, cy + r * 0.2, r * 0.65, 0, Math.PI * 2);
+      ctx.fill();
+    }
     // marcas de altura
     ctx.fillStyle = 'rgba(255,255,255,0.12)';
     ctx.font = `700 12px Arial`;
@@ -303,6 +376,8 @@ export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
     particles.draw(ctx);
     popups.draw(ctx);
     bigText(ctx, String(score), W / 2, H * 0.1, Math.min(56, H * 0.1));
+    const level = Math.floor((stack.length - 1) / 10);
+    if (level > 0) drawSceneBanner(ctx, W, H, ALTITUDES[Math.min(ALTITUDES.length - 1, level)], altAge);
     ctx.restore();
   });
 

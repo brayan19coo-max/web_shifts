@@ -1,6 +1,17 @@
 import { swaggyImage } from '../art.js';
 import { sound } from '../../../audio/sound-manager.js';
-import { createKit, drawCan, drawBrickWall, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
+import { createKit, drawCan, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
+import { drawScene, drawSceneBanner, SCENES } from './scenes.js';
+
+const SCENE_ORDER = ['barrio', 'azoteas', 'metro', 'neon', 'tormenta'];
+// estilo de los muros en cada escenario
+const WALL_STYLE = {
+  barrio: { body: '#2b2b2b', lines: 'rgba(255,255,255,0.08)', edge: '#e3151a' },
+  azoteas: { body: '#3a1f33', lines: 'rgba(255,170,120,0.12)', edge: '#ff8a4d' },
+  metro: { body: '#3a3f45', lines: 'rgba(255,255,255,0.12)', edge: '#f2c14e' },
+  neon: { body: '#111018', lines: 'rgba(191,239,255,0.08)', edge: '#ff3b4b', glow: true },
+  tormenta: { body: '#1c2230', lines: 'rgba(180,200,255,0.1)', edge: '#9fb4ff' },
+};
 
 /**
  * Mini juego "Swaggy Flap"
@@ -9,7 +20,9 @@ import { createKit, drawCan, drawBrickWall, bigText, createParticles, createPopu
  * impulso hacia arriba; hay que pasar entre los muros sin tocarlos.
  *   - +1 por cada muro que pasas · lata dorada en el hueco: +3
  *   - Un solo golpe y se acaba (como debe ser).
- *   - Cada 10 muros el hueco se cierra un poco y todo va más rápido.
+ *   - Cada 10 muros cambia el escenario (barrio → azoteas → metro → neón →
+ *     tormenta), el hueco se cierra un poco y todo va más rápido.
+ *   - Desde el metro, algunos muros suben y bajan.
  * Devuelve { stop() }.
  */
 export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
@@ -25,6 +38,10 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
   const walls = [];
   let state = 'ready'; // ready → play → dead
   let score = 0;
+  let passed = 0; // muros pasados (define el nivel)
+  let prevScene = null;
+  let sceneAge = 10;
+  let t = 0;
   let scroll = 0;
   let spawnIn = 0;
   let deadT = 0;
@@ -37,8 +54,10 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
   };
   reset();
 
-  const gapSize = () => u() * Math.max(0.27, 0.36 - Math.floor(score / 10) * 0.018);
-  const speed = () => Math.min(view.W * 0.55, u() * 0.62) * (1 + Math.min(0.6, Math.floor(score / 10) * 0.08));
+  const level = () => Math.floor(passed / 10);
+  const sceneId = () => SCENE_ORDER[level() % SCENE_ORDER.length];
+  const gapSize = () => u() * Math.max(0.27, 0.36 - level() * 0.018);
+  const speed = () => Math.min(view.W * 0.55, u() * 0.62) * (1 + Math.min(0.6, level() * 0.08));
 
   const flap = () => {
     if (state === 'dead') return;
@@ -68,7 +87,10 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
     const gy = margin + gap / 2 + Math.random() * (view.H * 0.88 - margin * 1.2 - gap);
     const w = Math.max(48, u() * 0.15);
     const gold = Math.random() < 0.3;
-    walls.push({ x: view.W + w, w, gy, gap, passed: false, gold, goldTaken: false, tag: Math.random() < 0.5 });
+    // desde el metro (nivel 3) algunos muros se mueven
+    const moving = level() >= 2 && Math.random() < Math.min(0.6, 0.25 + level() * 0.08);
+    const amp = moving ? Math.min(gap * 0.45, gy - margin - gap / 2, view.H * 0.88 - margin * 0.2 - gap / 2 - gy) : 0;
+    walls.push({ x: view.W + w, w, gy, baseGy: gy, amp: Math.max(0, amp), phase: Math.random() * 6, gap, passed: false, gold, goldTaken: false, tag: Math.random() < 0.5 });
   };
 
   const die = () => {
@@ -89,10 +111,11 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
     ctx.strokeStyle = COLORS.ink;
     ctx.lineWidth = 3;
     // columnas de ladrillo
+    const st = WALL_STYLE[sceneId()];
     [[0, top], [bot, view.H - bot]].forEach(([y, h]) => {
-      ctx.fillStyle = '#2b2b2b';
+      ctx.fillStyle = st.body;
       ctx.fillRect(x, y, w, h);
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.strokeStyle = st.lines;
       ctx.lineWidth = 1;
       for (let yy = y; yy < y + h; yy += 14) {
         ctx.beginPath();
@@ -105,15 +128,25 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
       ctx.strokeRect(x, y, w, h);
     });
     // bordes con pintura escurrida
-    ctx.fillStyle = COLORS.red;
+    ctx.save();
+    if (st.glow) {
+      ctx.shadowColor = st.edge;
+      ctx.shadowBlur = 16;
+    }
+    ctx.fillStyle = st.edge;
     ctx.fillRect(x - 4, top - 14, w + 8, 14);
     ctx.fillRect(x - 4, bot, w + 8, 14);
     for (let i = 0; i < 3; i++) {
       const dx = x + w * (0.2 + i * 0.3);
       ctx.fillRect(dx, bot + 14, 4, 8 + ((i * 7) % 12));
     }
+    ctx.restore();
     ctx.strokeRect(x - 4, top - 14, w + 8, 14);
     ctx.strokeRect(x - 4, bot, w + 8, 14);
+    if (wl.amp) {
+      // flechas que avisan que este muro se mueve
+      bigText(ctx, '↕', x + w / 2, top - 30, 18, { fill: st.edge, stroke: 'transparent' });
+    }
     if (wl.tag) {
       ctx.save();
       ctx.translate(x + w / 2, bot + (view.H - bot) / 2);
@@ -146,6 +179,8 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
   };
 
   kit.loop((dt, now) => {
+    t += dt;
+    sceneAge += dt;
     const { W, H } = view;
     bird.r = Math.max(18, u() * 0.07);
     bird.x = W * 0.28;
@@ -175,6 +210,7 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
       for (let i = walls.length - 1; i >= 0; i--) {
         const wl = walls[i];
         wl.x -= v * dt;
+        if (wl.amp) wl.gy = wl.baseGy + Math.sin(t * 1.6 + wl.phase) * wl.amp;
         if (wl.x + wl.w < -20) walls.splice(i, 1);
         const inX = bird.x + bird.r * 0.75 > wl.x - 4 && bird.x - bird.r * 0.75 < wl.x + wl.w + 4;
         if (inX && (bird.y - bird.r * 0.75 < wl.gy - wl.gap / 2 || bird.y + bird.r * 0.75 > wl.gy + wl.gap / 2)) die();
@@ -189,15 +225,17 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
         if (!wl.passed && wl.x + wl.w < bird.x) {
           wl.passed = true;
           score += 1;
+          passed += 1;
           onScore?.(score);
           sound.play('tick');
-          if (score % 10 === 0) {
-            popups.add('¡MÁS DURO!', W / 2, H * 0.3, { color: COLORS.red, size: 30, life: 1.2 });
+          if (passed % 10 === 0) {
+            prevScene = SCENE_ORDER[(level() - 1) % SCENE_ORDER.length];
+            sceneAge = 0;
             sound.play('unlock');
           }
         }
       }
-      onInfo?.(score >= 10 ? `Nivel ${Math.floor(score / 10) + 1}` : '');
+      onInfo?.(`Nivel ${level() + 1} · ${SCENES[sceneId()].name}`);
     }
 
     if (state === 'dead') {
@@ -215,10 +253,14 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
     // ---------- Dibujo ----------
     ctx.save();
     shake.apply(ctx, dt);
-    drawBrickWall(ctx, W, H, scroll * 0.3, Math.max(16, u() * 0.05));
-    // horizonte
-    ctx.fillStyle = 'rgba(227,21,26,0.06)';
-    ctx.fillRect(0, H * 0.55, W, H * 0.37);
+    const sceneOpts = { W, H, ground: H * 0.92, scroll, t, unit: u() };
+    if (prevScene && sceneAge < 1.2) {
+      drawScene(ctx, prevScene, sceneOpts);
+      ctx.save();
+      ctx.globalAlpha = sceneAge / 1.2;
+      drawScene(ctx, sceneId(), sceneOpts);
+      ctx.restore();
+    } else drawScene(ctx, sceneId(), sceneOpts);
     walls.forEach(drawWall);
     // piso
     ctx.fillStyle = '#0b0b0b';
@@ -228,6 +270,7 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
     particles.draw(ctx);
     drawBird(now);
     popups.draw(ctx);
+    if (prevScene) drawSceneBanner(ctx, W, H, SCENES[sceneId()].name, sceneAge);
     if (state === 'play' || state === 'dead') bigText(ctx, String(score), W / 2, H * 0.12, Math.min(64, u() * 0.13));
     if (state === 'ready') {
       bigText(ctx, '¡TOCA PARA VOLAR!', W / 2, H * 0.22, Math.min(36, W * 0.07), { fill: COLORS.white });
@@ -237,6 +280,6 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
   });
 
   onScore?.(0);
-  onInfo?.('');
+  onInfo?.(`Nivel 1 · ${SCENES.barrio.name}`);
   return { stop: () => kit.stop() };
 }

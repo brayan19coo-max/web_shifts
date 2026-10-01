@@ -1,5 +1,6 @@
 import { swaggyImage } from '../art.js';
 import { sound } from '../../../audio/sound-manager.js';
+import { drawScene, drawSceneBanner, SCENES } from './scenes.js';
 
 /**
  * Mini juego "Escape del muro"
@@ -11,10 +12,21 @@ import { sound } from '../../../audio/sound-manager.js';
  *   - Puntos por distancia recorrida.
  *   - Lata de spray: +5 · Lata dorada: +15.
  *   - 3 vidas; cada golpe quita una. Cada vez va más rápido.
+ *   - Cada 300 puntos cambia el escenario (barrio → puente → metro →
+ *     azoteas → tormenta → neón) y cada uno trae su propio obstáculo.
  * Devuelve { stop() }.
  */
 const LIVES = 3;
-const TAGS = ["SHIFT'S", 'SAINT', 'B&C', 'CREW', 'SWAGGY', 'DROP 02', '★', 'FUERA DE LA LEY'];
+const SCENE_ORDER = ['barrio', 'puente', 'metro', 'azoteas', 'tormenta', 'neon'];
+const SCENE_EVERY = 300;
+// obstáculo propio de cada escenario [ancho, alto] relativo al tamaño del juego
+const SCENE_OBSTACLE = {
+  puente: ['bolardo', 0.1, 0.13],
+  metro: ['torniquete', 0.13, 0.19],
+  azoteas: ['aire', 0.18, 0.15],
+  tormenta: ['charco', 0.24, 0.035],
+  neon: ['patineta', 0.17, 0.06],
+};
 
 export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
   const ctx = canvas.getContext('2d');
@@ -41,7 +53,6 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
   const player = { y: 0, vy: 0, jumps: 0, holding: false, w: 0, h: 0, hitUntil: 0, step: 0 };
   const obstacles = [];
   const pickups = [];
-  const tags = [];
   let distance = 0;
   let bonus = 0;
   let score = 0;
@@ -49,6 +60,9 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
   let elapsed = 0;
   let nextObstacle = 0;
   let wallOffset = 0;
+  let sceneI = 0;
+  let prevScene = null;
+  let sceneAge = 10;
   let last = performance.now();
   let running = true;
   let raf = 0;
@@ -104,8 +118,13 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
   const spawnObstacle = () => {
     const u = unit();
     const r = Math.random();
-    const type = elapsed > 12 && r < 0.25 ? 'valla' : r < 0.6 ? 'cono' : 'caneca';
-    const dims = { cono: [0.09, 0.14], caneca: [0.12, 0.16], valla: [0.2, 0.2] }[type];
+    const special = SCENE_OBSTACLE[SCENE_ORDER[sceneI]];
+    let type = elapsed > 12 && r < 0.25 ? 'valla' : r < 0.6 ? 'cono' : 'caneca';
+    let dims = { cono: [0.09, 0.14], caneca: [0.12, 0.16], valla: [0.2, 0.2] }[type];
+    if (special && Math.random() < 0.4) {
+      type = special[0];
+      dims = [special[1], special[2]];
+    }
     obstacles.push({ type, x: W + 20, w: u * dims[0], h: u * dims[1] });
     // A veces una lata encima o en el aire
     if (Math.random() < 0.55) {
@@ -116,66 +135,44 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
     nextObstacle = gapTime;
   };
 
-  const spawnTag = () => {
-    tags.push({
-      text: TAGS[Math.floor(Math.random() * TAGS.length)],
-      x: W + Math.random() * W * 0.5,
-      y: ground * (0.25 + Math.random() * 0.45),
-      size: unit() * (0.06 + Math.random() * 0.06),
-      rot: (Math.random() - 0.5) * 0.3,
-      red: Math.random() < 0.35,
-    });
-  };
-  for (let i = 0; i < 3; i++) {
-    spawnTag();
-    tags[i].x = Math.random() * W;
-  }
-
   // ---------- Dibujo ----------
-  const drawWall = () => {
-    // muro de ladrillo
-    ctx.fillStyle = '#151515';
-    ctx.fillRect(0, 0, W, ground);
-    const bh = unit() * 0.06;
-    const bw = bh * 2.4;
-    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-    ctx.lineWidth = 1;
-    const off = wallOffset % (bw * 2);
-    for (let row = 0, y = ground; y > -bh; row++, y -= bh) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
-      const shift = row % 2 ? bw / 2 : 0;
-      for (let x = -off + shift; x < W + bw; x += bw) {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x, y - bh);
-        ctx.stroke();
-      }
-    }
-    // tags de graffiti
-    tags.forEach((t) => {
-      ctx.save();
-      ctx.translate(t.x, t.y);
-      ctx.rotate(t.rot);
-      ctx.font = `900 ${t.size}px "Arial Black", Arial, sans-serif`;
-      ctx.fillStyle = t.red ? 'rgba(227,21,26,0.55)' : 'rgba(255,255,255,0.13)';
-      ctx.strokeStyle = 'rgba(0,0,0,0.6)';
-      ctx.lineWidth = 3;
-      ctx.strokeText(t.text, 0, 0);
-      ctx.fillText(t.text, 0, 0);
-      ctx.restore();
-    });
-    // calle
-    ctx.fillStyle = '#0c0c0c';
+  // Piso de cada escenario
+  const STREET = {
+    barrio: { fill: '#0c0c0c', line: 'rgba(255,255,255,0.85)', dash: 'rgba(255,255,255,0.18)' },
+    puente: { fill: '#14131f', line: '#e3151a', dash: 'rgba(255,214,140,0.35)' },
+    metro: { fill: '#2a2d30', line: '#f2c14e', dash: 'rgba(255,255,255,0.08)' },
+    azoteas: { fill: '#2b2226', line: 'rgba(255,190,140,0.8)', dash: 'rgba(0,0,0,0.25)' },
+    tormenta: { fill: '#0b0f16', line: 'rgba(180,200,255,0.7)', dash: 'rgba(180,200,255,0.25)' },
+    neon: { fill: '#07060b', line: '#ff3b4b', dash: 'rgba(191,239,255,0.35)' },
+  };
+  const drawStreet = (id) => {
+    const st = STREET[id];
+    ctx.fillStyle = st.fill;
     ctx.fillRect(0, ground, W, H - ground);
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fillStyle = st.line;
     ctx.fillRect(0, ground, W, 3);
-    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.fillStyle = st.dash;
     const dash = unit() * 0.12;
     for (let x = -(wallOffset * 2.5) % (dash * 2); x < W; x += dash * 2) {
       ctx.fillRect(x, ground + (H - ground) * 0.55, dash, 3);
+    }
+  };
+
+  const drawWorld = (now) => {
+    const id = SCENE_ORDER[sceneI];
+    const opts = { W, H, ground, scroll: wallOffset / 0.35, t: now / 1000, unit: unit() };
+    // al cambiar de escenario, el nuevo aparece encima del viejo poco a poco
+    if (prevScene && sceneAge < 1.2) {
+      drawScene(ctx, prevScene, opts);
+      drawStreet(prevScene);
+      ctx.save();
+      ctx.globalAlpha = sceneAge / 1.2;
+      drawScene(ctx, id, opts);
+      drawStreet(id);
+      ctx.restore();
+    } else {
+      drawScene(ctx, id, opts);
+      drawStreet(id);
     }
   };
 
@@ -210,6 +207,75 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
       ctx.textAlign = 'center';
       ctx.fillText('S', x + w / 2, y + h * 0.7);
       ctx.textAlign = 'start';
+    } else if (type === 'bolardo') {
+      ctx.fillStyle = '#f2c14e';
+      ctx.beginPath();
+      ctx.roundRect(x + w * 0.2, y, w * 0.6, h, [w * 0.3, w * 0.3, 2, 2]);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(x + w * 0.2, y + h * 0.35, w * 0.6, h * 0.14);
+      ctx.fillRect(x + w * 0.2, y + h * 0.65, w * 0.6, h * 0.14);
+    } else if (type === 'torniquete') {
+      ctx.fillStyle = '#8a8f96';
+      ctx.fillRect(x + w * 0.55, y, w * 0.35, h);
+      ctx.strokeRect(x + w * 0.55, y, w * 0.35, h);
+      ctx.fillStyle = '#e3151a';
+      ctx.fillRect(x + w * 0.6, y + h * 0.1, w * 0.25, h * 0.08);
+      ctx.strokeStyle = '#d6d9dd';
+      ctx.lineWidth = Math.max(3, w * 0.07);
+      ctx.beginPath();
+      ctx.moveTo(x + w * 0.55, y + h * 0.45);
+      ctx.lineTo(x, y + h * 0.45);
+      ctx.moveTo(x + w * 0.55, y + h * 0.45);
+      ctx.lineTo(x + w * 0.1, y + h * 0.2);
+      ctx.stroke();
+    } else if (type === 'aire') {
+      ctx.fillStyle = '#c9c4be';
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = '#5a5552';
+      ctx.beginPath();
+      ctx.arc(x + w * 0.35, y + h * 0.5, h * 0.33, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#c9c4be';
+      ctx.lineWidth = 2;
+      const a = performance.now() / 60;
+      for (let k = 0; k < 3; k++) {
+        ctx.beginPath();
+        ctx.moveTo(x + w * 0.35, y + h * 0.5);
+        ctx.lineTo(x + w * 0.35 + Math.cos(a + k * 2.1) * h * 0.3, y + h * 0.5 + Math.sin(a + k * 2.1) * h * 0.3);
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#0a0a0a';
+      for (let k = 0; k < 4; k++) ctx.fillRect(x + w * 0.68, y + h * (0.2 + k * 0.17), w * 0.24, 2);
+    } else if (type === 'charco') {
+      ctx.fillStyle = 'rgba(120,150,220,0.55)';
+      ctx.beginPath();
+      ctx.ellipse(x + w / 2, ground - h * 0.3, w / 2, h * 0.9, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(200,220,255,0.6)';
+      ctx.lineWidth = 1.5;
+      const r = (performance.now() / 400) % 1;
+      ctx.beginPath();
+      ctx.ellipse(x + w * 0.4, ground - h * 0.3, w * 0.15 * r, h * 0.4 * r, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (type === 'patineta') {
+      ctx.fillStyle = '#e3151a';
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h * 0.45, h * 0.22);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#f4f4f4';
+      ctx.font = `900 ${h * 0.4}px "Arial Black", Arial`;
+      ctx.textAlign = 'center';
+      ctx.fillText("SHIFT'S", x + w / 2, y + h * 0.38);
+      ctx.textAlign = 'start';
+      ctx.fillStyle = '#0a0a0a';
+      ctx.beginPath();
+      ctx.arc(x + w * 0.22, ground - h * 0.25, h * 0.25, 0, Math.PI * 2);
+      ctx.arc(x + w * 0.78, ground - h * 0.25, h * 0.25, 0, Math.PI * 2);
+      ctx.fill();
     } else {
       // valla de obra a rayas
       ctx.fillStyle = '#f4f4f4';
@@ -311,9 +377,7 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
     distance += v * dt;
     nextObstacle -= dt;
     if (nextObstacle <= 0) spawnObstacle();
-    tags.forEach((t) => (t.x -= v * 0.35 * dt));
-    for (let i = tags.length - 1; i >= 0; i--) if (tags[i].x < -W) tags.splice(i, 1);
-    if (tags.length < 4) spawnTag();
+    sceneAge += dt;
 
     // caja de Swaggy (más pequeña que el dibujo, para ser justos)
     const px = W * 0.16;
@@ -359,11 +423,19 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
     if (nextScore !== score) {
       score = nextScore;
       onScore?.(score);
+      // ¿nuevo escenario?
+      const next = Math.floor(score / SCENE_EVERY) % SCENE_ORDER.length;
+      if (next !== sceneI) {
+        prevScene = SCENE_ORDER[sceneI];
+        sceneI = next;
+        sceneAge = 0;
+        sound.play('unlock');
+      }
     }
 
     // dibujo
     ctx.clearRect(0, 0, W, H);
-    drawWall();
+    drawWorld(now);
     obstacles.forEach(drawObstacle);
     pickups.forEach(drawPickup);
     drawPlayer(now);
@@ -377,6 +449,7 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
       ctx.globalAlpha = 1;
       if (p.t > 1) popups.splice(i, 1);
     }
+    if (prevScene) drawSceneBanner(ctx, W, H, SCENES[SCENE_ORDER[sceneI]].name, sceneAge);
     if (flash > 0) {
       ctx.fillStyle = `rgba(227, 21, 26, ${flash * 0.35})`;
       ctx.fillRect(0, 0, W, H);
