@@ -3,7 +3,7 @@ import { storage } from '../../utils/storage.js';
 import { BRAND, SWAGGY } from '../../config.js';
 import { sound } from '../../audio/sound-manager.js';
 import { swaggySvg, talk } from './art.js';
-import { startCatchGame } from './games/catch-can.js';
+import { GAMES } from './games/index.js';
 
 /**
  * El parche de Swaggy
@@ -111,7 +111,6 @@ export function initSwaggy() {
   function open() {
     if (overlay) return;
     returnFocus = document.activeElement;
-    const best = data.best?.catch || 0;
     overlay = html(`
       <div class="parche" role="dialog" aria-modal="true" aria-label="${escapeHtml(SWAGGY.spotName)}">
         <div class="parche__top">
@@ -131,15 +130,17 @@ export function initSwaggy() {
           <section class="arcade" aria-label="Arcade">
             <p class="arcade__title">Arcade</p>
             <ul class="arcade__list">
-              <li>
-                <button type="button" class="arcade__game" data-game="catch">
-                  <span class="arcade__icon" aria-hidden="true">🎨</span>
-                  <span class="arcade__info"><strong>Atrapa la lata</strong><small>Récord: <b data-best>${best}</b></small></span>
+              ${GAMES.map(
+                (g) => g.soon
+                  ? `<li class="arcade__game is-soon"><span class="arcade__icon" aria-hidden="true">${g.icon}</span><span class="arcade__info"><strong>${escapeHtml(g.name)}</strong><small>Próximamente</small></span></li>`
+                  : `<li>
+                <button type="button" class="arcade__game" data-game="${g.id}">
+                  <span class="arcade__icon" aria-hidden="true">${g.icon}</span>
+                  <span class="arcade__info"><strong>${escapeHtml(g.name)}</strong><small>Récord: <b data-best="${g.id}">${data.best?.[g.id] || 0}</b></small></span>
                   <span class="arcade__play">Jugar →</span>
                 </button>
-              </li>
-              <li class="arcade__game is-soon"><span class="arcade__icon" aria-hidden="true">🏃</span><span class="arcade__info"><strong>Escape del muro</strong><small>Próximamente</small></span></li>
-              <li class="arcade__game is-soon"><span class="arcade__icon" aria-hidden="true">🧠</span><span class="arcade__info"><strong>Memoria Saint Mode</strong><small>Próximamente</small></span></li>
+              </li>`,
+              ).join('')}
             </ul>
           </section>
         </div>
@@ -147,20 +148,11 @@ export function initSwaggy() {
         <div class="game" hidden>
           <div class="game__hud">
             <span>Puntos <b data-score>0</b></span>
-            <span class="game__lives" data-lives aria-label="Vidas"></span>
+            <span class="game__lives" data-lives></span>
             <button type="button" class="game__exit" data-game-exit>Salir</button>
           </div>
-          <canvas class="game__canvas" aria-label="Juego Atrapa la lata"></canvas>
-          <div class="game__panel" data-game-intro>
-            <p class="game__name">Atrapa la lata</p>
-            <p><span class="only-mouse">Mueve el mouse</span><span class="only-touch">Arrastra el dedo</span> (o usa ← →) para mover a Swaggy.</p>
-            <ul class="game__rules">
-              <li><span class="can can--white"></span> Lata blanca: +1</li>
-              <li><span class="can can--gold"></span> Lata dorada: +5</li>
-              <li><span class="can can--bad"></span> Lata negra con X: pierdes una vida</li>
-            </ul>
-            <button type="button" class="btn btn--accent" data-game-start><span>¡Dale!</span><span class="btn__arrow">→</span></button>
-          </div>
+          <div class="game__stage" data-game-stage></div>
+          <div class="game__panel" data-game-intro></div>
           <div class="game__panel" data-game-over hidden></div>
         </div>
       </div>`);
@@ -178,7 +170,7 @@ export function initSwaggy() {
     const away = Date.now() - (data.lastVisit || 0);
     const firstTime = !data.lastVisit;
     data.lastVisit = Date.now();
-    storage.set(KEY, data);
+    storage.set(KEY, { ...storage.get(KEY, {}), ...data });
     const isBack = away > 2 * 86400000 && !firstTime;
     setTimeout(() => react(isBack ? 'party' : 'happy', pick(isBack ? phrases.back : phrases.greet), 3200, isBack ? 'dance' : 'wave'), 350);
     scheduleIdleAction();
@@ -355,11 +347,23 @@ export function initSwaggy() {
   function bindGame() {
     const home = overlay.querySelector('.parche__home');
     const view = overlay.querySelector('.game');
-    const canvas = overlay.querySelector('.game__canvas');
+    const stage = overlay.querySelector('[data-game-stage]');
     const intro = overlay.querySelector('[data-game-intro]');
     const over = overlay.querySelector('[data-game-over]');
     const scoreEl = overlay.querySelector('[data-score]');
     const livesEl = overlay.querySelector('[data-lives]');
+    let current = null;
+
+    const hearts = (l) => '❤'.repeat(Math.max(0, l)) + '♡'.repeat(Math.max(0, 3 - l));
+
+    // Prepara el lienzo (canvas) o el tablero (div) del juego
+    const mountStage = () => {
+      stage.innerHTML =
+        current.kind === 'canvas'
+          ? `<canvas class="game__canvas" aria-label="Juego ${escapeHtml(current.name)}"></canvas>`
+          : '<div class="game__board"></div>';
+      return stage.firstElementChild;
+    };
 
     const showHome = () => {
       game?.stop();
@@ -367,8 +371,10 @@ export function initSwaggy() {
       view.hidden = true;
       home.hidden = false;
       overlay.classList.remove('is-playing');
-      const best = overlay.querySelector('[data-best]');
-      if (best) best.textContent = data.best?.catch || 0;
+      GAMES.forEach((g) => {
+        const best = overlay.querySelector(`[data-best="${g.id}"]`);
+        if (best) best.textContent = data.best?.[g.id] || 0;
+      });
       react('happy', pick(phrases.home), 1600, 'wave');
     };
 
@@ -376,26 +382,39 @@ export function initSwaggy() {
       intro.hidden = true;
       over.hidden = true;
       game?.stop();
-      game = startCatchGame(canvas, {
+      const el = mountStage();
+      scoreEl.textContent = '0';
+      game = current.start(el, {
         onScore: (s) => (scoreEl.textContent = s),
-        onLives: (l) => (livesEl.textContent = '❤'.repeat(Math.max(0, l)) + '♡'.repeat(Math.max(0, 3 - l))),
+        onLives: (l) => {
+          livesEl.textContent = hearts(l);
+          livesEl.classList.remove('is-info');
+          livesEl.setAttribute('aria-label', `Vidas: ${l}`);
+        },
+        onInfo: (text) => {
+          livesEl.textContent = text;
+          livesEl.classList.add('is-info');
+          livesEl.removeAttribute('aria-label');
+        },
         onEnd: finish,
       });
     };
 
     function finish(score) {
       game = null;
-      const prev = data.best?.catch || 0;
+      const id = current.id;
+      const prev = data.best?.[id] || 0;
       const record = score > prev;
       if (record) {
-        data.best = { ...data.best, catch: score };
-        storage.set(KEY, data);
+        data.best = { ...data.best, [id]: score };
+        storage.set(KEY, { ...storage.get(KEY, {}), ...data });
       }
       sound.play(record ? 'unlock' : 'close');
-      const prize = SWAGGY.prize && score >= SWAGGY.prize.minScore ? SWAGGY.prize : null;
+      const p = SWAGGY.prize;
+      const prize = p && (!p.game || p.game === id) && score >= p.minScore ? p : null;
       const claim = prize && BRAND.whatsapp
         ? `https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(
-            `¡Hola ${BRAND.name}! Swaggy me dio un premio en "Atrapa la lata": hice ${score} puntos 🦦`,
+            `¡Hola ${BRAND.name}! Swaggy me dio un premio en "${current.name}": hice ${score} puntos 🦦`,
           )}`
         : '';
       over.innerHTML = `
@@ -410,21 +429,41 @@ export function initSwaggy() {
           <button type="button" class="btn btn--ghost" data-game-home>Volver al parche</button>
         </div>`;
       over.hidden = false;
+      over.querySelector('[data-game-again]').focus({ preventScroll: true });
     }
 
-    overlay.querySelector('[data-game="catch"]').addEventListener('click', () => {
+    const openGame = (g) => {
+      current = g;
       sound.play('whoosh');
       clearTimeout(idleTimer);
       home.hidden = true;
       view.hidden = false;
+      view.dataset.game = g.id;
       overlay.classList.add('is-playing');
-      intro.hidden = false;
       over.hidden = true;
       scoreEl.textContent = '0';
-      livesEl.textContent = '❤❤❤';
+      livesEl.textContent = g.lives === false ? '' : hearts(3);
+      mountStage();
+      intro.innerHTML = `
+        <p class="game__name">${escapeHtml(g.name)}</p>
+        <p><span class="only-mouse">${escapeHtml(g.controls.mouse)}</span><span class="only-touch">${escapeHtml(g.controls.touch)}</span></p>
+        <ul class="game__rules">
+          ${g.rules.map(([cls, text]) => `<li>${cls === 'rule-icon' ? '' : `<span class="${cls}"></span> `}${escapeHtml(text)}</li>`).join('')}
+        </ul>
+        <p class="game__best">Tu récord: <b>${data.best?.[g.id] || 0}</b></p>
+        <button type="button" class="btn btn--accent" data-game-start><span>¡Dale!</span><span class="btn__arrow">→</span></button>`;
+      intro.hidden = false;
       intro.querySelector('[data-game-start]').focus({ preventScroll: true });
+    };
+
+    overlay.querySelector('.arcade').addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-game]');
+      const g = btn && GAMES.find((x) => x.id === btn.dataset.game);
+      if (g) openGame(g);
     });
-    intro.querySelector('[data-game-start]').addEventListener('click', play);
+    intro.addEventListener('click', (event) => {
+      if (event.target.closest('[data-game-start]')) play();
+    });
     over.addEventListener('click', (event) => {
       if (event.target.closest('[data-game-again]')) play();
       if (event.target.closest('[data-game-home]')) showHome();

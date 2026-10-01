@@ -153,8 +153,9 @@ export const SWAGGY = {
     // Swaggy escondido: lo que dice cuando alguien lo encuentra
     secret: ['¡Me encontraste! 👀', 'Shhh… no le digas a nadie que me escondo aquí.', 'Pista: las claves se sueltan en el Crew 🤫', 'Pista: el drop se abre solo cuando llega la hora ⏰'],
   },
-  // Premio del juego "Atrapa la lata". En null = sin premio.
+  // Premio de los mini juegos. En null = sin premio.
   // Ejemplo: { minScore: 60, text: '10 % de descuento en tu próxima compra' }
+  // Para que aplique a un solo juego, agrega game: 'catch' | 'runner' | 'memory'.
   // Quien lo gane recibe un botón para reclamarlo por WhatsApp con su puntaje.
   prize: null,
 };

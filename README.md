@@ -97,8 +97,12 @@ Nutria con lentes deportivos oscuros. Botón flotante (abajo a la izquierda) que
 - Se puede tocar (reacciona con frases de brother), acariciar (pasar el dedo/mouse por encima) o molestar (tocarlo mucho). Si lo ignoras, se duerme.
 - **Siempre está vivo:** está articulado (hombro, codo y mano; cola de 3 partes que se menea como ola), mueve la boca cuando habla, se sonroja, levanta las cejas cuando se sorprende, respira, mueve las orejas, le brillan los lentes y te sigue con la cabeza (también desde el botón flotante). Cada tanto hace algo solo: bailar, saludar, subirse los lentes y guiñar, mirar a los lados, estirarse, saltar o dar una vuelta. Al tocarlo salta, da un mortal o baila; al acariciarlo "ronronea"; si está dormido, se despierta estirándose. Se mueve aunque el celular tenga activado "reducir movimiento".
 - **Por toda la página:** se asoma por un borde al llegar a cada sección (una vez por visita), celebra cuando agregas algo al carrito, se pone triste si lo quitas, baila cuando haces el pedido y sale en la bóveda cuando se abre el drop. Además está **escondido** en algún lugar (solo asoman las orejas y los lentes): si lo encuentras y lo tocas, te dice algo o te da una pista y se esconde en otro lado. Código en `js/components/swaggy/roam.js`.
-- **Arcade** con mini juegos. Por ahora: **Atrapa la lata** (latas blancas +1, doradas +5, negras con X quitan una vida). El récord se guarda en el navegador de cada persona.
-- Nombre, frases (una lista por situación: saludo, toque, caricia, molesto, dormido, despertar, cosas que dice solo, juego…) y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje.
+- **Arcade** con mini juegos (el récord de cada uno se guarda en el navegador de cada persona):
+  - **Atrapa la lata:** latas blancas +1, doradas +5; las negras con X quitan una vida.
+  - **Escape del muro:** Swaggy corre frente a un muro de graffiti y salta conos, canecas y vallas (mantener = salto más alto, doble salto en el aire). Latas en el aire +5, doradas +15.
+  - **Memoria Saint Mode:** 6 parejas con las fotos del lookbook. +10 por pareja, −2 por fallo y bono por rapidez.
+  - Para agregar más juegos: `js/components/swaggy/games/index.js`.
+- Nombre, frases (una lista por situación: saludo, toque, caricia, molesto, dormido, despertar, cosas que dice solo, juego…) y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje (con `game: 'runner'`, por ejemplo, aplica solo a ese juego).
 - El dibujo actual es **provisional** (`js/components/swaggy/art.js`). Cuando esté la ilustración oficial se reemplaza por las poses: normal, feliz, molesto, celebrando, dormido.
 
 ## Estructura
