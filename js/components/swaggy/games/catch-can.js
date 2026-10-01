@@ -13,7 +13,7 @@ import { sound } from '../../../audio/sound-manager.js';
  */
 const LIVES = 3;
 
-export function startCatchGame(canvas, { onScore, onLives, onEnd } = {}) {
+export function startCatchGame(canvas, { onScore, onLives, onEnd, music } = {}) {
   const ctx = canvas.getContext('2d');
 
   let W = 0;
@@ -175,6 +175,7 @@ export function startCatchGame(canvas, { onScore, onLives, onEnd } = {}) {
           if (lives <= 0) return end();
         } else {
           score += it.type === 'gold' ? 5 : 1;
+          music?.setLevel(1 + Math.min(2, Math.floor(score / 30)));
           setMood(it.type === 'gold' ? 'party' : 'happy', 400);
           sound.play(it.type === 'gold' ? 'success' : 'tick');
           onScore?.(score);

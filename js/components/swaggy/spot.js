@@ -4,6 +4,7 @@ import { BRAND, SWAGGY } from '../../config.js';
 import { sound } from '../../audio/sound-manager.js';
 import { swaggySvg, talk } from './art.js';
 import { GAMES } from './games/index.js';
+import { createMusic } from './games/music.js';
 
 /**
  * El parche de Swaggy
@@ -105,6 +106,7 @@ export function initSwaggy() {
   // ---------- El parche ----------
   let overlay = null;
   let game = null;
+  let music = null;
   let onKey = null;
   let returnFocus = null;
 
@@ -149,7 +151,10 @@ export function initSwaggy() {
           <div class="game__hud">
             <span>Puntos <b data-score>0</b></span>
             <span class="game__lives" data-lives></span>
-            <button type="button" class="game__exit" data-game-exit>Salir</button>
+            <span class="game__btns">
+              <button type="button" class="game__exit game__music" data-game-music aria-pressed="true" aria-label="Música del juego">♪</button>
+              <button type="button" class="game__exit" data-game-exit>Salir</button>
+            </span>
           </div>
           <div class="game__stage" data-game-stage></div>
           <div class="game__panel" data-game-intro></div>
@@ -180,6 +185,8 @@ export function initSwaggy() {
     if (!overlay) return;
     game?.stop();
     game = null;
+    music?.stop();
+    music = null;
     clearTimeout(idleTimer);
     clearTimeout(actionTimer);
     document.removeEventListener('keydown', onKey);
@@ -365,9 +372,15 @@ export function initSwaggy() {
       return stage.firstElementChild;
     };
 
+    const stopMusic = () => {
+      music?.stop();
+      music = null;
+    };
+
     const showHome = () => {
       game?.stop();
       game = null;
+      stopMusic();
       view.hidden = true;
       home.hidden = false;
       overlay.classList.remove('is-playing');
@@ -384,7 +397,11 @@ export function initSwaggy() {
       game?.stop();
       const el = mountStage();
       scoreEl.textContent = '0';
+      stopMusic();
+      music = current.music ? createMusic(current.music) : null;
+      music?.start();
       game = current.start(el, {
+        music,
         onScore: (s) => (scoreEl.textContent = s),
         onLives: (l) => {
           livesEl.textContent = hearts(l);
@@ -402,6 +419,7 @@ export function initSwaggy() {
 
     function finish(score) {
       game = null;
+      stopMusic();
       const id = current.id;
       const prev = data.best?.[id] || 0;
       const record = score > prev;
@@ -469,6 +487,22 @@ export function initSwaggy() {
       if (event.target.closest('[data-game-home]')) showHome();
     });
     overlay.querySelector('[data-game-exit]').addEventListener('click', showHome);
+    const musicBtn = overlay.querySelector('[data-game-music]');
+    const paintMusic = () => {
+      const on = sound.state.gameMusicOn !== false;
+      musicBtn.setAttribute('aria-pressed', String(on));
+      musicBtn.classList.toggle('is-off', !on);
+    };
+    paintMusic();
+    musicBtn.addEventListener('click', () => {
+      sound.setGameMusic(sound.state.gameMusicOn === false);
+      paintMusic();
+      // si estaba apagada al empezar, arranca ahora
+      if (sound.state.gameMusicOn && current?.music && current.music !== 'manual' && game && !music) {
+        music = createMusic(current.music);
+        music.start();
+      }
+    });
     overlay.querySelector('[data-parche-close]').addEventListener('click', close);
 
     onKey = (event) => {

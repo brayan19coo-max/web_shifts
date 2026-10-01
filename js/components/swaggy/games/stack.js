@@ -43,7 +43,7 @@ const STYLES = [
 ];
 const GOLD = { kind: 'hoodie', fill: '#f2c14e', ink: '#0a0a0a', print: '#0a0a0a' };
 
-export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
+export function startStackGame(canvas, { onScore, onInfo, onEnd, music } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
   const particles = createParticles();
@@ -137,6 +137,7 @@ export function startStackGame(canvas, { onScore, onInfo, onEnd } = {}) {
       popups.add(`¡${stack.length - 1} PRENDAS!`, view.W / 2, view.H * 0.4, { color: COLORS.red, size: 30, life: 1.3 });
       sound.play('unlock');
       altAge = 0;
+      music?.setLevel(Math.min(3, 1 + Math.floor((stack.length - 1) / 10)));
     }
     spawn();
   };

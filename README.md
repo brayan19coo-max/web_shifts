@@ -106,6 +106,8 @@ Nutria con lentes deportivos oscuros. Botón flotante (abajo a la izquierda) que
   - **Ritmo Shift's:** toca los 3 carriles al ritmo; cada acierto suena una nota y el beat se acelera. La tarima cambia con la velocidad (garaje → block party → disco → tarima → festival) con público que salta al beat.
   - **Escape del muro:** corre y salta conos, canecas y vallas (doble salto). Cada 300 puntos cambia el escenario (barrio → puente → metro → azoteas → tormenta → neón), cada uno con su propio obstáculo.
   - Los fondos de los escenarios están en `js/components/swaggy/games/scenes.js`; la lista de sprites para el arte final, en `assets/images/juegos/LEEME.md`.
+  - **Animaciones:** Swaggy se anima cuadro por cuadro en los juegos (correr, saltar, voltereta, aletear, pintar, bailar…), definidas en `games/poses.js`.
+  - **Música:** cada juego tiene su beat hecho con código (`games/music.js`: estilos calle, rápido y tensión) que sube de intensidad con los niveles; en Ritmo Shift's el beat va sincronizado con las latas. Botón ♪ en el juego para apagarla. Se apaga también con el botón de sonido del sitio.
   - **Atrapa la lata:** atrapa las latas buenas y esquiva las negras.
   - Para agregar más juegos: `js/components/swaggy/games/index.js`.
 - Nombre, frases (una lista por situación: saludo, toque, caricia, molesto, dormido, despertar, cosas que dice solo, juego…) y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje (con `game: 'runner'`, por ejemplo, aplica solo a ese juego).

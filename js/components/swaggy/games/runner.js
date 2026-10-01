@@ -28,7 +28,7 @@ const SCENE_OBSTACLE = {
   neon: ['patineta', 0.17, 0.06],
 };
 
-export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
+export function startRunnerGame(canvas, { onScore, onLives, onEnd, music } = {}) {
   const ctx = canvas.getContext('2d');
 
   let W = 0;
@@ -443,6 +443,7 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd } = {}) {
         sceneI = next;
         sceneAge = 0;
         sound.play('unlock');
+        music?.setLevel(Math.min(3, 1 + sceneI));
       }
     }
 

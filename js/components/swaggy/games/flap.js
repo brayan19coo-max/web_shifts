@@ -25,7 +25,7 @@ const WALL_STYLE = {
  *   - Desde el metro, algunos muros suben y bajan.
  * Devuelve { stop() }.
  */
-export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
+export function startFlapGame(canvas, { onScore, onInfo, onEnd, music } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
   const particles = createParticles();
@@ -234,6 +234,7 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd } = {}) {
             prevScene = SCENE_ORDER[(level() - 1) % SCENE_ORDER.length];
             sceneAge = 0;
             sound.play('unlock');
+            music?.setLevel(Math.min(3, 1 + level()));
           }
         }
       }

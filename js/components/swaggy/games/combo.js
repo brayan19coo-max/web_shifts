@@ -22,7 +22,7 @@ const TYPES = [
   { color: '#1d1d1d', band: COLORS.red, outline: '#f4f4f4' },
 ];
 
-export function startComboGame(canvas, { onScore, onInfo, onEnd } = {}) {
+export function startComboGame(canvas, { onScore, onInfo, onEnd, music } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
   const particles = createParticles();
@@ -233,6 +233,7 @@ export function startComboGame(canvas, { onScore, onInfo, onEnd } = {}) {
         lastSecond = sec;
         onInfo?.(`⏱ ${fmt(Math.max(0, timeLeft))}`);
         if (sec <= 5 && sec > 0) sound.play('tick');
+        music?.setLevel(sec <= 10 ? 3 : 2);
       }
       if (timeLeft <= 0) {
         ended = true;

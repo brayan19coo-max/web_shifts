@@ -19,11 +19,14 @@ import { startRhythmGame } from './rhythm.js';
  * - controls: texto de cómo se juega (con versión para mouse y para dedo).
  * - rules: lista de reglas que se muestra antes de empezar.
  * - lives: false si el juego no usa vidas (muestra su propia info arriba).
+ * - music: estilo de la música ('calle' | 'rapido' | 'tension' | 'manual'),
+ *   ver music.js. El juego recibe `music` y puede subirle el nivel.
  * - soon: true para mostrarlo como "Próximamente".
  */
 export const GAMES = [
   {
     id: 'flap',
+    music: 'rapido',
     name: 'Swaggy Flap',
     icon: '🚀',
     kind: 'canvas',
@@ -42,6 +45,7 @@ export const GAMES = [
   },
   {
     id: 'tapdrop',
+    music: 'tension',
     name: 'Tap the Drop',
     icon: '⏱️',
     kind: 'canvas',
@@ -59,6 +63,7 @@ export const GAMES = [
   },
   {
     id: 'stack',
+    music: 'calle',
     name: 'Stack Drop',
     icon: '👕',
     kind: 'canvas',
@@ -77,6 +82,7 @@ export const GAMES = [
   },
   {
     id: 'combo',
+    music: 'calle',
     name: 'Combo Spray',
     icon: '🌈',
     kind: 'canvas',
@@ -95,6 +101,7 @@ export const GAMES = [
   },
   {
     id: 'guard',
+    music: 'tension',
     name: 'Esquiva al guardia',
     icon: '🚨',
     kind: 'canvas',
@@ -112,6 +119,7 @@ export const GAMES = [
   },
   {
     id: 'rhythm',
+    music: 'manual',
     name: "Ritmo Shift's",
     icon: '🎵',
     kind: 'canvas',
@@ -130,6 +138,7 @@ export const GAMES = [
   },
   {
     id: 'catch',
+    music: 'calle',
     name: 'Atrapa la lata',
     icon: '🥫',
     kind: 'canvas',
@@ -146,6 +155,7 @@ export const GAMES = [
   },
   {
     id: 'runner',
+    music: 'rapido',
     name: 'Escape del muro',
     icon: '🏃',
     kind: 'canvas',

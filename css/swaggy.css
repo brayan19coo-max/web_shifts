@@ -341,6 +341,16 @@ html.is-entered .swaggy-launcher.is-hidden {
   letter-spacing: 4px;
 }
 
+.game__btns {
+  display: flex;
+  gap: 8px;
+}
+
+.game__music.is-off {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
 .game__lives.is-info {
   color: var(--fg);
   font-size: 14px;

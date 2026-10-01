@@ -29,7 +29,7 @@ const WINDOWS = [
   { max: 0.16, label: 'OK', pts: 30, energy: 0, color: COLORS.gray },
 ];
 
-export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
+export function startRhythmGame(canvas, { onScore, onInfo, onEnd, music } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
   const particles = createParticles();
@@ -37,6 +37,11 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
   const shake = createShake();
 
   let t = -2.4; // tiempo de la canción (negativo = cuenta regresiva)
+  // Con música, el tiempo sale del reloj del audio: así el beat que suena
+  // y las latas van exactamente juntos.
+  const clock = music?.ctx || null;
+  let audioStart = clock ? clock.currentTime - t : 0;
+  let hiddenAt = 0;
   let bpm = 96;
   let beatLen = 60 / bpm;
   let nextBeatAt = 0; // tiempo del próximo tiempo a programar
@@ -190,6 +195,8 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
     const level = Math.floor(beatCount / 16);
     while (spawnedUntil < t + travel() + 0.1) {
       const at = nextBeatAt;
+      // el beat suena justo cuando la lata llega a la línea
+      if (clock) music.scheduleBeat(audioStart + at, beatCount, beatLen);
       beatCount += 1;
       if (beatCount % 16 === 0) {
         bpm = Math.min(156, bpm + 6);
@@ -201,6 +208,7 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
         setTimeout(() => {
           if (over) return;
           stage += 1;
+          music?.setLevel(Math.min(3, 1 + stage));
           stageAge = 0;
           sound.play('unlock');
         }, Math.max(0, (at2 - t) * 1000));
@@ -259,6 +267,16 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
     }
   };
 
+  // Si la pestaña se oculta, al volver el juego sigue donde iba
+  kit.on(document, 'visibilitychange', () => {
+    if (!clock) return;
+    if (document.hidden) hiddenAt = clock.currentTime;
+    else if (hiddenAt) {
+      audioStart += clock.currentTime - hiddenAt;
+      hiddenAt = 0;
+    }
+  });
+
   const KEYS = { ArrowLeft: 0, a: 0, j: 0, ArrowDown: 1, s: 1, k: 1, ArrowRight: 2, d: 2, l: 2 };
   kit.on(window, 'keydown', (e) => {
     const lane = KEYS[e.key];
@@ -282,7 +300,10 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd } = {}) {
 
   kit.loop((dt) => {
     const { W, H } = view;
-    if (!over) t += dt;
+    if (!over) {
+      if (clock) t = clock.currentTime - audioStart;
+      else t += dt;
+    }
     stageAge += dt;
     hype = Math.max(0, Math.min(1, hype + (combo >= 10 ? 0.3 : -0.4) * dt));
     const { lx, lw, width, hitY } = layout();

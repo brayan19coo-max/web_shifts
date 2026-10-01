@@ -152,4 +152,4 @@ Van en `assets/sounds/juegos/`. Formato **.mp3** (128–192 kbps). Las de loop d
 | `perdiste.mp3` | Fin del juego | 1–2 s | |
 | `salto.mp3`, `golpe.mp3`, `moneda.mp3`, `spray-largo.mp3` | Efectos de juego | < 1 s | `spray-largo` en loop, para Guardia |
 
-Mientras no estén los archivos, el juego sigue usando los sonidos actuales del sitio.
+Mientras no estén los archivos, cada juego usa música hecha con código (`js/components/swaggy/games/music.js`) y los sonidos actuales del sitio.

@@ -22,7 +22,7 @@ const GRADES = [
   { max: 150, label: 'CASI…', pts: 10, color: COLORS.gray },
 ];
 
-export function startTapDropGame(canvas, { onScore, onLives, onInfo, onEnd } = {}) {
+export function startTapDropGame(canvas, { onScore, onLives, onInfo, onEnd, music } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
   const particles = createParticles();
@@ -53,6 +53,7 @@ export function startTapDropGame(canvas, { onScore, onLives, onInfo, onEnd } = {
     value = 2.4 + Math.random() * 1.6;
     rate = Math.min(1.9, 1 + (round - 1) * 0.07);
     hideBelow = round >= 7 ? 1.8 : round >= 4 ? 1.1 : 0;
+    music?.setLevel(round >= 7 ? 3 : round >= 4 ? 2 : 1);
     state = 'run';
     stateT = 0;
     mood = 'chill';

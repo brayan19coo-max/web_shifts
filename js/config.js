@@ -164,6 +164,7 @@ export const SWAGGY = {
 export const AUDIO = {
   sfxVolume: 0.7,
   musicVolume: 0.35,
+  gameMusicVolume: 0.55, // música de los mini juegos
   // Ajustes por sonido:
   // - volume: 0 a 1, relativo al volumen general de efectos
   // - cooldown: milisegundos mínimos entre una repetición y la siguiente

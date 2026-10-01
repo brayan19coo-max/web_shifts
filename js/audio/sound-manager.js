@@ -17,6 +17,8 @@ import { bus } from '../core/bus.js';
 let ctx = null;
 let sfxBus = null;
 let musicBus = null;
+let gameBus = null; // música de los mini juegos
+let master = null;
 const buffers = new Map();
 const lastPlayed = new Map();
 let stopAmbient = null;
@@ -25,7 +27,10 @@ let ambientSource = null;
 const state = {
   sfxOn: storage.get('sfxOn', true),
   musicOn: storage.get('musicOn', false),
+  gameMusicOn: storage.get('gameMusicOn', true),
 };
+
+const gameVolume = () => (state.gameMusicOn && state.sfxOn ? AUDIO.gameMusicVolume ?? 0.55 : 0);
 
 const soundSettings = (name) => AUDIO.perSound?.[name] || {};
 
@@ -37,6 +42,7 @@ function ensureContext() {
 
   const compressor = ctx.createDynamicsCompressor();
   compressor.connect(ctx.destination);
+  master = compressor;
 
   sfxBus = ctx.createGain();
   musicBus = ctx.createGain();
@@ -124,7 +130,35 @@ export const sound = {
     state.sfxOn = on;
     storage.set('sfxOn', on);
     if (sfxBus) sfxBus.gain.setTargetAtTime(on ? AUDIO.sfxVolume : 0, ctx.currentTime, 0.05);
+    if (gameBus) gameBus.gain.setTargetAtTime(gameVolume(), ctx.currentTime, 0.05);
     emitState();
+  },
+
+  /**
+   * Audio para la música de los mini juegos: { ctx, out } o null si el
+   * audio todavía no está activo. Sigue el botón de sonido del sitio y el
+   * botón ♪ de los juegos.
+   */
+  gameAudio() {
+    if (!ctx || ctx.state !== 'running') return null;
+    if (!gameBus) {
+      gameBus = ctx.createGain();
+      gameBus.gain.value = gameVolume();
+      gameBus.connect(master);
+    }
+    return { ctx, out: gameBus };
+  },
+
+  setGameMusic(on) {
+    state.gameMusicOn = on;
+    storage.set('gameMusicOn', on);
+    if (gameBus) gameBus.gain.setTargetAtTime(gameVolume(), ctx.currentTime, 0.05);
+    emitState();
+  },
+
+  /** Baja la música de fondo del sitio mientras suena la de un juego. */
+  duckMusic(on) {
+    if (musicBus && ctx) musicBus.gain.setTargetAtTime(on ? 0 : AUDIO.musicVolume, ctx.currentTime, 0.25);
   },
 
   toggleSfx() {

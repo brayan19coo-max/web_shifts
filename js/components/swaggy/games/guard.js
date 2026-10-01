@@ -28,7 +28,7 @@ const CAM_FROM = 5; // nivel desde el que aparece la cámara
  */
 const WORDS = ["SHIFT'S", 'SWAGGY', 'CREW', 'B&C', 'DROP 02', 'STYLE', 'LEY', 'PARCHE'];
 
-export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd } = {}) {
+export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music } = {}) {
   const kit = createKit(canvas);
   const { ctx, view } = kit;
   const particles = createParticles();
@@ -139,6 +139,7 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd } = {})
     const oldScene = sceneId();
     level += 1;
     word = WORDS[(level - 1) % WORDS.length];
+    music?.setLevel(Math.min(3, 1 + Math.floor(level / 2)));
     if (sceneId() !== oldScene) {
       prevScene = oldScene;
       sceneAge = 0;
