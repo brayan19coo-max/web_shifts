@@ -26,6 +26,8 @@ const CAM_FROM = 5; // nivel desde el que aparece la cámara
  *     enfoca mientras pintas, te pillan.
  * Devuelve { stop() }.
  */
+// dónde queda la mano levantada en cada cuadro de 'pintar' (fracción del cuadro)
+const PAINT_HAND = [[0.179, 0.223], [0.193, 0.225], [0.203, 0.219], [0.213, 0.225], [0.222, 0.225], [0.232, 0.216], [0.246, 0.209], [0.256, 0.209], [0.271, 0.209], [0.28, 0.205], [0.295, 0.198], [0.3, 0.32]];
 const WORDS = ["SHIFT'S", 'SWAGGY', 'CREW', 'B&C', 'DROP 02', 'STYLE', 'LEY', 'PARCHE'];
 
 export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music } = {}) {
@@ -529,21 +531,22 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
             : guard.state === 'look' ? frame('disimular', t, 2)
               : frame('quieto', t, 2);
     const bob = spraying ? Math.sin(t * 30) * 1.5 : Math.sin(t * 2) * 2;
-    if (img.complete) {
-      const iw = sh * aspect(img);
-      ctx.drawImage(img, sx - iw / 2, floor - sh + bob, iw, sh);
-    }
-    // la lata va en la mano: estirada al pintar, abajo si está quieto, escondida si disimula
+    const iw = sh * aspect(img);
+    if (img.complete) ctx.drawImage(img, sx - iw / 2, floor - sh + bob, iw, sh);
+    // la lata va en la mano: en la mano levantada al pintar (la que sube hacia el muro),
+    // abajo si está quieto, escondida si disimula
     const hiding = !spraying && guard.state === 'look';
-    const canX = spraying ? sx + sw * 0.41 : sx + sw * 0.25;
-    const canY = spraying ? floor - sh * 0.56 : floor - sh * 0.2;
-    if (!hiding) drawCan(ctx, canX, canY, sw * 0.12, COLORS.white, { rot: spraying ? -0.9 : -0.2 });
+    const paintHand = spraying && mood !== 'annoyed' && mood !== 'party';
+    const hp = PAINT_HAND[Math.floor(Math.max(0, t) * 12) % PAINT_HAND.length];
+    const canX = paintHand ? sx - iw / 2 + iw * (hp[0] + 0.04) : sx + sw * 0.25;
+    const canY = paintHand ? floor - sh + bob + sh * (hp[1] - 0.02) : floor - sh * 0.2;
+    if (!hiding) drawCan(ctx, canX, canY, sw * 0.12, COLORS.white, { rot: paintHand ? -0.9 : -0.2 });
     if (spraying && caughtT <= 0) {
-      for (let i = 0; i < 3; i++) particles.spray(canX, canY - sw * 0.1, Math.random() < 0.6 ? COLORS.red : COLORS.white, 1, 1);
+      for (let i = 0; i < 3; i++) particles.spray(canX - sw * 0.07, canY - sw * 0.08, Math.random() < 0.6 ? COLORS.red : COLORS.white, 1, 1);
       // nube de pintura hacia el muro
       ctx.fillStyle = 'rgba(227,21,26,0.18)';
       ctx.beginPath();
-      ctx.ellipse(canX + sw * 0.25, Math.min(canY, cy) - 4, sw * 0.25, sw * 0.12, 0, 0, Math.PI * 2);
+      ctx.ellipse(canX - sw * 0.22, canY - sw * 0.16, sw * 0.22, sw * 0.11, 0, 0, Math.PI * 2);
       ctx.fill();
     }
     if (!spraying && guard.state === 'look' && caughtT <= 0) bigText(ctx, '♪ fiu fiu', sx, floor - sh - 14, Math.min(18, sw * 0.16), { fill: COLORS.white });
