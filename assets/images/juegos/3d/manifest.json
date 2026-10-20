@@ -3,7 +3,7 @@
  "anims": {
   "aletear": {
    "frames": 2,
-   "w": 158,
+   "w": 159,
    "h": 220
   },
   "atrapar": {
@@ -18,7 +18,7 @@
   },
   "caer": {
    "frames": 1,
-   "w": 158,
+   "w": 159,
    "h": 220
   },
   "caminar": {
@@ -32,8 +32,8 @@
    "h": 220
   },
   "correr": {
-   "frames": 4,
-   "w": 158,
+   "frames": 12,
+   "w": 159,
    "h": 220
   },
   "disimular": {
@@ -48,7 +48,7 @@
   },
   "golpe_lado": {
    "frames": 8,
-   "w": 158,
+   "w": 159,
    "h": 220
   },
   "nervioso": {
@@ -63,7 +63,7 @@
   },
   "planear": {
    "frames": 4,
-   "w": 158,
+   "w": 159,
    "h": 220
   },
   "quieto": {
@@ -73,12 +73,12 @@
   },
   "recoger": {
    "frames": 1,
-   "w": 158,
+   "w": 159,
    "h": 220
   },
   "saltar": {
    "frames": 1,
-   "w": 158,
+   "w": 159,
    "h": 220
   },
   "triste": {

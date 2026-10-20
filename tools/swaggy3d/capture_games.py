@@ -24,7 +24,7 @@ PLAN = [
     ('pintar', 'front', BACK, "S.place('spray','hand'); S.play('spray', 0, {silent:true})", 0.6, EVEN(12, 1 / 12)),
     ('aletear', 'side', Q34, "S.play('tantrum', 0, {silent:true})", 0.25, [0, 0.105]),
     ('planear', 'side', Q34, "S.play('startle', 0, {silent:true})", 0.35, EVEN(4, 1 / 12)),
-    ('correr', 'side', SIDE, 'run', 1.4, 'phase4'),
+    ('correr', 'side', SIDE, 'run', 1.4, 'phase12'),
     ('saltar', 'side', SIDE, 'jump', 0.12, EVEN(1, 0.1)),
     ('caer', 'side', SIDE, 'jump', 0.62, EVEN(1, 0.1)),
     ('recoger', 'side', SIDE, "S.play('scared', 0, {silent:true})", 0.5, EVEN(1, 0.1)),
@@ -72,14 +72,14 @@ async def main():
               const adv = (dt) => { const n = Math.max(1, Math.round(dt / (1/60))); for (let i = 0; i < n; i++) { tickKeep(); step(dt/n); } t += dt; };
               adv(skip);
               let ts = times;
-              if (times === 'phase4' || times === 'beat4') {
+              if (times === 'phase4' || times === 'phase12' || times === 'beat4') {
                 // 4 cuadros repartidos en un ciclo
                 const out = [];
                 if (times === 'beat4') { for (let k = 0; k < 4; k++) { if (k) adv(0.785/4); out.push(S.renderer.domElement.toDataURL('image/png')); } return out; }
-                const p0 = S.phase; let k = 0;
-                while (k < 4) {
-                  adv(1/120);
-                  if (S.phase - p0 >= k * Math.PI / 2) { out.push(S.renderer.domElement.toDataURL('image/png')); k++; }
+                const p0 = S.phase; let k = 0; const N = times === 'phase12' ? 12 : 4;
+                while (k < N) {
+                  adv(1/240);
+                  if (S.phase - p0 >= k * Math.PI * 2 / N) { out.push(S.renderer.domElement.toDataURL('image/png')); k++; }
                 }
                 return out;
               }

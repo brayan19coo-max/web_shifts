@@ -14,14 +14,14 @@
  * build_game_sheets.py.
  */
 const BASE = 'assets/images/juegos/3d/';
-const VERSION = '2';
+const VERSION = '3';
 const STRIP_FPS = 12;
 
 // cuadros y tamaño de cada tira (igual que manifest.json)
 const ANIMS = {
-  aletear: [2, 158], atrapar: [1, 207], bailar: [4, 207], caer: [1, 158], caminar: [4, 207], celebrar: [10, 207],
-  correr: [4, 158], disimular: [16, 207], golpe: [8, 207], golpe_lado: [8, 158], nervioso: [8, 207], pintar: [12, 207],
-  planear: [4, 158], quieto: [24, 207], recoger: [1, 158], saltar: [1, 158], triste: [12, 207],
+  aletear: [2, 159], atrapar: [1, 207], bailar: [4, 207], caer: [1, 159], caminar: [4, 207], celebrar: [10, 207],
+  correr: [12, 159], disimular: [16, 207], golpe: [8, 207], golpe_lado: [8, 159], nervioso: [8, 207], pintar: [12, 207],
+  planear: [4, 159], quieto: [24, 207], recoger: [1, 159], saltar: [1, 159], triste: [12, 207],
   // guardia y perro de "Esquiva al guardia"
   guardia_espalda: [12, 234], guardia_grita: [8, 234], guardia_mira: [8, 234], guardia_sospecha: [8, 234], guardia_voltea: [6, 234], perro_alerta: [6, 247], perro_duerme: [12, 247], perro_ladra: [8, 247],
 };
@@ -44,7 +44,20 @@ function loadStrip(name) {
   img.decoding = 'async';
   img.onload = () => {
     list.forEach((c, i) => {
-      c.getContext('2d').drawImage(img, i * w, 0, w, FRAME_H, 0, 0, w, FRAME_H);
+      const cx = c.getContext('2d', { willReadFrequently: true });
+      cx.drawImage(img, i * w, 0, w, FRAME_H, 0, 0, w, FRAME_H);
+      // .foot = dónde termina el dibujo por abajo (0..1), para pegarlo al piso
+      c.foot = 1;
+      try {
+        const a = cx.getImageData(0, 0, w, FRAME_H).data;
+        let y = FRAME_H - 1;
+        for (; y > 0; y--) {
+          let hit = false;
+          for (let x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] > 110) { hit = true; break; }
+          if (hit) break;
+        }
+        c.foot = (y + 1) / FRAME_H;
+      } catch (e) { /* sin acceso a los píxeles: se queda en 1 */ }
       c.complete = true;
     });
   };
