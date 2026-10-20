@@ -1,0 +1,29 @@
+{
+ "frame": [
+  240,
+  260
+ ],
+ "fps": 12,
+ "anims": {
+  "quieto": 24,
+  "saludar": 29,
+  "hablar": 22,
+  "risa": 11,
+  "carcajada": 17,
+  "bailar": 30,
+  "rapear": 30,
+  "flex": 19,
+  "chocala": 19,
+  "bravo": 10,
+  "pataleta": 16,
+  "triste": 24,
+  "dormido": 36,
+  "bostezo": 28,
+  "gafas": 28,
+  "susto": 12,
+  "mirar": 31,
+  "girar": 18,
+  "saltar": 16,
+  "cadena": 25
+ }
+}

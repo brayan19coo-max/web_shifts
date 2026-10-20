@@ -40,19 +40,18 @@ html.is-entered .swaggy-launcher.is-hidden {
 }
 
 /* Solo se ve la cara, como si se asomara */
-.swaggy-launcher__peek svg {
+.swaggy-launcher__peek .sw3d {
   position: absolute;
   left: 50%;
-  top: 4%;
-  width: 230%;
-  transform: translateX(-50%);
-  transition: transform 0.4s var(--ease);
+  top: -14%;
+  width: 260%;
+  translate: -50% 0;
   animation: swaggy-peek 5s ease-in-out infinite;
 }
 
 @media (hover: hover) {
-  .swaggy-launcher:hover .swaggy-launcher__peek svg {
-    transform: translateX(-50%) translateY(-6%) rotate(-6deg);
+  .swaggy-launcher:hover .swaggy-launcher__peek .sw3d {
+    transform: translateY(-6%) rotate(-6deg);
     animation: none;
   }
 }
@@ -188,7 +187,7 @@ html.is-entered .swaggy-launcher.is-hidden {
 .parche__swaggy {
   position: relative;
   width: min(62vw, 300px, 42svh);
-  aspect-ratio: 200 / 240;
+  aspect-ratio: 240 / 260;
   cursor: pointer;
   touch-action: none;
   user-select: none;
@@ -197,18 +196,17 @@ html.is-entered .swaggy-launcher.is-hidden {
   animation: swaggy-idle 3.2s ease-in-out infinite;
 }
 
-.parche__swaggy svg {
+.parche__swaggy .sw3d {
   width: 100%;
-  height: 100%;
   filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
   pointer-events: none;
 }
 
-.parche__swaggy.is-bounce svg {
+.parche__swaggy.is-bounce .sw3d {
   animation: swaggy-bounce 0.5s var(--ease);
 }
 
-.parche__swaggy.is-shake svg {
+.parche__swaggy.is-shake .sw3d {
   animation: shake 0.45s;
 }
 
@@ -531,9 +529,9 @@ html.is-entered .swaggy-launcher.is-hidden {
 }
 
 @keyframes swaggy-peek {
-  0%, 70%, 100% { transform: translateX(-50%) translateY(0); }
-  80% { transform: translateX(-50%) translateY(-8%) rotate(-8deg); }
-  90% { transform: translateX(-50%) translateY(-4%) rotate(6deg); }
+  0%, 70%, 100% { transform: translateY(0); }
+  80% { transform: translateY(-8%) rotate(-8deg); }
+  90% { transform: translateY(-4%) rotate(6deg); }
 }
 
 @keyframes heart-float {
@@ -918,9 +916,8 @@ html.is-entered .swaggy-launcher.is-hidden {
   pointer-events: auto;
 }
 
-.swaggy-roam__fig svg {
+.swaggy-roam__fig .sw3d {
   width: 100%;
-  height: 100%;
   filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
 }
 
@@ -975,21 +972,21 @@ html.is-entered .swaggy-launcher.is-hidden {
 }
 
 /* Solo asoman las orejas y los lentes, y de vez en cuando se esconde */
-.swaggy-secret__peek svg {
+.swaggy-secret__peek .sw3d {
   position: absolute;
   left: 50%;
-  top: 0;
+  top: -2px;
   width: 150%;
   translate: -50% 0;
   animation: swaggy-hide-peek 7s ease-in-out infinite;
 }
 
-.swaggy-secret.is-found .swaggy-secret__peek svg {
+.swaggy-secret.is-found .swaggy-secret__peek .sw3d {
   animation: swaggy-found 1.3s ease-in forwards;
 }
 
 @media (hover: hover) {
-  .swaggy-secret:hover .swaggy-secret__peek svg {
+  .swaggy-secret:hover .swaggy-secret__peek .sw3d {
     animation-play-state: paused;
   }
 }
@@ -1131,4 +1128,22 @@ html.is-entered .swaggy-launcher.is-hidden {
 /* Escape del muro: el lienzo no esconde el cursor (se juega con clic) */
 .game[data-game='runner'] .game__canvas {
   cursor: pointer;
+}
+
+/* =========================================================
+   SWAGGY 3D (sw3d.js): tiras de cuadros del modelo 3D
+   ========================================================= */
+.sw3d {
+  position: relative;
+  aspect-ratio: 240 / 260;
+  transform-origin: 50% 100%;
+  /* sigue un poco al cursor (--lx / --ly los pone spot.js) */
+  transform: perspective(700px) rotateY(calc(var(--lx, 0) * 9deg)) rotateX(calc(var(--ly, 0) * -4deg));
+  transition: transform 0.35s ease-out;
+}
+
+.sw3d__img {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
 }

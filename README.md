@@ -93,7 +93,7 @@ Drop actual: **Drop 02 — Bonnie & Clyde** · *FUERA DE LA LEY. DENTRO DEL DROP
 
 ## Swaggy — el brother de la marca
 
-Nutria con lentes deportivos oscuros. Botón flotante (abajo a la izquierda) que abre **El parche de Swaggy**:
+Nutria con lentes deportivos oscuros. En la página se ve el **Swaggy 3D** (el modelo de la escena `Swaggy de Shift's`, grabado cuadro por cuadro en `assets/images/swaggy/3d/`, reproducido por `js/components/swaggy/sw3d.js`). Botón flotante (abajo a la izquierda) que abre **El parche de Swaggy**:
 - Se puede tocar (reacciona con frases de brother), acariciar (pasar el dedo/mouse por encima) o molestar (tocarlo mucho). Si lo ignoras, se duerme.
 - **Siempre está vivo:** está articulado (hombro, codo y mano; cola de 3 partes que se menea como ola), mueve la boca cuando habla, se sonroja, levanta las cejas cuando se sorprende, respira, mueve las orejas, le brillan los lentes y te sigue con la cabeza (también desde el botón flotante). Cada tanto hace algo solo: bailar, saludar, subirse los lentes y guiñar, mirar a los lados, estirarse, saltar o dar una vuelta. Al tocarlo salta, da un mortal o baila; al acariciarlo "ronronea"; si está dormido, se despierta estirándose. Se mueve aunque el celular tenga activado "reducir movimiento".
 - **Por toda la página:** se asoma por un borde al llegar a cada sección (una vez por visita), celebra cuando agregas algo al carrito, se pone triste si lo quitas, baila cuando haces el pedido y sale en la bóveda cuando se abre el drop. Además está **escondido** en algún lugar (solo asoman las orejas y los lentes): si lo encuentras y lo tocas, te dice algo o te da una pista y se esconde en otro lado. Código en `js/components/swaggy/roam.js`.

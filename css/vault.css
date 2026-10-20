@@ -343,9 +343,8 @@
   transform: translateY(22%) rotate(-4deg);
 }
 
-.vault__swaggy svg {
+.vault__swaggy .sw3d {
   width: 100%;
-  height: auto;
   display: block;
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6));
 }

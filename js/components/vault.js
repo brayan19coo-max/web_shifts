@@ -1,7 +1,7 @@
 import { html, escapeHtml, lockScroll } from '../utils/dom.js';
 import { BRAND, SWAGGY } from '../config.js';
 import { sound } from '../audio/sound-manager.js';
-import { swaggySvg } from './swaggy/art.js';
+import { swaggy3d, mountSwaggy3d } from './swaggy/sw3d.js';
 
 /**
  * Animación de caja fuerte abriéndose (pantalla completa).
@@ -50,13 +50,14 @@ export function playVault({ title = '', subtitle = '' } = {}) {
       </div>
       <div class="vault__swaggy" aria-hidden="true">
         <p class="vault__swaggy-say">${escapeHtml(pickPhrase(SWAGGY.phrases?.vault))}</p>
-        ${swaggySvg('party', { rig: true })}
+        ${swaggy3d('party')}
       </div>
       <p class="vault__caption" aria-live="polite">Abriendo la bóveda…</p>
       <button type="button" class="vault__skip">Saltar →</button>
     </div>`);
 
   document.body.append(overlay);
+  mountSwaggy3d(overlay);
   lockScroll('vault', true);
 
   const caption = overlay.querySelector('.vault__caption');

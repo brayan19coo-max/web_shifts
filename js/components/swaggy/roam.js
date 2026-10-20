@@ -4,7 +4,8 @@ import { SWAGGY } from '../../config.js';
 import { sound } from '../../audio/sound-manager.js';
 import { bus } from '../../core/bus.js';
 import { cartStore, getTotals } from '../../core/cart-store.js';
-import { swaggySvg, talk } from './art.js';
+import { talk } from './art.js';
+import { swaggy3d, mountSwaggy3d, preloadSwaggy3d, ACTION_TIME } from './sw3d.js';
 import { toast } from '../toast.js';
 
 /**
@@ -40,17 +41,17 @@ export function initSwaggyRoam() {
   const roam = html(`
     <div class="swaggy-roam" data-side="right" aria-hidden="true">
       <p class="swaggy-roam__bubble"></p>
-      <div class="swaggy-roam__fig">${swaggySvg('chill', { rig: true })}</div>
+      <div class="swaggy-roam__fig">${swaggy3d('chill')}</div>
     </div>`);
   document.body.append(roam);
   const fig = roam.querySelector('.swaggy-roam__fig');
-  const svg = roam.querySelector('svg');
+  const svg = mountSwaggy3d(roam);
   const bubble = roam.querySelector('.swaggy-roam__bubble');
   let hideTimer = 0;
   let actionTimer = 0;
   let lastShow = 0;
 
-  const act = (name, ms = 1200) => {
+  const act = (name, ms = Math.round((ACTION_TIME[name] || 1.2) * 1000)) => {
     clearTimeout(actionTimer);
     delete svg.dataset.action;
     void svg.getBoundingClientRect();
@@ -76,7 +77,7 @@ export function initSwaggyRoam() {
     setTimeout(() => {
       roam.classList.toggle('is-talking', !!text);
       talk(svg, text);
-      if (action) act(action, action === 'dance' ? ms : 1600);
+      if (action) act(action, action === 'dance' ? ms : undefined);
     }, wasIn ? 0 : 420);
     lastShow = Date.now();
     hideTimer = setTimeout(hide, ms);
@@ -92,7 +93,7 @@ export function initSwaggyRoam() {
   fig.addEventListener('click', () => {
     sound.play('note', { index: Math.floor(Math.random() * 8) });
     svg.dataset.mood = 'party';
-    act(pick(['flip', 'spin', 'jump']), 950);
+    act(pick(['flip', 'highfive', 'jump']));
     bubble.textContent = pick(phrases.tap);
     roam.classList.add('is-talking');
     talk(svg, bubble.textContent);
@@ -145,9 +146,9 @@ export function initSwaggyRoam() {
   const data = storage.get('swaggy', {});
   const secret = html(`
     <button type="button" class="swaggy-secret" aria-label="Encontraste a ${SWAGGY.name}" data-cursor="¿Y esto?">
-      <span class="swaggy-secret__peek">${swaggySvg('chill', { rig: true })}</span>
+      <span class="swaggy-secret__peek">${swaggy3d('chill')}</span>
     </button>`);
-  const secretSvg = secret.querySelector('svg');
+  const secretSvg = mountSwaggy3d(secret);
   let lastHideout = '';
 
   function hideSecret() {
@@ -177,4 +178,6 @@ export function initSwaggyRoam() {
 
   // Se esconde un rato después de entrar, para no delatarse de una
   setTimeout(hideSecret, 3000);
+  // Precarga las animaciones con las que se asoma y reacciona
+  setTimeout(() => preloadSwaggy3d(['saludar', 'gafas', 'mirar', 'bailar', 'triste', 'chocala', 'saltar', 'girar']), 4000);
 }

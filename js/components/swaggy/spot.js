@@ -2,7 +2,8 @@ import { html, escapeHtml, lockScroll, trapFocus } from '../../utils/dom.js';
 import { storage } from '../../utils/storage.js';
 import { BRAND, SWAGGY } from '../../config.js';
 import { sound } from '../../audio/sound-manager.js';
-import { swaggySvg, talk } from './art.js';
+import { talk } from './art.js';
+import { swaggy3d, mountSwaggy3d, preloadSwaggy3d, ACTION_TIME } from './sw3d.js';
 import { GAMES } from './games/index.js';
 import { createMusic } from './games/music.js';
 
@@ -24,7 +25,8 @@ const rand = (a, b) => a + Math.random() * (b - a);
 const clamp = (v) => Math.max(-1, Math.min(1, v));
 
 // Cuánto dura cada acción (ms)
-const ACTIONS = { surprise: 700, look: 2200, glasses: 1900, wave: 1700, dance: 2600, flip: 950, spin: 900, jump: 600, stretch: 1800, purr: 1400 };
+// Cuánto dura cada acción (ms): lo que dura su animación en 3D
+const ACTIONS = { ...Object.fromEntries(Object.entries(ACTION_TIME).map(([k, v]) => [k, Math.round(v * 1000)])), dance: 2600 };
 
 /** Hace que Swaggy haga una acción un momento. */
 function doAction(svg, name, ms = ACTIONS[name] || 1200) {
@@ -54,12 +56,13 @@ export function initSwaggy() {
   // ---------- Botón flotante ----------
   const launcher = html(`
     <button type="button" class="swaggy-launcher" aria-label="Abrir ${escapeHtml(SWAGGY.spotName)}" data-cursor="Parche">
-      <span class="swaggy-launcher__peek">${swaggySvg('chill', { rig: true })}</span>
+      <span class="swaggy-launcher__peek">${swaggy3d('chill')}</span>
       <span class="swaggy-launcher__bubble" aria-hidden="true"></span>
     </button>`);
   document.body.append(launcher);
   const launcherBubble = launcher.querySelector('.swaggy-launcher__bubble');
-  const launcherSvg = launcher.querySelector('svg');
+  const launcherSvg = mountSwaggy3d(launcher);
+  preloadSwaggy3d(['quieto', 'hablar', 'risa', 'saltar', 'gafas']);
 
   // Te sigue con la mirada por toda la página
   let lookFrame = 0;
@@ -71,7 +74,7 @@ export function initSwaggy() {
       if (lookFrame) return;
       lookFrame = requestAnimationFrame(() => {
         lookFrame = 0;
-        if (overlay) lookAt(overlay.querySelector('[data-swaggy] svg'), lastPointer.x, lastPointer.y);
+        if (overlay) lookAt(overlay.querySelector('[data-swaggy] .sw3d'), lastPointer.x, lastPointer.y);
         else lookAt(launcherSvg, lastPointer.x, lastPointer.y);
       });
     },
@@ -124,7 +127,7 @@ export function initSwaggy() {
           <section class="parche__stage">
             <p class="parche__bubble" aria-live="polite"></p>
             <button type="button" class="parche__swaggy" data-swaggy aria-label="Tocar a ${escapeHtml(SWAGGY.name)}" data-cursor="Tócalo">
-              ${swaggySvg('chill', { rig: true })}
+              ${swaggy3d('chill')}
             </button>
             <p class="parche__hint"><span class="only-mouse">Hazle clic o pásale el mouse</span><span class="only-touch">Tócalo o pásale el dedo</span> 🦦</p>
           </section>
@@ -162,6 +165,9 @@ export function initSwaggy() {
         </div>
       </div>`);
     document.body.append(overlay);
+    mountSwaggy3d(overlay);
+    // en el parche puede hacer de todo: precargar todas sus animaciones
+    preloadSwaggy3d(['saludar', 'risa', 'carcajada', 'bailar', 'rapear', 'flex', 'chocala', 'bravo', 'pataleta', 'triste', 'dormido', 'bostezo', 'gafas', 'susto', 'mirar', 'girar', 'saltar', 'cadena']);
     lockScroll('parche', true);
     launcher.classList.add('is-hidden');
     requestAnimationFrame(() => overlay.classList.add('is-open'));
@@ -207,7 +213,7 @@ export function initSwaggy() {
   let actionTimer = 0;
   let busyUntil = 0;
 
-  const stageSvg = () => overlay?.querySelector('[data-swaggy] svg');
+  const stageSvg = () => overlay?.querySelector('[data-swaggy] .sw3d');
 
   function setMood(mood) {
     const btn = overlay?.querySelector('[data-swaggy]');
@@ -236,7 +242,7 @@ export function initSwaggy() {
       const svg = stageSvg();
       const home = overlay?.querySelector('.parche__home');
       if (svg && !home?.hidden && svg.dataset.mood === 'chill' && Date.now() > busyUntil && !document.hidden) {
-        const name = pick(['look', 'glasses', 'wave', 'dance', 'spin', 'jump', 'stretch', 'look', 'glasses', 'dance']);
+        const name = pick(['look', 'glasses', 'wave', 'dance', 'rap', 'flex', 'chain', 'spin', 'jump', 'stretch', 'look', 'glasses']);
         act(name);
         if (Math.random() < 0.45) {
           const own = { glasses: phrases.glasses, dance: phrases.dance, stretch: phrases.stretch };
@@ -314,7 +320,7 @@ export function initSwaggy() {
       } else {
         sound.play('note', { index: Math.floor(Math.random() * 8) });
         const party = Math.random() < 0.25;
-        react(party ? 'party' : 'happy', pick(phrases.tap), party ? 2200 : 1500, party ? 'dance' : pick(['jump', 'surprise', 'flip', 'spin', 'wave', 'surprise']));
+        react(party ? 'party' : 'happy', pick(phrases.tap), party ? 2200 : 1500, party ? 'dance' : pick(['jump', 'surprise', 'flip', 'highfive', 'wave', 'flex']));
       }
     });
 
@@ -436,7 +442,7 @@ export function initSwaggy() {
           )}`
         : '';
       over.innerHTML = `
-        <div class="game__over-swaggy">${swaggySvg(record ? 'party' : 'annoyed', { rig: true })}</div>
+        <div class="game__over-swaggy">${swaggy3d(record ? 'party' : 'annoyed')}</div>
         <p class="game__name">${score} puntos</p>
         <p class="game__msg">${escapeHtml(pick(record ? phrases.record : phrases.gameOver))}</p>
         <p class="game__best">Tu récord: <b>${Math.max(score, prev)}</b></p>
@@ -447,6 +453,7 @@ export function initSwaggy() {
           <button type="button" class="btn btn--ghost" data-game-home>Volver al parche</button>
         </div>`;
       over.hidden = false;
+      mountSwaggy3d(over);
       over.querySelector('[data-game-again]').focus({ preventScroll: true });
     }
 
