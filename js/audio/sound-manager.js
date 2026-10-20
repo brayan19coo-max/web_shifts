@@ -109,8 +109,7 @@ export const sound = {
     if (buffer) {
       // Afinación por índice para las notas del logo cuando se usa archivo
       const rate = options.index != null ? 2 ** ((options.index * 2) / 12) : options.rate ?? 1;
-      playBuffer(buffer, sfxBus, { rate, volume });
-      return;
+      return playBuffer(buffer, sfxBus, { rate, volume });
     }
     const recipe = RECIPES[name];
     if (!recipe) return;

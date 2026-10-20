@@ -62,6 +62,14 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
   // guardia: away → warn → look → away (o warn → away si es amague)
   const guard = { state: 'away', timer: 2.4, lookStart: 0, since: 0, fake: false };
   let alertAt = -1;
+  // sonido de spray (el mismo del logo de la página): suena mientras pintas
+  let sprayNode = null;
+  let sprayNext = 0;
+  const stopSpray = () => {
+    try { sprayNode?.stop(); } catch (e) { /* ya terminó */ }
+    sprayNode = null;
+    sprayNext = 0;
+  };
   // carga de una vez las tiras del guardia y el perro (para que no parpadeen)
   ['guardia_espalda', 'guardia_sospecha', 'guardia_voltea', 'guardia_mira', 'guardia_grita', 'perro_duerme', 'perro_alerta', 'perro_ladra'].forEach((n) => frames(n));
   // cuadro de una tira: en bucle (loop) o que se queda en el último
@@ -103,6 +111,7 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
   const up = () => {
     if (spraying) releasedAt = t;
     spraying = false;
+    stopSpray();
   };
   kit.on(canvas, 'pointerdown', (e) => {
     e.preventDefault();
@@ -125,6 +134,7 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
     onLives?.(lives);
     caughtT = 1.1;
     spraying = false;
+    stopSpray();
     progress = Math.max(0, progress - 0.1);
     shake.hit(14);
     sound.play('error');
@@ -167,6 +177,7 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
     progress = 0;
     painted = 0;
     spraying = false;
+    stopSpray();
     setGuard('away');
     guard.timer += 1;
   };
@@ -476,7 +487,10 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
           painted = pct;
           onScore?.(score);
         }
-        if (Math.random() < 0.5) sound.play('tick');
+        if (t >= sprayNext) {
+          sprayNext = t + 0.78;
+          sprayNode = sound.play('spray', { rate: 0.95 + Math.random() * 0.1 }) || null;
+        }
         if (progress >= 1) finishWall();
       }
       onInfo?.(`Muro ${level} · ${Math.floor(progress * 100)}%`);
@@ -580,5 +594,10 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
 
   onScore?.(0);
   onLives?.(lives);
-  return { stop: () => kit.stop() };
+  return {
+    stop: () => {
+      stopSpray();
+      kit.stop();
+    },
+  };
 }
