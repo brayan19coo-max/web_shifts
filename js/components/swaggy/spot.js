@@ -10,19 +10,34 @@ import { createMusic } from './games/music.js';
 /**
  * El parche de Swaggy
  * -------------------------------------------------------------
- * - Botón flotante con Swaggy 3D asomándose (abajo a la izquierda), que
- *   cada tanto hace algo y te invita a entrar.
- * - Al abrirlo se carga la escena 3D completa de Swaggy (parche/index.html,
- *   en un iframe): la calle, sus acciones, objetos, palomas, el gato…
- * - Botón 🕹️ Arcade: panel encima del 3D con los mini juegos
- *   (games/index.js). Mientras se juega, el 3D se esconde para no gastar.
+ * - Botón flotante con Swaggy asomándose (abajo a la izquierda).
+ * - Al abrirlo: Swaggy reacciona si lo tocas, lo acaricias (pasar el
+ *   dedo/mouse por encima) o lo tocas demasiado; se duerme si lo ignoras.
+ * - Siempre está vivo: respira, mueve la cola, sigue el cursor con la
+ *   cabeza y cada tanto hace algo por su cuenta (bailar, saludar, subirse
+ *   los lentes, mirar a los lados, dar una vuelta…).
+ * - Arcade con los mini juegos, en estilo arcade pixel art (games/pixel.js).
  * - Récords guardados en el navegador de cada persona.
+ * - Si el navegador tiene WebGL, el parche es la calle 3D de Swaggy
+ *   (swaggy3d.html dentro de un iframe): ahí lo tocas, le das cosas, se
+ *   enoja, y en la máquina de arcade de la calle se abren los juegos.
+ *   Sin WebGL queda el Swaggy dibujado de siempre.
  */
+const STREET_3D = 'swaggy3d.html?embed=1';
+const HAS_WEBGL = (() => {
+  try {
+    const c = document.createElement('canvas');
+    return Boolean(c.getContext('webgl') || c.getContext('experimental-webgl'));
+  } catch {
+    return false;
+  }
+})();
 const KEY = 'swaggy';
 const pick = (list = []) => list[Math.floor(Math.random() * list.length)] || '';
 const rand = (a, b) => a + Math.random() * (b - a);
 const clamp = (v) => Math.max(-1, Math.min(1, v));
 
+// Cuánto dura cada acción (ms)
 // Cuánto dura cada acción (ms): lo que dura su animación en 3D
 const ACTIONS = { ...Object.fromEntries(Object.entries(ACTION_TIME).map(([k, v]) => [k, Math.round(v * 1000)])), dance: 2600 };
 
@@ -72,7 +87,8 @@ export function initSwaggy() {
       if (lookFrame) return;
       lookFrame = requestAnimationFrame(() => {
         lookFrame = 0;
-        if (!overlay) lookAt(launcherSvg, lastPointer.x, lastPointer.y);
+        if (overlay) lookAt(overlay.querySelector('[data-swaggy] .sw3d'), lastPointer.x, lastPointer.y);
+        else lookAt(launcherSvg, lastPointer.x, lastPointer.y);
       });
     },
     { passive: true },
@@ -109,21 +125,42 @@ export function initSwaggy() {
   let music = null;
   let onKey = null;
   let returnFocus = null;
+  let onMessage = null;
+  let world = null; // iframe de la calle 3D
+  const use3d = HAS_WEBGL;
+
+  /** Manda un mensaje a la calle 3D (mismo sitio). */
+  const tell3d = (msg) => world?.contentWindow?.postMessage(msg, location.origin);
 
   function open() {
     if (overlay) return;
     returnFocus = document.activeElement;
     overlay = html(`
-      <div class="parche parche--3d" role="dialog" aria-modal="true" aria-label="${escapeHtml(SWAGGY.spotName)}">
-        <iframe class="parche__world" src="parche/index.html" title="${escapeHtml(SWAGGY.spotName)} en 3D" allow="autoplay; fullscreen"></iframe>
-        <div class="parche__loading" data-parche-loading><span class="parche__loading-dot"></span>Cargando el parche…</div>
-        <div class="parche__bar">
-          <button type="button" class="parche__pill" data-arcade-toggle aria-expanded="false">🕹️ Arcade</button>
-          <button type="button" class="parche__pill parche__close" data-parche-close aria-label="Cerrar el parche">✕</button>
+      <div class="parche${use3d ? ' is-3d' : ''}" role="dialog" aria-modal="true" aria-label="${escapeHtml(SWAGGY.spotName)}">
+        <div class="parche__top">
+          <p class="parche__title">${escapeHtml(SWAGGY.spotName).replace(escapeHtml(SWAGGY.name), `<em>${escapeHtml(SWAGGY.name)}</em>`)}</p>
+          <span class="parche__top-btns">
+            ${use3d ? '<button type="button" class="parche__arcade-btn" data-arcade-open aria-haspopup="dialog">▶ Arcade</button>' : ''}
+            <button type="button" class="icon-btn parche__close" data-parche-close aria-label="Cerrar">✕</button>
+          </span>
         </div>
 
-        <div class="parche__home" hidden>
+        <div class="parche__home">
+          ${use3d
+            ? `<section class="parche__street">
+            <div class="parche__loading" data-parche-loading><span class="parche__loading-dot"></span>Cargando la calle…</div>
+            <iframe class="parche__iframe" src="${STREET_3D}" title="La calle de ${escapeHtml(SWAGGY.name)} en 3D: tócalo, pásale cosas y juega en la máquina de arcade" allow="autoplay; fullscreen"></iframe>
+          </section>`
+            : `<section class="parche__stage">
+            <p class="parche__bubble" aria-live="polite"></p>
+            <button type="button" class="parche__swaggy" data-swaggy aria-label="Tocar a ${escapeHtml(SWAGGY.name)}" data-cursor="Tócalo">
+              ${swaggy3d('chill')}
+            </button>
+            <p class="parche__hint"><span class="only-mouse">Hazle clic o pásale el mouse</span><span class="only-touch">Tócalo o pásale el dedo</span> 🦦</p>
+          </section>`}
+
           <section class="arcade" aria-label="Arcade">
+            ${use3d ? '<button type="button" class="icon-btn arcade__close" data-arcade-close aria-label="Cerrar el arcade">✕</button>' : ''}
             <p class="arcade__title">Arcade</p>
             <ul class="arcade__list">
               ${GAMES.map(
@@ -156,11 +193,200 @@ export function initSwaggy() {
         </div>
       </div>`);
     document.body.append(overlay);
+    mountSwaggy3d(overlay);
+    // en el parche 2D puede hacer de todo: precargar todas sus animaciones (en 3D no hacen falta)
+    if (!use3d) preloadSwaggy3d(['saludar', 'risa', 'carcajada', 'bailar', 'rapear', 'flex', 'chocala', 'bravo', 'pataleta', 'triste', 'dormido', 'bostezo', 'gafas', 'susto', 'mirar', 'girar', 'saltar', 'cadena']);
     lockScroll('parche', true);
-    // la música de fondo del sitio baja: el parche 3D tiene sus propios sonidos
-    sound.duckMusic(true);
-    document.documentElement.classList.add('is-parche');
-    const world = overlay.querySelector('.parche__world');
+    launcher.classList.add('is-hidden');
+    requestAnimationFrame(() => overlay.classList.add('is-open'));
+    sound.play('open');
+    overlay.querySelector('[data-parche-close]').focus({ preventScroll: true });
+
+    if (use3d) {
+      bind3d();
+      // la música de fondo del sitio baja: la calle 3D tiene sus propios sonidos
+      sound.duckMusic(true);
+      document.documentElement.classList.add('is-parche');
+    } else bindStage();
+    bindGame();
+
+    // Saludo (distinto si volvió después de 2 días o más)
+    const away = Date.now() - (data.lastVisit || 0);
+    const firstTime = !data.lastVisit;
+    data.lastVisit = Date.now();
+    storage.set(KEY, { ...storage.get(KEY, {}), ...data });
+    const isBack = away > 2 * 86400000 && !firstTime;
+    if (use3d) return; // en 3D saluda él mismo, y se acuerda de ti
+    setTimeout(() => react(isBack ? 'party' : 'happy', pick(isBack ? phrases.back : phrases.greet), 3200, isBack ? 'dance' : 'wave'), 350);
+    scheduleIdleAction();
+  }
+
+  function close() {
+    if (!overlay) return;
+    game?.stop();
+    game = null;
+    music?.stop();
+    music = null;
+    clearTimeout(idleTimer);
+    clearTimeout(actionTimer);
+    document.removeEventListener('keydown', onKey);
+    window.removeEventListener('message', onMessage);
+    if (world) {
+      sound.duckMusic(false);
+      document.documentElement.classList.remove('is-parche');
+    }
+    world = null;
+    const el = overlay;
+    overlay = null;
+    el.classList.remove('is-open');
+    lockScroll('parche', false);
+    launcher.classList.remove('is-hidden');
+    sound.play('close');
+    setTimeout(() => el.remove(), 350);
+    returnFocus?.focus?.({ preventScroll: true });
+  }
+
+  // ---------- Swaggy: reacciones ----------
+  let moodTimer = 0;
+  let bubbleTimer = 0;
+  let idleTimer = 0;
+  let actionTimer = 0;
+  let busyUntil = 0;
+
+  const stageSvg = () => overlay?.querySelector('[data-swaggy] .sw3d');
+
+  function setMood(mood) {
+    const btn = overlay?.querySelector('[data-swaggy]');
+    const svg = stageSvg();
+    if (!btn || !svg) return;
+    svg.dataset.mood = mood;
+    btn.dataset.mood = mood;
+    if (mood === 'sleepy') {
+      svg.style.setProperty('--lx', '0');
+      svg.style.setProperty('--ly', '0');
+    }
+  }
+
+  function act(name, ms) {
+    const svg = stageSvg();
+    if (!svg) return;
+    const time = ms || ACTIONS[name] || 1200;
+    busyUntil = Date.now() + time;
+    doAction(svg, name, time);
+  }
+
+  // Cuando nadie lo toca, hace cosas por su cuenta
+  function scheduleIdleAction() {
+    clearTimeout(actionTimer);
+    actionTimer = setTimeout(() => {
+      const svg = stageSvg();
+      const home = overlay?.querySelector('.parche__home');
+      if (svg && !home?.hidden && svg.dataset.mood === 'chill' && Date.now() > busyUntil && !document.hidden) {
+        const name = pick(['look', 'glasses', 'wave', 'dance', 'rap', 'flex', 'chain', 'spin', 'jump', 'stretch', 'look', 'glasses']);
+        act(name);
+        if (Math.random() < 0.45) {
+          const own = { glasses: phrases.glasses, dance: phrases.dance, stretch: phrases.stretch };
+          say(pick(own[name]?.length && Math.random() < 0.6 ? own[name] : phrases.idle), 2800);
+        }
+      }
+      scheduleIdleAction();
+    }, rand(3500, 7000));
+  }
+
+  function say(text, ms = 2600) {
+    const bubble = overlay?.querySelector('.parche__bubble');
+    if (!bubble || !text) return;
+    bubble.textContent = text;
+    bubble.classList.add('is-visible');
+    if (stageSvg()?.dataset.mood !== 'sleepy') talk(stageSvg(), text);
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(() => bubble.classList.remove('is-visible'), ms);
+  }
+
+  function react(mood, text, ms = 1400, action = '') {
+    setMood(mood);
+    say(text, Math.max(ms, 2200));
+    const btn = overlay?.querySelector('[data-swaggy]');
+    if (btn) {
+      btn.classList.remove('is-bounce', 'is-shake');
+      void btn.offsetWidth;
+      if (mood === 'annoyed') btn.classList.add('is-shake');
+      else if (!action) btn.classList.add('is-bounce');
+    }
+    if (action) act(action, Math.max(ACTIONS[action] || 0, action === 'dance' || action === 'wave' ? ms : 0));
+    else busyUntil = Date.now() + ms;
+    clearTimeout(moodTimer);
+    moodTimer = setTimeout(() => setMood('chill'), ms);
+    resetIdle();
+  }
+
+  function resetIdle() {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      setMood('sleepy');
+      say(pick(phrases.sleepy), 4000);
+    }, 25000);
+  }
+
+  function bindStage() {
+    const btn = overlay.querySelector('[data-swaggy]');
+    let taps = [];
+    let petDistance = 0;
+    let lastPoint = null;
+    let lastPet = 0;
+    let annoyedUntil = 0;
+
+    btn.addEventListener('click', () => {
+      const now = Date.now();
+      // Si estaba dormido, se despierta estirándose
+      if (btn.dataset.mood === 'sleepy') {
+        sound.play('whoosh');
+        react('happy', pick(phrases.wake), 1800, 'stretch');
+        return;
+      }
+      // Si está molesto, sigue molesto un rato aunque lo sigas tocando
+      if (now < annoyedUntil) {
+        react('annoyed', pick(phrases.annoyed), 1800);
+        annoyedUntil = now + 1500;
+        return;
+      }
+      taps = taps.filter((t) => now - t < 3000);
+      taps.push(now);
+      if (taps.length >= 6) {
+        taps = [];
+        annoyedUntil = now + 2000;
+        sound.play('error');
+        react('annoyed', pick(phrases.annoyed), 1800);
+      } else {
+        sound.play('note', { index: Math.floor(Math.random() * 8) });
+        const party = Math.random() < 0.25;
+        react(party ? 'party' : 'happy', pick(phrases.tap), party ? 2200 : 1500, party ? 'dance' : pick(['jump', 'surprise', 'flip', 'highfive', 'wave', 'flex']));
+      }
+    });
+
+    // Acariciar: mover el mouse o el dedo por encima un buen rato
+    btn.addEventListener('pointermove', (event) => {
+      if (event.pointerType === 'mouse' || event.buttons || event.pressure > 0) {
+        if (lastPoint) petDistance += Math.hypot(event.clientX - lastPoint.x, event.clientY - lastPoint.y);
+        lastPoint = { x: event.clientX, y: event.clientY };
+        if (petDistance > 700 && Date.now() - lastPet > 2500) {
+          petDistance = 0;
+          lastPet = Date.now();
+          sound.play('success');
+          react('happy', pick(phrases.pet), 1800, 'purr');
+          hearts(btn);
+        }
+      }
+    });
+    btn.addEventListener('pointerleave', () => {
+      lastPoint = null;
+      petDistance = Math.max(0, petDistance - 200);
+    });
+  }
+
+  // ---------- La calle 3D ----------
+  function bind3d() {
+    world = overlay.querySelector('.parche__iframe');
     world.addEventListener('load', () => {
       overlay?.querySelector('[data-parche-loading]')?.classList.add('is-done');
       // Esc también funciona cuando el foco está dentro del 3D
@@ -170,35 +396,41 @@ export function initSwaggy() {
         /* otro origen: no pasa nada */
       }
     });
-    launcher.classList.add('is-hidden');
-    requestAnimationFrame(() => overlay.classList.add('is-open'));
-    sound.play('open');
-    overlay.querySelector('[data-parche-close]').focus({ preventScroll: true });
-
-    bindGame();
-
-    // Última visita (la usa el saludo)
-    data.lastVisit = Date.now();
-    storage.set(KEY, { ...storage.get(KEY, {}), ...data });
+    onMessage = (event) => {
+      if (event.origin !== location.origin || event.source !== world?.contentWindow) return;
+      if (event.data?.type === 'swaggy:arcade') openArcade();
+    };
+    window.addEventListener('message', onMessage);
+    overlay.querySelector('[data-arcade-open]').addEventListener('click', openArcade);
+    overlay.querySelector('[data-arcade-close]').addEventListener('click', closeArcade);
   }
 
-  function close() {
-    if (!overlay) return;
-    game?.stop();
-    game = null;
-    music?.stop();
-    music = null;
-    document.removeEventListener('keydown', onKey);
-    const el = overlay;
-    overlay = null;
-    el.classList.remove('is-open');
-    lockScroll('parche', false);
-    sound.duckMusic(false);
-    document.documentElement.classList.remove('is-parche');
-    launcher.classList.remove('is-hidden');
+  function openArcade() {
+    if (!overlay || overlay.classList.contains('is-arcade')) return;
+    overlay.classList.add('is-arcade');
+    tell3d({ type: 'swaggy:pause', paused: true }); // la calle descansa mientras juegas
+    sound.play('open');
+    overlay.querySelector('.arcade [data-game]')?.focus({ preventScroll: true });
+  }
+
+  function closeArcade() {
+    if (!overlay?.classList.contains('is-arcade')) return;
+    overlay.classList.remove('is-arcade');
+    tell3d({ type: 'swaggy:pause', paused: false });
     sound.play('close');
-    setTimeout(() => el.remove(), 350);
-    returnFocus?.focus?.({ preventScroll: true });
+    overlay.querySelector('[data-arcade-open]')?.focus({ preventScroll: true });
+  }
+
+  function hearts(btn) {
+    for (let i = 0; i < 5; i++) {
+      const h = document.createElement('span');
+      h.className = 'parche__heart';
+      h.textContent = '♥';
+      h.style.left = `${30 + Math.random() * 40}%`;
+      h.style.animationDelay = `${i * 90}ms`;
+      btn.append(h);
+      setTimeout(() => h.remove(), 1400);
+    }
   }
 
   // ---------- Juego ----------
@@ -228,35 +460,19 @@ export function initSwaggy() {
       music = null;
     };
 
-    const world = overlay.querySelector('.parche__world');
-    const toggle = overlay.querySelector('[data-arcade-toggle]');
-    // El arcade es un panel encima del 3D
-    const setArcade = (open) => {
-      home.hidden = !open;
-      toggle.setAttribute('aria-expanded', String(open));
-      toggle.classList.toggle('is-on', open);
-      if (open) sound.play('open');
-    };
-    toggle.addEventListener('click', () => {
-      if (!view.hidden) showHome();
-      else setArcade(home.hidden);
-    });
-    home.addEventListener('click', (event) => {
-      if (event.target === home) setArcade(false);
-    });
-
     const showHome = () => {
       game?.stop();
       game = null;
       stopMusic();
       view.hidden = true;
-      setArcade(true);
+      home.hidden = false;
       overlay.classList.remove('is-playing');
       GAMES.forEach((g) => {
         const best = overlay.querySelector(`[data-best="${g.id}"]`);
         if (best) best.textContent = data.best?.[g.id] || 0;
       });
-      world.style.visibility = '';
+      if (use3d) overlay.querySelector('.arcade [data-game]')?.focus({ preventScroll: true });
+      else react('happy', pick(phrases.home), 1600, 'wave');
     };
 
     const play = () => {
@@ -295,6 +511,8 @@ export function initSwaggy() {
         data.best = { ...data.best, [id]: score };
         storage.set(KEY, { ...storage.get(KEY, {}), ...data });
       }
+      // Swaggy reacciona en la calle 3D (lo ves al volver)
+      tell3d({ type: 'swaggy:result', game: id, score, record });
       sound.play(record ? 'unlock' : 'close');
       const p = SWAGGY.prize;
       const prize = p && (!p.game || p.game === id) && score >= p.minScore ? p : null;
@@ -322,10 +540,10 @@ export function initSwaggy() {
     const openGame = (g) => {
       current = g;
       sound.play('whoosh');
+      clearTimeout(idleTimer);
       home.hidden = true;
       view.hidden = false;
       view.dataset.game = g.id;
-      world.style.visibility = 'hidden';
       overlay.classList.add('is-playing');
       over.hidden = true;
       scoreEl.textContent = '0';
@@ -378,7 +596,7 @@ export function initSwaggy() {
       if (event.key === 'Escape') {
         event.stopPropagation();
         if (!view.hidden) showHome();
-        else if (!home.hidden) setArcade(false);
+        else if (overlay.classList.contains('is-arcade')) closeArcade();
         else close();
       }
       if (event.key === 'Tab') trapFocus(event, overlay);

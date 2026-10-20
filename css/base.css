@@ -18,6 +18,7 @@
   --font-display: 'Anton', Impact, 'Arial Narrow', sans-serif;
   --font-marker: 'Permanent Marker', 'Comic Sans MS', cursive;
   --font-body: 'Space Grotesk', system-ui, sans-serif;
+  --font-pixel: 'Press Start 2P', 'Courier New', monospace; /* arcade */
 
   --radius: 18px;
   --radius-sm: 10px;

@@ -1290,3 +1290,229 @@ html.is-parche .cursor-dot,
 html.is-parche .cursor-ring {
   display: none !important;
 }
+
+
+/* =========================================================
+   ARCADE PIXEL ART — máquina de arcade para los mini juegos
+   (el dibujo pixelado lo hace games/pixel.js)
+   ========================================================= */
+.arcade__title,
+.game__name {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.04em;
+  text-shadow: 3px 3px 0 var(--crew);
+}
+
+.arcade__info strong {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.arcade__info small {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  line-height: 1.8;
+}
+
+.game__hud {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.game__hud b {
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  color: #f2c14e;
+  text-shadow: 2px 2px 0 var(--crew);
+}
+
+.game__lives.is-info {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+/* La pantalla: marco de máquina, líneas CRT y viñeta */
+.game__stage {
+  position: relative;
+  padding: 12px;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, #232323, #0d0d0d);
+  box-shadow:
+    inset 0 0 0 2px #2e2e2e,
+    inset 0 -6px 0 #050505,
+    0 0 0 2px var(--fg),
+    0 18px 50px rgba(0, 0, 0, 0.55);
+}
+
+.game__canvas.is-pixel {
+  border: 0;
+  border-radius: 14px;
+  background: #050505;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  box-shadow: 0 0 0 3px #000, 0 0 30px rgba(227, 21, 26, 0.18);
+}
+
+.game__stage::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 14px;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at 50% 45%, transparent 62%, rgba(0, 0, 0, 0.5) 100%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.05) 0 18%, transparent 18% 100%);
+}
+
+.game__panel {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  line-height: 1.9;
+}
+
+.game__panel .btn {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .game__stage {
+    padding: 8px;
+    border-radius: 18px;
+  }
+  .game__stage::after {
+    inset: 8px;
+  }
+  .game__hud b {
+    font-size: 13px;
+  }
+}
+
+/* =========================================================
+   PARCHE 3D — la calle de Swaggy (swaggy3d.html en un iframe)
+   ========================================================= */
+.parche__top-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.parche__arcade-btn {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  background: #f2c14e;
+  border: 2px solid #0a0a0a;
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 3px 3px 0 var(--crew), 0 0 0 2px var(--fg);
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.parche__arcade-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--crew), 0 0 0 2px var(--fg);
+}
+
+.parche.is-3d .parche__home {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0 var(--gutter) 18px;
+  min-height: 0;
+}
+
+.parche.is-3d .parche__home[hidden] {
+  display: none;
+}
+
+.parche__street {
+  position: relative;
+  flex: 1;
+  min-height: min(70vh, 640px);
+  border: 2px solid var(--fg);
+  border-radius: 22px;
+  overflow: hidden;
+  background: #38c4ff;
+}
+
+.parche__iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.parche__street::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 8, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.parche.is-arcade .parche__street::after {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* el arcade sale como una máquina encima de la calle */
+.parche.is-3d .arcade {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: min(760px, calc(100% - 2 * var(--gutter) - 24px));
+  max-height: calc(100% - 48px);
+  overflow: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -46%) scale(0.96);
+  transition: opacity 0.25s, transform 0.3s var(--ease), visibility 0s 0.3s;
+}
+
+.parche.is-3d.is-arcade .arcade {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.25s, transform 0.3s var(--ease), visibility 0s;
+}
+
+.arcade__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.parche.is-3d .arcade {
+  padding-top: 26px;
+}
+
+@media (max-width: 760px) {
+  .parche__street {
+    min-height: 72vh;
+    border-radius: 16px;
+  }
+  .parche__arcade-btn {
+    font-size: 9px;
+    padding: 8px 10px;
+  }
+  .parche.is-3d .arcade {
+    width: calc(100% - 20px);
+    max-height: calc(100% - 20px);
+  }
+}

@@ -1,4 +1,5 @@
 import { frames, frame as poseFrame } from './poses.js';
+import { fitPixel, pixelPost } from './pixel.js';
 import { sound } from '../../../audio/sound-manager.js';
 
 /**
@@ -14,18 +15,12 @@ import { sound } from '../../../audio/sound-manager.js';
 const LIVES = 3;
 
 export function startCatchGame(canvas, { onScore, onLives, onEnd, music } = {}) {
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
   let W = 0;
   let H = 0;
   const resize = () => {
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const rect = canvas.getBoundingClientRect();
-    W = rect.width;
-    H = rect.height;
-    canvas.width = Math.round(W * dpr);
-    canvas.height = Math.round(H * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ({ W, H } = fitPixel(canvas, ctx));
   };
   resize();
   window.addEventListener('resize', resize);
@@ -130,7 +125,7 @@ export function startCatchGame(canvas, { onScore, onLives, onEnd, music } = {}) 
   // ---------- Bucle ----------
   const frame = (now) => {
     if (!running) return;
-    const dt = Math.min(0.05, (now - last) / 1000);
+    const dt = Math.max(0, Math.min(0.05, (now - last) / 1000));
     last = now;
     elapsed += dt;
     size(); // por si cambió el tamaño de la pantalla
@@ -212,6 +207,7 @@ export function startCatchGame(canvas, { onScore, onLives, onEnd, music } = {}) 
       ctx.fillRect(0, 0, W, H);
       flash = Math.max(0, flash - dt * 3);
     }
+    pixelPost(ctx);
     raf = requestAnimationFrame(frame);
   };
 

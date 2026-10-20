@@ -94,8 +94,10 @@ Drop actual: **Drop 02 — Bonnie & Clyde** · *FUERA DE LA LEY. DENTRO DEL DROP
 ## Swaggy — el brother de la marca
 
 Nutria con lentes deportivos oscuros. En la página se ve el **Swaggy 3D** (el modelo de la escena `Swaggy de Shift's`, grabado cuadro por cuadro en `assets/images/swaggy/3d/`, reproducido por `js/components/swaggy/sw3d.js`). Botón flotante (abajo a la izquierda) que abre **El parche de Swaggy**:
-- **El parche es la escena 3D de Swaggy** (`parche/index.html`, se carga en un iframe solo al abrirlo): la calle con el mural, la vitrina de Shift's, palomas, el gato, el carrito del Viejo Chigüi; a Swaggy se le pasan objetos a la mano, se le toca, se peina, baila, rapea, pinta el logo… Usa Three.js guardado en `assets/vendor/three/`.
-- Arriba hay un botón **🕹️ Arcade** que abre el panel de los mini juegos encima del 3D, y **✕** para volver a la tienda. `Esc` va cerrando paso a paso.
+- **La calle 3D:** si el navegador tiene WebGL, el parche abre `swaggy3d.html` (la calle de Swaggy en 3D, cel shading, con el gato, las palomas, el Viejo Chigüi y la vitrina) dentro de un iframe. Ahí lo tocas, le pasas cosas, se enoja, come, duerme y se acuerda de ti. En la calle hay una **máquina de arcade**: si la tocas, Swaggy camina hasta ella, se pone a jugar y se abre el arcade de la web (también con el botón **▶ Arcade** de arriba). Mientras juegas, la calle se pausa para no gastar batería, y al volver Swaggy reacciona a tu puntaje. Usa Three.js guardado en `assets/vendor/three/`. Sin WebGL queda el Swaggy de siempre.
+  - `swaggy3d.html` se genera desde el proyecto de la calle 3D (no se edita a mano).
+  - La web y la calle se hablan con mensajes (`postMessage`, solo del mismo sitio): `swaggy:arcade` (la calle pide abrir el arcade), `swaggy:result` (la web le cuenta el puntaje), `swaggy:pause` y `swaggy:say` (que diga una frase).
+- **Arcade pixel art:** todos los juegos se ven como máquina de arcade: el lienzo se dibuja a baja resolución (cada pixel del juego mide 2 o 3 de pantalla), con una paleta fija de 40 colores y tramado, letra *Press Start 2P*, marco de máquina y líneas de pantalla CRT. Está en `games/pixel.js`; con `PIXEL.enabled = false` vuelve al dibujo normal.
 - **Por toda la página:** se asoma por un borde al llegar a cada sección (una vez por visita), celebra cuando agregas algo al carrito, se pone triste si lo quitas, baila cuando haces el pedido y sale en la bóveda cuando se abre el drop. Además está **escondido** en algún lugar (solo asoman las orejas y los lentes): si lo encuentras y lo tocas, te dice algo o te da una pista y se esconde en otro lado. Código en `js/components/swaggy/roam.js`.
 - **Arcade** con 8 mini juegos (el récord de cada uno se guarda en el navegador de cada persona):
   - **Swaggy Flap:** vuela con la lata de propulsor entre muros; un toque = un impulso. Un golpe y se acaba. Cada 10 muros cambia el escenario (barrio → azoteas → metro → neón → tormenta) y desde el metro hay muros que suben y bajan.
@@ -117,6 +119,7 @@ Nutria con lentes deportivos oscuros. En la página se ve el **Swaggy 3D** (el m
 
 ```
 index.html                 Estructura de la página
+swaggy3d.html              La calle 3D de Swaggy (se abre dentro del parche)
 css/
   base.css                 Variables de diseño (colores, fuentes), reset
   layout.css               Header, menú móvil, secciones, footer
@@ -141,7 +144,7 @@ js/
     drop-lock.js           Drop bloqueado: contador, clave, desbloqueo
     logo3d.js              Logo girando en 3D (se puede arrastrar)
     vault.js               Animación de caja fuerte al abrir un drop
-    swaggy/                Swaggy: dibujo (art.js), el parche (spot.js) y juegos (games/)
+    swaggy/                Swaggy: dibujo (art.js), el parche (spot.js) y juegos (games/, pixel.js = modo arcade)
     cursor.js              Cursor personalizado
     header.js              Cabecera, controles de sonido, menú móvil
     hero.js                Logo musical + parallax

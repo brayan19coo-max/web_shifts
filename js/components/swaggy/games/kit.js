@@ -1,14 +1,16 @@
+import { fitPixel, pixelPost } from './pixel.js';
+
 /**
  * Kit para los mini juegos de canvas
  * -------------------------------------------------------------
- * - Lienzo nítido en pantallas retina y que se adapta al tamaño.
+ * - Lienzo en modo arcade pixel art (ver pixel.js) que se adapta al tamaño.
  * - Bucle de animación con dt (segundos) que se pausa si la pestaña
  *   se oculta.
  * - Registro de eventos para limpiarlos todos al salir.
  * - Dibujos compartidos: lata de spray, texto con contorno, partículas.
  */
 export function createKit(canvas) {
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
   const view = { W: 0, H: 0 };
   const listeners = [];
   let raf = 0;
@@ -18,13 +20,9 @@ export function createKit(canvas) {
   let tick = null;
 
   const resize = () => {
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const rect = canvas.getBoundingClientRect();
-    view.W = rect.width;
-    view.H = rect.height;
-    canvas.width = Math.round(view.W * dpr);
-    canvas.height = Math.round(view.H * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const { W, H } = fitPixel(canvas, ctx);
+    view.W = W;
+    view.H = H;
   };
   resize();
 
@@ -35,9 +33,10 @@ export function createKit(canvas) {
 
   const frame = (now) => {
     if (!running) return;
-    const dt = Math.min(0.05, (now - last) / 1000);
+    const dt = Math.max(0, Math.min(0.05, (now - last) / 1000));
     last = now;
     tick?.(dt, now);
+    pixelPost(ctx);
     if (running) raf = requestAnimationFrame(frame);
   };
 
@@ -120,8 +119,11 @@ export function drawCan(ctx, x, y, w, color = COLORS.white, { band = COLORS.red,
   ctx.restore();
 }
 
-/** Texto grande con contorno (estilo graffiti). */
-export function bigText(ctx, text, x, y, size, { fill = COLORS.white, stroke = COLORS.ink, align = 'center', font = '"Arial Black", Arial, sans-serif', alpha = 1 } = {}) {
+export const PIXEL_FONT = '"Press Start 2P", "Arial Black", Arial, sans-serif';
+
+/** Texto grande con contorno (letra de arcade). */
+export function bigText(ctx, text, x, y, size, { fill = COLORS.white, stroke = COLORS.ink, align = 'center', font = PIXEL_FONT, alpha = 1 } = {}) {
+  if (font === PIXEL_FONT) size *= 0.72; // la letra pixel es más ancha
   ctx.save();
   ctx.globalAlpha = alpha;
   ctx.font = `900 ${size}px ${font}`;
