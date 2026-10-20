@@ -1,4 +1,4 @@
-import { frames, frame } from './poses.js';
+import { frames, frame, aspect } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, bigText, createParticles, createShake, COLORS } from './kit.js';
 
@@ -224,7 +224,8 @@ export function startTapDropGame(canvas, { onScore, onLives, onInfo, onEnd, musi
       const sw = Math.min(140, H * 0.28, W * 0.3);
       const sh = sw * 1.2;
       const hop = mood === 'party' ? Math.abs(Math.sin(now / 120)) * 14 : mood === 'annoyed' ? (Math.random() - 0.5) * 4 : Math.sin(now / 500) * 3;
-      ctx.drawImage(img, W / 2 - sw / 2, H - sh - 6 - hop, sw, sh);
+      const iw = sh * aspect(img);
+      ctx.drawImage(img, W / 2 - iw / 2, H - sh - 6 - hop, iw, sh);
     }
     particles.draw(ctx);
     ctx.restore();

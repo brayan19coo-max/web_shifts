@@ -1,4 +1,4 @@
-import { frames, frame } from './poses.js';
+import { frames, frame, aspect } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
 import { skyline, rnd, drawSceneBanner } from './scenes.js';
@@ -374,7 +374,7 @@ export function startStackGame(canvas, { onScore, onInfo, onEnd, music } = {}) {
       const sw = Math.min(110, H * 0.22, W * 0.24);
       const hop = mood === 'party' ? Math.abs(Math.sin(now / 110)) * 12 : Math.sin(now / 400) * 2;
       const sy = H * 0.86 + cam - sw * 1.2 - hop;
-      if (sy < H) ctx.drawImage(img, 6, sy, sw, sw * 1.2);
+      if (sy < H) ctx.drawImage(img, 6, sy, sw * 1.2 * aspect(img), sw * 1.2);
     }
     particles.draw(ctx);
     popups.draw(ctx);

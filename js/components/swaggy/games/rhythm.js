@@ -1,4 +1,4 @@
-import { frames, frame } from './poses.js';
+import { frames, frame, aspect } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, drawCan, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
 import { drawSceneBanner, rnd } from './scenes.js';
@@ -422,9 +422,10 @@ export function startRhythmGame(canvas, { onScore, onInfo, onEnd, music } = {}) 
       ctx.translate(sx + sw / 2, sy + sw * 1.2);
       ctx.rotate(Math.sin(beatPhase * Math.PI * 2) * 0.12);
       ctx.scale(1 + pulse * 0.04, 1 - pulse * 0.05);
-      ctx.drawImage(img, -sw / 2, -sw * 1.2, sw, sw * 1.2);
+      const iw = sw * 1.2 * aspect(img);
+      ctx.drawImage(img, -iw / 2, -sw * 1.2, iw, sw * 1.2);
       ctx.restore();
-      if (roomy && img2.complete) ctx.drawImage(img2, W - (lx - sw - 30) - sw, sy, sw, sw * 1.2);
+      if (roomy && img2.complete) ctx.drawImage(img2, W - (lx - sw - 30) - sw / 2 - iw / 2, sy, iw, sw * 1.2);
     }
 
     particles.draw(ctx);

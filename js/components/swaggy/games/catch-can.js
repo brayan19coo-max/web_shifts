@@ -1,4 +1,4 @@
-import { frames, frame as poseFrame } from './poses.js';
+import { frames, frame as poseFrame, aspect } from './poses.js';
 import { fitPixel, pixelPost } from './pixel.js';
 import { sound } from '../../../audio/sound-manager.js';
 
@@ -199,7 +199,8 @@ export function startCatchGame(canvas, { onScore, onLives, onEnd, music } = {}) 
       ctx.translate(player.x, py + player.h);
       ctx.rotate(player.tilt);
       ctx.scale(1 / squash, squash);
-      ctx.drawImage(img, -player.w / 2, -player.h - hop, player.w, player.h);
+      const iw = player.h * aspect(img);
+      ctx.drawImage(img, -iw / 2, -player.h - hop, iw, player.h);
       ctx.restore();
     }
     if (flash > 0) {

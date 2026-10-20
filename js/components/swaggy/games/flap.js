@@ -1,4 +1,4 @@
-import { frames, frame } from './poses.js';
+import { frames, frame, aspect } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, drawCan, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
 import { drawScene, drawSceneBanner, SCENES } from './scenes.js';
@@ -158,7 +158,7 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd, music } = {}) {
 
   const drawBird = (now) => {
     const img =
-      state === 'dead' ? frame('golpe', now / 1000, 10)
+      state === 'dead' ? frame('golpe_lado', now / 1000, 10)
         : bird.flapT > 0 ? frames('aletear')[bird.flapT > 0.09 ? 0 : 1]
           : frame('planear', now / 1000, 4);
     if (!img.complete) return;
@@ -176,7 +176,8 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd, music } = {}) {
       ctx.ellipse(-w * 0.42, h * 0.32, w * 0.06, w * (0.1 + Math.random() * 0.08), 0.5, 0, Math.PI * 2);
       ctx.fill();
     }
-    ctx.drawImage(img, -w / 2, -h / 2, w, h);
+    const iw = h * aspect(img);
+    ctx.drawImage(img, -iw / 2, -h / 2, iw, h);
     ctx.restore();
   };
 

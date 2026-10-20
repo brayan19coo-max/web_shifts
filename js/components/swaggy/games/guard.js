@@ -1,4 +1,4 @@
-import { frames, frame } from './poses.js';
+import { frames, frame, aspect } from './poses.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { createKit, drawCan, drawBrickWall, bigText, createParticles, createPopups, createShake, COLORS } from './kit.js';
 import { drawScene, drawSceneBanner } from './scenes.js';
@@ -465,7 +465,10 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
             : guard.state === 'look' ? frame('disimular', t, 2)
               : frame('quieto', t, 2);
     const bob = spraying ? Math.sin(t * 30) * 1.5 : Math.sin(t * 2) * 2;
-    if (img.complete) ctx.drawImage(img, sx - sw / 2, floor - sh + bob, sw, sh);
+    if (img.complete) {
+      const iw = sh * aspect(img);
+      ctx.drawImage(img, sx - iw / 2, floor - sh + bob, iw, sh);
+    }
     // la lata va en la mano: estirada al pintar, abajo si está quieto, escondida si disimula
     const hiding = !spraying && guard.state === 'look';
     const canX = spraying ? sx + sw * 0.41 : sx + sw * 0.25;

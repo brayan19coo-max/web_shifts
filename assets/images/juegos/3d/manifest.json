@@ -1,0 +1,90 @@
+{
+ "fps": 12,
+ "anims": {
+  "aletear": {
+   "frames": 2,
+   "w": 158,
+   "h": 220
+  },
+  "atrapar": {
+   "frames": 1,
+   "w": 207,
+   "h": 220
+  },
+  "bailar": {
+   "frames": 4,
+   "w": 207,
+   "h": 220
+  },
+  "caer": {
+   "frames": 1,
+   "w": 158,
+   "h": 220
+  },
+  "caminar": {
+   "frames": 4,
+   "w": 207,
+   "h": 220
+  },
+  "celebrar": {
+   "frames": 10,
+   "w": 207,
+   "h": 220
+  },
+  "correr": {
+   "frames": 4,
+   "w": 158,
+   "h": 220
+  },
+  "disimular": {
+   "frames": 16,
+   "w": 207,
+   "h": 220
+  },
+  "golpe": {
+   "frames": 8,
+   "w": 207,
+   "h": 220
+  },
+  "golpe_lado": {
+   "frames": 8,
+   "w": 158,
+   "h": 220
+  },
+  "nervioso": {
+   "frames": 8,
+   "w": 207,
+   "h": 220
+  },
+  "pintar": {
+   "frames": 12,
+   "w": 207,
+   "h": 220
+  },
+  "planear": {
+   "frames": 4,
+   "w": 158,
+   "h": 220
+  },
+  "quieto": {
+   "frames": 24,
+   "w": 207,
+   "h": 220
+  },
+  "recoger": {
+   "frames": 1,
+   "w": 158,
+   "h": 220
+  },
+  "saltar": {
+   "frames": 1,
+   "w": 158,
+   "h": 220
+  },
+  "triste": {
+   "frames": 12,
+   "w": 207,
+   "h": 220
+  }
+ }
+}

@@ -1,4 +1,4 @@
-import { frames, frame as poseFrame } from './poses.js';
+import { frames, frame as poseFrame, aspect } from './poses.js';
 import { fitPixel, pixelPost } from './pixel.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { drawScene, drawSceneBanner, SCENES } from './scenes.js';
@@ -329,7 +329,7 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd, music } = {})
     const spinning = !onGround && player.jumps === 2 && player.spinT < 0.45;
     // cuadro de animación según lo que esté haciendo
     let img;
-    if (hit) img = poseFrame('golpe', now / 1000, 10);
+    if (hit) img = poseFrame('golpe_lado', now / 1000, 10);
     else if (spinning) img = frames('recoger')[0];
     else if (!onGround) img = frames(player.vy < 0 ? 'saltar' : 'caer')[0];
     else img = frames('correr')[Math.floor(player.step / (Math.PI / 2)) % 4];
@@ -353,7 +353,10 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd, music } = {})
     }
     const squash = onGround ? 1 - Math.abs(Math.sin(player.step)) * 0.04 : 1.05;
     ctx.scale(1 / squash, squash);
-    ctx.drawImage(img, -player.w / 2, -player.h, player.w, player.h);
+    // el 3D de lado deja aire arriba (para los saltos): se dibuja un poco más grande
+    const ih = player.h * 1.3;
+    const iw = ih * aspect(img);
+    ctx.drawImage(img, -iw / 2, -ih, iw, ih);
     ctx.restore();
   };
 

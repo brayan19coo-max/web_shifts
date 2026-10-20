@@ -108,12 +108,12 @@ Nutria con lentes deportivos oscuros. En la página se ve el **Swaggy 3D** (el m
   - **Ritmo Shift's:** toca los 3 carriles al ritmo; cada acierto suena una nota y el beat se acelera. La tarima cambia con la velocidad (garaje → block party → disco → tarima → festival) con público que salta al beat.
   - **Escape del muro:** corre y salta conos, canecas y vallas (doble salto). Cada 300 puntos cambia el escenario (barrio → puente → metro → azoteas → tormenta → neón), cada uno con su propio obstáculo.
   - Los fondos de los escenarios están en `js/components/swaggy/games/scenes.js`; la lista de sprites para el arte final, en `assets/images/juegos/LEEME.md`.
-  - **Animaciones:** Swaggy se anima cuadro por cuadro en los juegos (correr, saltar, voltereta, aletear, pintar, bailar…), definidas en `games/poses.js`.
+  - **Animaciones:** Swaggy se anima cuadro por cuadro en los juegos con el modelo 3D grabado (correr en 4 patas, saltar, aletear, pintar, bailar…): tiras en `assets/images/juegos/3d/`, cargadas por `games/poses.js`.
   - **Música:** cada juego tiene su beat hecho con código (`games/music.js`: estilos calle, rápido y tensión) que sube de intensidad con los niveles; en Ritmo Shift's el beat va sincronizado con las latas. Botón ♪ en el juego para apagarla. Se apaga también con el botón de sonido del sitio.
   - **Atrapa la lata:** atrapa las latas buenas y esquiva las negras.
   - Para agregar más juegos: `js/components/swaggy/games/index.js`.
 - Nombre, frases (una lista por situación: saludo, toque, caricia, molesto, dormido, despertar, cosas que dice solo, juego…) y premio se editan en `js/config.js` → `SWAGGY`. El premio (`prize`) está apagado; si lo activas, quien lo gane lo reclama por WhatsApp con su puntaje (con `game: 'runner'`, por ejemplo, aplica solo a ese juego).
-- El dibujo actual es **provisional** (`js/components/swaggy/art.js`). Cuando esté la ilustración oficial se reemplaza por las poses: normal, feliz, molesto, celebrando, dormido.
+- **Ya no hay Swaggy 2D:** en la página es el Swaggy 3D grabado (`sw3d.js`), en el parche es la calle 3D (`swaggy3d.html`) y en los juegos son tiras del 3D (`games/poses.js`, `assets/images/juegos/3d/`).
 
 ## Estructura
 
@@ -144,7 +144,7 @@ js/
     drop-lock.js           Drop bloqueado: contador, clave, desbloqueo
     logo3d.js              Logo girando en 3D (se puede arrastrar)
     vault.js               Animación de caja fuerte al abrir un drop
-    swaggy/                Swaggy: dibujo (art.js), el parche (spot.js) y juegos (games/, pixel.js = modo arcade)
+    swaggy/                Swaggy: 3D en la página (sw3d.js), el parche (spot.js) y juegos (games/, pixel.js = modo arcade)
     cursor.js              Cursor personalizado
     header.js              Cabecera, controles de sonido, menú móvil
     hero.js                Logo musical + parallax
