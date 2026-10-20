@@ -58,13 +58,23 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
   let warnText = '';
   const sceneId = () => SCENE_ORDER[Math.floor((level - 1) / 2) % SCENE_ORDER.length];
   // guardia: away → warn → look → away (o warn → away si es amague)
-  const guard = { state: 'away', timer: 2.4, lookStart: 0, fake: false };
+  const guard = { state: 'away', timer: 2.4, lookStart: 0, since: 0, fake: false };
+  let alertAt = -1;
+  // carga de una vez las tiras del guardia y el perro (para que no parpadeen)
+  ['guardia_espalda', 'guardia_sospecha', 'guardia_voltea', 'guardia_mira', 'guardia_grita', 'perro_duerme', 'perro_alerta', 'perro_ladra'].forEach((n) => frames(n));
+  // cuadro de una tira: en bucle (loop) o que se queda en el último
+  const at = (name, time, fps, loop) => {
+    const list = frames(name);
+    const i = Math.floor(Math.max(0, time) * fps);
+    return list[loop ? i % list.length : Math.min(i, list.length - 1)];
+  };
   const lvl = () => Math.min(level, 10);
   const nextAway = () => 1.1 + Math.random() * (3.2 - lvl() * 0.15);
   const warnTime = () => Math.max(0.28, 0.75 - lvl() * 0.05);
   const lookTime = () => 1.0 + Math.random() * 1.2;
 
   const setGuard = (state) => {
+    if (guard.state !== state) guard.since = t;
     guard.state = state;
     if (state === 'away') guard.timer = nextAway();
     if (state === 'warn') {
@@ -199,10 +209,44 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
     return { tipX: cx - tw / 2 + tw * progress, cy };
   };
 
+  // El guardia y el perro son modelos 3D grabados (assets/images/juegos/3d/guardia_*.webp
+  // y perro_*.webp). Si las tiras no han cargado, se dibujan con código como antes.
   const drawGuard = (gx, gy, s) => {
     const looking = guard.state === 'look';
     const warn = guard.state === 'warn';
-    // cono de linterna
+    const since = t - guard.since;
+    const anim = caughtT > 0 ? ['guardia_grita', 12, true]
+      : looking ? (since < 0.42 ? ['guardia_voltea', 12, false] : ['guardia_mira', 6, true])
+        : warn ? ['guardia_sospecha', 20, false] : ['guardia_espalda', 6, true];
+    const img = at(anim[0], anim[0] === 'guardia_mira' ? since - 0.42 : since, anim[1], anim[2]);
+    const floorY = gy + s * 1.05;
+    const h = s * 1.7;
+    const w = h * aspect(img);
+    // cono de linterna (sale de la linterna que apunta a Swaggy)
+    if (looking && since >= 0.3) {
+      const lx = img.complete ? gx - w * 0.47 : gx - s * 0.3;
+      const ly = img.complete ? floorY - h * 0.69 : gy - s * 0.2;
+      ctx.save();
+      const grd = ctx.createLinearGradient(lx, ly, lx - view.W * 0.6, ly);
+      grd.addColorStop(0, 'rgba(255,240,180,0.5)');
+      grd.addColorStop(1, 'rgba(255,240,180,0)');
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.moveTo(lx, ly - s * 0.04);
+      ctx.lineTo(lx, ly + s * 0.04);
+      ctx.lineTo(lx - view.W * 0.75, ly + s * 1.5);
+      ctx.lineTo(lx - view.W * 0.75, ly - s * 1.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+    if (img.complete) {
+      const tremble = warn ? Math.sin(t * 40) * 1.5 : 0;
+      ctx.drawImage(img, gx - w / 2 + tremble, floorY - h, w, h);
+      if (warn) bigText(ctx, '¿?', gx, floorY - h - s * 0.12, s * 0.35, { fill: COLORS.gold });
+      if (looking && since >= 0.42) bigText(ctx, '👀', gx, floorY - h - s * 0.12, s * 0.3, { stroke: 'transparent' });
+      return;
+    }
     if (looking) {
       ctx.save();
       const grd = ctx.createLinearGradient(gx, gy, gx - view.W * 0.6, gy);
@@ -280,6 +324,26 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
     const awake = barkT > 0;
     const alert = noise > 0.65;
     const y = floor - s * 0.42;
+    if (alert && alertAt < 0) alertAt = t;
+    if (!alert) alertAt = -1;
+    const img = awake ? at('perro_ladra', 1.2 - barkT, 12, true)
+      : alert ? at('perro_alerta', t - alertAt, 12, false)
+        : at('perro_duerme', t, 6, true);
+    if (img.complete) {
+      const h = s * 0.95;
+      const w = h * aspect(img);
+      ctx.drawImage(img, x, floor - h, w, h);
+      if (!awake && !alert) bigText(ctx, 'z', x + w * 0.12, floor - h * 0.75 - (t * 12) % 14, s * 0.18, { fill: '#cfd8ff', stroke: 'transparent' });
+      if (alert && !awake) bigText(ctx, '!', x + w * 0.16, floor - h - s * 0.05, s * 0.3, { fill: COLORS.gold });
+      const bw = s * 0.9;
+      const my = floor - h - s * 0.22;
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(x + w / 2 - bw / 2, my, bw, 6);
+      ctx.fillStyle = noise > 0.65 ? COLORS.red : COLORS.white;
+      ctx.fillRect(x + w / 2 - bw / 2, my, bw * Math.min(1, noise), 6);
+      bigText(ctx, 'RUIDO', x + w / 2, my - s * 0.12, 10, { fill: '#cfcfcf', stroke: 'transparent' });
+      return;
+    }
     ctx.save();
     ctx.translate(x, y);
     ctx.lineWidth = 2.5;
@@ -455,7 +519,7 @@ export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music 
     const { tipX, cy } = drawMural(...box);
 
     // Swaggy pintando
-    const sw = Math.min(130, u * 0.3);
+    const sw = Math.min(220, u * 0.5);
     const sh = sw * 1.2;
     const sx = Math.min(Math.max(tipX - sw * 0.2, sw * 0.6), portrait ? W * 0.5 : W * 0.55);
     const img =

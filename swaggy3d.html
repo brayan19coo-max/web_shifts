@@ -1510,6 +1510,7 @@ function toonify(){
   root.traverse(o => heavy.add(o));
   Object.keys(IT).forEach(k => IT[k].mesh.traverse(o => heavy.add(o)));
   catG.traverse(o => heavy.add(o));
+  crewG.traverse(o => heavy.add(o));
   const list = [];
   scene.traverse(o => { if(o.isMesh && !o.userData.isOutline) list.push(o); });
   list.forEach(o => {
@@ -4326,6 +4327,240 @@ function updateWorld(dt, t, walking){
   // onomatopeyas: zoom de golpe
   if(punch > 0){ punch = Math.max(0, punch - dt); camera.zoom = 1 + punch*0.35; camera.updateProjectionMatrix(); }
 }
+// ---------- Guardia y perro (juego "Esquiva al guardia") ----------
+const crewG = new THREE.Group(); crewG.visible = false; scene.add(crewG);
+const CREW = (function(){
+  const M = c => new THREE.MeshLambertMaterial({color:c});
+  const mk = (geo, mat, par, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x || 0, y || 0, z || 0); par.add(m); return m; };
+  const E = (par, mat, r, sx, sy, sz, x, y, z, ws, hs) => mk(ell(r, sx, sy, sz, 0, 0, 0, ws, hs), mat, par, x, y, z);
+  const grp = (par, x, y, z) => { const g = new THREE.Group(); g.position.set(x || 0, y || 0, z || 0); par.add(g); return g; };
+  const ink = M(0x141019);
+
+  // ===== EL GUARDIA: panzón, camisa celeste, corbata negra, gorra y barba de tres días =====
+  const shirt = M(0x92b8ee), shirtD = M(0x6f96d3), pants = M(0x3c5eab), skin = M(0xf3c4a2), stub = M(0x8797c4),
+        gold = M(0xffc83a), capM = M(0x2d4b8f), white = M(0xffffff), mouthM = M(0x5a1a22), lensM = new THREE.MeshBasicMaterial({color:0xfff2a8});
+  const G = {g:grp(crewG)}; G.g.position.set(-1.6, 0, 0);
+  const B = G.body = grp(G.g);
+  G.legs = [-1, 1].map(sx => { const L = grp(B, sx*0.2, 0.62, 0);
+    E(L, pants, 0.165, 1, 1.95, 1.05, 0, -0.26, 0);
+    const st = mk(new THREE.BoxGeometry(0.03, 0.52, 0.07), ink, L, sx*0.158, -0.26, 0); st.userData.noOutline = true;
+    E(L, ink, 0.125, 1.05, 0.62, 1.75, 0, -0.56, 0.08);
+    return L; });
+  E(B, pants, 0.42, 1.05, 0.5, 0.92, 0, 0.66, 0);
+  E(B, shirt, 0.53, 1.0, 0.98, 0.95, 0, 1.0, 0.05);
+  E(B, shirt, 0.44, 1.12, 0.86, 0.86, 0, 1.34, -0.02);
+  // bolsillos con tapa, placa y corbata
+  [-1, 1].forEach(sx => {
+    const pk = mk(new THREE.BoxGeometry(0.16, 0.13, 0.04), shirt, B, sx*0.19, 1.33, 0.36); pk.rotation.set(-0.42, sx*0.38, 0);
+    const fl = mk(new THREE.BoxGeometry(0.17, 0.05, 0.05), shirtD, B, sx*0.19, 1.405, 0.345); fl.rotation.set(-0.5, sx*0.38, 0);
+    const bt = mk(new THREE.SphereGeometry(0.014, 8, 6), white, B, sx*0.19, 1.39, 0.375); bt.userData.noOutline = true;
+  });
+  const badge = mk(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 6), gold, B, 0.21, 1.5, 0.31); badge.rotation.set(Math.PI/2 - 0.55, 0, -0.3);
+  [-1, 1].forEach(sx => { const c = mk(new THREE.BoxGeometry(0.15, 0.05, 0.08), shirt, B, sx*0.08, 1.62, 0.22); c.rotation.set(-0.5, 0, sx*0.55); });
+  E(B, ink, 0.045, 1.1, 0.9, 0.8, 0, 1.6, 0.27);
+  const tie = mk(new THREE.CylinderGeometry(0.04, 0.07, 0.36, 4), ink, B, 0, 1.4, 0.36); tie.rotation.set(-0.42, Math.PI/4, 0); tie.scale.set(1, 1, 0.45);
+  const tip = mk(new THREE.ConeGeometry(0.07, 0.08, 4), ink, B, 0, 1.2, 0.44); tip.rotation.set(Math.PI - 0.42, Math.PI/4, 0); tip.scale.set(1, 1, 0.45);
+  // cabeza
+  const H = G.head = grp(B, 0, 1.66, 0.04);
+  E(H, skin, 0.27, 1, 1.02, 0.95, 0, 0.16, 0);
+  E(H, stub, 0.258, 1.08, 0.6, 0.96, 0, -0.035, 0.065);
+  E(H, skin, 0.09, 1.15, 0.9, 1.0, 0, 0.1, 0.3);
+  [-1, 1].forEach(sx => E(H, skin, 0.065, 0.6, 1, 0.9, sx*0.27, 0.13, 0));
+  G.eyes = []; G.brows = []; G.lids = [];
+  [-1, 1].forEach(sx => {
+    const w = E(H, white, 0.05, 0.85, 1, 0.6, sx*0.09, 0.21, 0.235); w.userData.noOutline = false;
+    const pu = E(H, ink, 0.022, 1, 1, 0.6, sx*0.085, 0.205, 0.265); pu.userData.noOutline = true; G.eyes.push(pu);
+    const lid = E(H, skin, 0.054, 0.88, 0.55, 0.66, sx*0.09, 0.245, 0.236); G.lids.push(lid);
+    const br = mk(new THREE.BoxGeometry(0.13, 0.035, 0.05), ink, H, sx*0.09, 0.285, 0.245); br.rotation.z = sx*0.38; G.brows.push(br);
+  });
+  G.frown = mk(new THREE.TorusGeometry(0.055, 0.013, 6, 16, Math.PI), ink, H, 0, -0.03, 0.31); G.frown.userData.noOutline = true; G.frown.rotation.x = -0.2;
+  G.mouth = E(H, mouthM, 0.07, 1.2, 0.8, 0.5, 0, -0.06, 0.29); G.mouth.visible = false;
+  // gorra
+  const C = grp(H, 0, 0.33, -0.01); C.rotation.x = -0.08;
+  mk(new THREE.CylinderGeometry(0.29, 0.265, 0.17, 32), capM, C, 0, 0.05, 0);
+  E(C, capM, 0.29, 1, 0.3, 1, 0, 0.13, 0);
+  mk(new THREE.CylinderGeometry(0.272, 0.272, 0.045, 32), ink, C, 0, -0.02, 0).userData.noOutline = true;
+  const brim = mk(new THREE.CylinderGeometry(0.21, 0.21, 0.03, 24, 1, false, -Math.PI/2, Math.PI), M(0x1f3770), C, 0, -0.035, 0.17); brim.scale.z = 0.8; brim.rotation.x = 0.12;
+  const cb = mk(new THREE.CylinderGeometry(0.055, 0.055, 0.02, 3), gold, C, 0, 0.07, 0.275); cb.rotation.set(Math.PI/2 - 0.1, 0, Math.PI);
+  // brazos: hombro → codo → puño
+  G.arms = [-1, 1].map(sx => {
+    const A = grp(B, sx*0.48, 1.48, 0);
+    E(A, shirt, 0.14, 1, 2.0, 1.0, 0, -0.18, 0);
+    E(A, shirtD, 0.125, 1.04, 0.34, 1.04, 0, -0.4, 0);
+    if(sx > 0){ const pt = mk(new THREE.CylinderGeometry(0.075, 0.075, 0.02, 5), gold, A, sx*0.135, -0.14, 0); pt.rotation.z = Math.PI/2; }
+    const Fo = grp(A, 0, -0.42, 0);
+    E(Fo, skin, 0.105, 1, 1.75, 1, 0, -0.12, 0);
+    const Fi = grp(Fo, 0, -0.29, 0);
+    E(Fi, skin, 0.125, 1, 1.05, 0.95, 0, 0, 0);
+    for(let k=-1;k<=1;k++) E(Fi, skin, 0.035, 1, 1, 1, k*0.055, -0.05, 0.095);
+    return {A, Fo, Fi, sx};
+  });
+  // linterna en la mano derecha
+  const fl = G.flash = grp(G.arms[0].Fi, 0, -0.03, 0.02); fl.rotation.x = Math.PI/2;
+  mk(new THREE.CylinderGeometry(0.04, 0.034, 0.34, 14), ink, fl, 0, 0, 0.1).rotation.x = Math.PI/2;
+  mk(new THREE.CylinderGeometry(0.06, 0.042, 0.09, 16), ink, fl, 0, 0, 0.29).rotation.x = Math.PI/2;
+  const lens = mk(new THREE.CircleGeometry(0.05, 18), lensM, fl, 0, 0, 0.336); lens.userData.noOutline = true; G.lens = lens;
+
+  // ===== EL PERRO: bulldog blanco, collar de púas, lengua afuera =====
+  const fur = M(0xf4f0ea), furS = M(0xe4ddd2), noseM = M(0x1b1517), tongueM = M(0xec2f3a), eyeM = M(0xe2772a), spikeM = M(0xdfe4ec), pinkM = M(0xf2b3ae);
+  const D = {g:grp(crewG)}; D.g.position.set(1.6, 0, 0);
+  const DB = D.body = grp(D.g, 0, 0.45, 0);
+  E(DB, fur, 0.36, 1.08, 0.92, 1.0, 0, 0.02, 0.12);
+  E(DB, fur, 0.31, 1.0, 0.88, 1.05, 0, 0.0, -0.12);
+  E(DB, fur, 0.27, 1.0, 0.86, 0.95, 0, 0.0, -0.28);
+  const tail = grp(DB, 0, 0.15, -0.52); E(tail, fur, 0.055, 1, 1.5, 1, 0, 0.05, 0); tail.rotation.x = -0.6; D.tail = tail;
+  D.front = [-1, 1].map(sx => { const L = grp(DB, sx*0.23, -0.12, 0.27);
+    E(L, fur, 0.115, 1, 1.75, 1.15, 0, -0.12, 0);
+    E(L, fur, 0.1, 1.2, 0.55, 1.4, sx*0.02, -0.28, 0.07);
+    for(let k=-1;k<=1;k++) E(L, fur, 0.035, 1, 0.8, 1, sx*0.02 + k*0.055, -0.29, 0.19);
+    return L; });
+  D.back = [-1, 1].map(sx => { const L = grp(DB, sx*0.2, -0.08, -0.3);
+    E(L, fur, 0.15, 1, 1.35, 1.25, 0, -0.08, 0);
+    E(L, fur, 0.09, 1.15, 0.55, 1.4, 0, -0.32, 0.06);
+    return L; });
+  // collar de púas
+  const col = D.collar = grp(DB, 0, 0.17, 0.33); col.rotation.x = -0.65;
+  mk(new THREE.TorusGeometry(0.255, 0.05, 10, 36), ink, col, 0, 0, 0);
+  for(let i=0;i<7;i++){ const a = Math.PI/2 + (i - 3)*0.5; const sp = mk(new THREE.ConeGeometry(0.032, 0.09, 10), spikeM, col, Math.cos(a)*0.3, Math.sin(a)*0.3, 0.02); sp.rotation.z = a - Math.PI/2; }
+  // cabeza
+  const Hd = D.head = grp(DB, 0, 0.24, 0.46); Hd.scale.setScalar(1.3);
+  E(Hd, fur, 0.25, 1.25, 0.95, 1.0, 0, 0.06, 0);
+  E(Hd, fur, 0.17, 1.35, 0.72, 0.8, 0, 0.01, 0.2);
+  [-1, 1].forEach(sx => E(Hd, fur, 0.145, 0.92, 1.12, 0.95, sx*0.145, -0.1, 0.17));
+  E(Hd, noseM, 0.066, 1.45, 0.8, 0.9, 0, 0.07, 0.33);
+  [-1, 1].forEach(sx => { const n = E(Hd, M(0x000000), 0.012, 1, 0.7, 0.5, sx*0.03, 0.06, 0.39); n.userData.noOutline = true; });
+  // arrugas de la frente
+  [0.2, 0.25].forEach((y, i) => { const w = mk(new THREE.TorusGeometry(0.09 - i*0.015, 0.008, 5, 14, Math.PI*0.7), noseM, Hd, 0, y, 0.21 - i*0.03); w.rotation.set(-0.5, 0, Math.PI*0.15); w.userData.noOutline = true; });
+  D.eyes = []; D.lids = [];
+  [-1, 1].forEach(sx => {
+    E(Hd, eyeM, 0.042, 1.1, 0.72, 0.6, sx*0.14, 0.13, 0.205);
+    const pu = E(Hd, noseM, 0.02, 1, 1, 0.6, sx*0.142, 0.128, 0.226); pu.userData.noOutline = true; D.eyes.push(pu);
+    const lid = E(Hd, fur, 0.048, 1.12, 0.8, 0.68, sx*0.14, 0.135, 0.207); D.lids.push(lid);
+    const br = E(Hd, fur, 0.075, 1.35, 0.55, 0.8, sx*0.13, 0.18, 0.18); br.rotation.z = -sx*0.35;
+    const bl = mk(new THREE.BoxGeometry(0.11, 0.016, 0.02), noseM, Hd, sx*0.13, 0.168, 0.236); bl.rotation.z = -sx*0.35; bl.userData.noOutline = true;
+    const ear = grp(Hd, sx*0.25, 0.22, -0.02); ear.rotation.set(0.2, 0, -sx*0.5);
+    E(ear, fur, 0.085, 1.0, 0.75, 0.38, 0, 0, 0);
+    E(ear, pinkM, 0.055, 0.9, 0.6, 0.3, 0, -0.01, 0.018).userData.noOutline = true;
+    (D.ears = D.ears || []).push(ear);
+  });
+  // quijada con dientes y lengua
+  const J = D.jaw = grp(Hd, 0, -0.13, 0.06);
+  E(J, mouthM, 0.14, 1.25, 0.7, 0.95, 0, 0.03, 0.1).userData.noOutline = true;
+  E(J, fur, 0.14, 1.35, 0.6, 1.05, 0, -0.06, 0.12);
+  [-1, 1].forEach(sx => mk(new THREE.ConeGeometry(0.024, 0.07, 8), white, J, sx*0.1, 0.02, 0.24));
+  const Tg = D.tongue = grp(J, 0.03, 0.0, 0.2);
+  E(Tg, tongueM, 0.06, 1.35, 0.34, 1.7, 0, 0, 0.085); Tg.rotation.x = 1.3;
+  E(Tg, M(0xb81f2a), 0.012, 0.6, 0.4, 7, 0, 0.012, 0.1).userData.noOutline = true;
+
+  // ===== POSES (t en segundos, deterministas para poder grabarlas) =====
+  const TAU2 = Math.PI*2, sm = x => x*x*(3 - 2*x), cl01 = x => Math.max(0, Math.min(1, x));
+  const AWAY = Math.PI/2 + 0.6, LOOK = -Math.PI/2 + 0.4;
+  function guardBase(){
+    G.g.rotation.set(0, 0, 0); B.rotation.set(0, 0, 0); B.position.set(0, 0, 0); B.scale.set(1, 1, 1);
+    H.rotation.set(0, 0, 0); G.legs.forEach(L => L.rotation.set(0, 0, 0));
+    G.arms.forEach(a => { a.A.rotation.set(0, 0, a.sx*0.42); a.Fo.rotation.set(0, 0, 0); a.Fi.rotation.set(0, 0, 0); });
+    G.frown.visible = true; G.mouth.visible = false; G.lids.forEach(l => l.visible = false);
+    G.brows.forEach((b, i) => { b.rotation.z = (i ? 1 : -1)*0.38; b.position.y = 0.285; });
+    G.eyes.forEach((e, i) => e.position.x = (i ? 1 : -1)*0.085);
+    G.flash.rotation.set(Math.PI/2, 0, 0); G.lens.material.color.setHex(0xfff2a8);
+  }
+  function breathe(t, k){ const b = Math.sin(t*TAU2/2); B.scale.set(1 + b*0.008*k, 1 + b*0.014*k, 1 + b*0.01*k); H.position.y = 1.66 + b*0.012*k; }
+  function guardPose(name, t){
+    guardBase();
+    const L = G.arms[0], R = G.arms[1];   // L lleva la linterna (brazo del fondo cuando mira a Swaggy)
+    if(name === 'espalda'){
+      G.g.rotation.y = AWAY; breathe(t, 1);
+      H.rotation.y = Math.sin(t*TAU2/2)*0.12; H.rotation.x = 0.06;
+      L.A.rotation.set(-0.35, 0, -0.42); L.Fo.rotation.x = -0.6; L.Fi.rotation.x = 0.3;
+      R.A.rotation.set(0.1, 0, 0.62); R.Fo.rotation.x = -1.2; R.Fo.rotation.z = -0.5;
+      G.lids.forEach(l => l.visible = true);
+    }
+    if(name === 'sospecha'){
+      G.g.rotation.y = AWAY; breathe(t, 0.6);
+      const k = sm(cl01(t/0.25));
+      H.rotation.y = -1.45*k + Math.sin(t*40)*0.03; H.rotation.z = 0.1*k;
+      B.rotation.y = -0.3*k;
+      G.eyes.forEach((e, i) => e.position.x = (i ? 1 : -1)*0.085 - 0.024*k);
+      G.brows.forEach((b, i) => { b.rotation.z = (i ? -1 : 1)*0.2*k + (i ? 1 : -1)*0.38*(1 - k); b.position.y = 0.285 + 0.03*k; });
+      L.A.rotation.set(-0.35, 0, -0.42); L.Fo.rotation.x = -0.6;
+      R.A.rotation.set(0.1, 0, 0.62); R.Fo.rotation.x = -1.2; R.Fo.rotation.z = -0.5;
+    }
+    if(name === 'voltea'){
+      const k = sm(cl01(t/0.42));
+      G.g.rotation.y = AWAY + (LOOK - AWAY)*k;
+      H.rotation.y = -1.45*(1 - k)*(1 - k);
+      B.position.y = Math.sin(k*Math.PI)*0.06;
+      G.legs.forEach((Lg, i) => Lg.rotation.x = Math.sin(k*Math.PI)*(i ? 0.3 : -0.3));
+      L.A.rotation.set(-0.35 - 1.1*k, 0, -0.42 + 0.17*k); L.Fo.rotation.x = -0.6 + 0.35*k;
+      R.A.rotation.set(0.1, 0, 0.62 - 0.1*k); R.Fo.rotation.x = -1.2; R.Fo.rotation.z = -0.5;
+    }
+    if(name === 'mira'){
+      G.g.rotation.y = LOOK; breathe(t, 0.8);
+      H.rotation.y = Math.sin(t*TAU2/1.33)*0.16; H.rotation.x = 0.05;
+      B.rotation.z = Math.sin(t*TAU2/1.33)*0.02;
+      L.A.rotation.set(-1.45 + Math.sin(t*TAU2/1.33)*0.06, Math.sin(t*TAU2/1.33)*0.15, -0.25); L.Fo.rotation.x = -0.25;
+      R.A.rotation.set(0.1, 0, 0.62); R.Fo.rotation.x = -1.2; R.Fo.rotation.z = -0.5;
+      G.brows.forEach((b, i) => { b.rotation.z = (i ? 1 : -1)*0.5; b.position.y = 0.272; });
+    }
+    if(name === 'grita'){
+      G.g.rotation.y = LOOK + 0.2;
+      const w = Math.sin(t*TAU2*1.5);
+      B.rotation.x = 0.1; B.position.y = Math.abs(w)*0.03;
+      H.rotation.x = -0.08 + w*0.04;
+      G.frown.visible = false; G.mouth.visible = true; G.mouth.scale.set(1, 1 + Math.abs(w)*0.5, 1);
+      G.brows.forEach((b, i) => { b.rotation.z = (i ? 1 : -1)*0.55; b.position.y = 0.265; });
+      R.A.rotation.set(-2.1 + w*0.25, 0, 1.05); R.Fo.rotation.x = -0.7 + w*0.35;
+      L.A.rotation.set(-1.25, 0, -0.3); L.Fo.rotation.x = -0.3;
+    }
+  }
+  function dogBase(){
+    D.g.rotation.set(0, 0, 0); DB.position.set(0, 0.45, 0); DB.rotation.set(0, 0, 0); DB.scale.set(1, 1, 1);
+    Hd.rotation.set(0, 0, 0); Hd.position.set(0, 0.26, 0.48); J.rotation.set(0, 0, 0); Tg.rotation.set(1.3, 0, 0); Tg.scale.set(1, 1, 1);
+    D.front.forEach(L => { L.rotation.set(0, 0, 0); L.position.y = -0.12; }); D.back.forEach(L => { L.rotation.set(0, 0, 0); L.position.y = -0.08; });
+    D.lids.forEach(l => { l.visible = false; l.scale.set(1, 1, 1); }); D.ears.forEach((e, i) => e.rotation.set(0.2, 0, (i ? -1 : 1)*0.5));
+    tail.rotation.set(-0.6, 0, 0);
+  }
+  function lying(){
+    DB.position.y = 0.3;
+    D.front.forEach((L, i) => { L.rotation.set(-1.45, 0, 0); L.position.y = -0.17; });
+    D.back.forEach((L, i) => { L.rotation.set(1.25, 0, (i ? 1 : -1)*0.25); L.position.y = -0.12; });
+  }
+  function dogPose(name, t){
+    dogBase(); D.g.rotation.y = LOOK - 0.1;
+    if(name === 'duerme'){
+      lying();
+      const b = Math.sin(t*TAU2/2);
+      DB.scale.set(1 + b*0.02, 1 + b*0.03, 1);
+      Hd.position.set(0, 0.06, 0.52); Hd.rotation.set(0.35, 0, 0.06);
+      D.lids.forEach(l => l.visible = true);
+      Tg.rotation.x = 1.45; Tg.scale.set(0.8, 0.8, 0.7);
+      J.rotation.x = 0.04 + b*0.02;
+      D.ears.forEach((e, i) => e.rotation.set(0.35, 0, (i ? -1 : 1)*0.8));
+    }
+    if(name === 'alerta'){
+      lying();
+      const k = sm(cl01(t/0.3));
+      Hd.position.set(0, 0.06 + 0.16*k, 0.52 - 0.02*k); Hd.rotation.set(0.35 - 0.5*k, Math.sin(t*TAU2*1.2)*0.12*k, 0);
+      D.lids.forEach(l => { l.visible = true; l.scale.y = 1 - 0.85*k; l.position.y = 0.135 + 0.03*k; });
+      D.ears.forEach((e, i) => e.rotation.set(0.0, 0, (i ? -1 : 1)*(0.5 - 0.35*k)));
+      tail.rotation.x = -0.6 - 0.4*k + Math.sin(t*30)*0.1*k;
+    }
+    if(name === 'ladra'){
+      const ph = (t*3) % 1, bark = Math.sin(Math.min(1, ph/0.45)*Math.PI);
+      DB.position.y = 0.45 + bark*0.04; DB.rotation.x = -0.06 - bark*0.06;
+      D.front.forEach((L, i) => L.rotation.set(-0.15, 0, (i ? 1 : -1)*0.18));
+      D.back.forEach((L, i) => L.rotation.set(0.2, 0, (i ? 1 : -1)*0.12));
+      Hd.position.set(0, 0.28 + bark*0.04, 0.5 + bark*0.06); Hd.rotation.set(-0.15 - bark*0.2, 0, 0);
+      J.rotation.x = 0.12 + bark*0.75;
+      Tg.rotation.x = 1.0 + bark*0.4; Tg.scale.set(1, 1, 1.1 + bark*0.2);
+      D.ears.forEach((e, i) => e.rotation.set(-0.2 - bark*0.3, 0, (i ? -1 : 1)*0.25));
+      tail.rotation.x = -0.9 + Math.sin(t*28)*0.25;
+    }
+  }
+  return {G, D, guardPose, dogPose};
+})();
+window.__crew = {group:crewG, ...CREW, setTimeMode:(m) => setTimeMode(m, true)};
+// ---------- fin guardia y perro ----------
 toonify();
 { // las líneas de la cabeza usan su propio grosor (sin contar los objetos que se pone)
   const items = new Set(); Object.keys(IT).forEach(k => IT[k].mesh.traverse(o => items.add(o)));

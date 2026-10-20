@@ -85,6 +85,46 @@
    "frames": 12,
    "w": 207,
    "h": 220
+  },
+  "guardia_espalda": {
+   "frames": 12,
+   "w": 234,
+   "h": 220
+  },
+  "guardia_grita": {
+   "frames": 8,
+   "w": 234,
+   "h": 220
+  },
+  "guardia_mira": {
+   "frames": 8,
+   "w": 234,
+   "h": 220
+  },
+  "guardia_sospecha": {
+   "frames": 8,
+   "w": 234,
+   "h": 220
+  },
+  "guardia_voltea": {
+   "frames": 6,
+   "w": 234,
+   "h": 220
+  },
+  "perro_alerta": {
+   "frames": 6,
+   "w": 247,
+   "h": 220
+  },
+  "perro_duerme": {
+   "frames": 12,
+   "w": 247,
+   "h": 220
+  },
+  "perro_ladra": {
+   "frames": 8,
+   "w": 247,
+   "h": 220
   }
  }
 }

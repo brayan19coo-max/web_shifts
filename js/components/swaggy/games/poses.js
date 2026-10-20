@@ -14,7 +14,7 @@
  * build_game_sheets.py.
  */
 const BASE = 'assets/images/juegos/3d/';
-const VERSION = '1';
+const VERSION = '2';
 const STRIP_FPS = 12;
 
 // cuadros y tamaño de cada tira (igual que manifest.json)
@@ -22,6 +22,8 @@ const ANIMS = {
   aletear: [2, 158], atrapar: [1, 207], bailar: [4, 207], caer: [1, 158], caminar: [4, 207], celebrar: [10, 207],
   correr: [4, 158], disimular: [16, 207], golpe: [8, 207], golpe_lado: [8, 158], nervioso: [8, 207], pintar: [12, 207],
   planear: [4, 158], quieto: [24, 207], recoger: [1, 158], saltar: [1, 158], triste: [12, 207],
+  // guardia y perro de "Esquiva al guardia"
+  guardia_espalda: [12, 234], guardia_grita: [8, 234], guardia_mira: [8, 234], guardia_sospecha: [8, 234], guardia_voltea: [6, 234], perro_alerta: [6, 247], perro_duerme: [12, 247], perro_ladra: [8, 247],
 };
 const FRAME_H = 220;
 // nombres viejos que se siguen usando
