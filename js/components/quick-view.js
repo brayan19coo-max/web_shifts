@@ -16,7 +16,19 @@ export function initQuickView() {
   let returnFocus = null;
 
   const renderVisual = () => {
-    $('[data-qv-visual]', content).innerHTML = productVisual(product, selection.colorIndex);
+    const media = $('[data-qv-visual]', content);
+    const set = product.gallery?.[selection.colorIndex] || product.gallery?.[0];
+    media.classList.toggle('qv__media--gallery', Boolean(set));
+    if (set) {
+      const i = Math.min(selection.photo || 0, set.length - 1);
+      media.innerHTML = `
+        <div class="qv__stage"><img class="qv__photo" src="${escapeHtml(set[i].src)}" alt="${escapeHtml(set[i].alt || product.name)}"></div>
+        <div class="qv__thumbs" role="group" aria-label="Fotos">
+          ${set.map((g, k) => `<button type="button" class="qv__thumb${k === i ? ' is-active' : ''}" data-qv-photo="${k}"
+            aria-label="Foto ${k + 1}${g.model ? ' (modelo)' : ''}" aria-pressed="${k === i}" data-sfx="tick">
+            <img src="${escapeHtml(g.src)}" alt="" loading="lazy"></button>`).join('')}
+        </div>`;
+    } else media.innerHTML = productVisual(product, selection.colorIndex);
     $('[data-qv-color]', content).textContent = product.colors[selection.colorIndex].name;
   };
 
@@ -30,7 +42,7 @@ export function initQuickView() {
       <div class="qv__body">
         ${product.tag ? `<span class="qv__tag">${escapeHtml(product.tag)}</span>` : ''}
         <h2 class="qv__name" id="qv-title">${escapeHtml(product.name)}</h2>
-        <p class="qv__price">${soldOut ? `<s>${formatPrice(product.price)}</s> <span class="qv__soldout">Sold out</span>` : formatPrice(product.price)}</p>
+        <p class="qv__price">${soldOut ? `${product.price != null ? `<s>${formatPrice(product.price)}</s> ` : ''}<span class="qv__soldout">Sold out</span>` : formatPrice(product.price)}</p>
         <p class="qv__desc">${escapeHtml(product.description)}</p>
 
         <div class="qv__group">
@@ -78,7 +90,7 @@ export function initQuickView() {
   const open = ({ id, colorIndex = 0 }) => {
     product = getProduct(id);
     if (!product) return;
-    selection = { colorIndex, size: null, qty: 1 };
+    selection = { colorIndex, size: null, qty: 1, photo: 0 };
     returnFocus = document.activeElement;
     render();
     modal.hidden = false;
@@ -101,9 +113,16 @@ export function initQuickView() {
     const t = event.target;
     if (t.closest('[data-qv-close]') || t === modal) return close();
 
+    const thumb = t.closest('[data-qv-photo]');
+    if (thumb) {
+      selection.photo = Number(thumb.dataset.qvPhoto);
+      renderVisual();
+      return;
+    }
     const swatch = t.closest('[data-qv-swatch]');
     if (swatch) {
       selection.colorIndex = Number(swatch.dataset.qvSwatch);
+      selection.photo = 0;
       content.querySelectorAll('[data-qv-swatch]').forEach((s) => {
         s.classList.toggle('is-active', s === swatch);
         s.setAttribute('aria-pressed', String(s === swatch));

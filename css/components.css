@@ -1044,3 +1044,126 @@ html.cursor-visible .cursor-ring {
 .toast--error .toast__dot {
   background: var(--danger);
 }
+
+
+/* ---------- Prendas con foto recortada (prenda + modelos sin fondo) ---------- */
+.pv-cut {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.product-photo--cut {
+  position: absolute;
+  inset: 0;
+  object-fit: contain;
+  border-radius: 0;
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.45));
+  transition: opacity 0.45s var(--ease), transform 0.6s var(--ease);
+}
+
+.product-photo--model {
+  opacity: 0;
+  transform: translateY(4%) scale(0.98);
+}
+
+.card--photo .card__visual {
+  inset: 6%;
+}
+
+@media (hover: hover) {
+  .card__media:hover .product-photo--cut:not(.product-photo--model) {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  .card__media:hover .product-photo--model {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* agotada pero con foto real: la prenda se ve con su color real, solo con el sello */
+.card--soldout.card--photo .card__visual {
+  filter: none;
+}
+
+.card--soldout.card--photo .card__media:hover .card__stamp {
+  opacity: 0;
+}
+
+.card__stamp {
+  transition: opacity 0.3s;
+}
+
+.qv__media--gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: 16px;
+  min-height: 0;
+  animation: none;
+}
+
+.qv__stage {
+  position: relative;
+  flex: 1;
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+}
+
+.qv__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.45));
+  animation: swap 0.45s var(--ease);
+}
+
+.qv__thumbs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.qv__thumb {
+  flex: 0 0 auto;
+  width: 58px;
+  height: 72px;
+  padding: 4px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: var(--bg-2);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.qv__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.qv__thumb:hover {
+  transform: translateY(-2px);
+}
+
+.qv__thumb.is-active {
+  border-color: var(--accent);
+}
+
+@media (max-width: 720px) {
+  .qv__media--gallery {
+    padding: 12px;
+  }
+
+  .qv__stage {
+    min-height: 300px;
+  }
+}

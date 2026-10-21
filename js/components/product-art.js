@@ -60,6 +60,16 @@ export function garmentSvg(type, hex) {
 /** Visual del producto: foto si existe, si no la ilustración. */
 export function productVisual(product, colorIndex = 0) {
   const color = product.colors[colorIndex] || product.colors[0];
+  const set = product.gallery?.[colorIndex] || product.gallery?.[0];
+  if (set?.length) {
+    // prenda sola y, encima, el primer modelo (aparece al pasar el mouse)
+    const garment = set.find((g) => !g.model) || set[0];
+    const model = set.find((g) => g.model);
+    return `<span class="pv-cut">
+      <img class="product-photo product-photo--cut" src="${escapeHtml(garment.src)}" alt="${escapeHtml(garment.alt || product.name)}" loading="lazy">
+      ${model ? `<img class="product-photo product-photo--cut product-photo--model" src="${escapeHtml(model.src)}" alt="${escapeHtml(model.alt || '')}" loading="lazy">` : ''}
+    </span>`;
+  }
   const image = product.images?.[colorIndex];
   if (image) {
     return `<img class="product-photo" src="${escapeHtml(image)}" alt="${escapeHtml(`${product.name} ${color.name}`)}" loading="lazy">`;

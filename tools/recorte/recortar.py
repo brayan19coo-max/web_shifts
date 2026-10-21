@@ -1,0 +1,96 @@
+"""Quita el fondo de fotos (modelo con la prenda) y deja un PNG/WebP transparente.
+Uso: python3 recortar.py foto1.jpg [foto2.jpg ...] --out carpeta [--max 1400]
+Usa el modelo IS-Net (isnet-general-use.onnx) con onnxruntime; el modelo
+se guarda en ~/.u2net/ (se descarga de los releases de rembg en GitHub)."""
+import argparse, os, sys, urllib.request
+import numpy as np
+import onnxruntime as ort
+from PIL import Image, ImageFilter, ImageOps
+
+BASE = 'https://github.com/danielgatis/rembg/releases/download/v0.0.0/'
+# 'general' = IS-Net (cualquier objeto) · 'human' = U2Net de personas · 'persona' = los dos juntos (lo mejor para modelos)
+MODELS = {'general': ('isnet-general-use.onnx', 1024, (0.5, 0.5, 0.5), (1.0, 1.0, 1.0)),
+          'human': ('u2net_human_seg.onnx', 320, (0.485, 0.456, 0.406), (0.229, 0.224, 0.225))}
+
+
+def session(kind='general'):
+    name = MODELS[kind][0]
+    path = os.path.expanduser('~/.u2net/' + name)
+    if not os.path.exists(path):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        urllib.request.urlretrieve(BASE + name, path)
+    sess = ort.InferenceSession(path, providers=['CPUExecutionProvider'])
+    sess.kind = kind
+    return sess
+
+
+class Persona:
+    """Borde fino de IS-Net, pero solo donde U2Net ve a la persona
+    (así no se cuelan máquinas, sillas ni lámparas pegadas al modelo)."""
+    kind = 'persona'
+
+    def __init__(self):
+        self.g, self.h = session('general'), session('human')
+
+
+def mask_for(sess, im):
+    if isinstance(sess, Persona):
+        import cv2
+        g = np.asarray(mask_for(sess.g, im), dtype=np.float32)
+        h = np.asarray(mask_for(sess.h, im))
+        k = max(9, int(min(im.size) * 0.02) | 1)
+        gate = cv2.GaussianBlur(cv2.dilate((h > 90).astype(np.uint8) * 255, np.ones((k, k), np.uint8)), (k, k), 0) / 255.0
+        return Image.fromarray(np.clip(g * gate, 0, 255).astype(np.uint8))
+    _, size, mean, std = MODELS[getattr(sess, 'kind', 'general')]
+    x = np.asarray(im.convert('RGB').resize((size, size), Image.BILINEAR), dtype=np.float32) / 255.0
+    x = (x - np.array(mean, dtype=np.float32)) / np.array(std, dtype=np.float32)
+    x = x.transpose(2, 0, 1)[None].astype(np.float32)
+    out = sess.run(None, {sess.get_inputs()[0].name: x})[0][0, 0]
+    out = (out - out.min()) / (out.max() - out.min() + 1e-8)
+    m = Image.fromarray((out * 255).astype(np.uint8)).resize(im.size, Image.BILINEAR)
+    return m
+
+
+def keep_largest(m):
+    """Deja solo la figura más grande (quita lámparas, objetos sueltos)."""
+    import cv2
+    a = np.asarray(m)
+    n, lab, stats, _ = cv2.connectedComponentsWithStats((a > 100).astype(np.uint8), 8)
+    if n <= 2:
+        return m
+    big = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+    keep = cv2.dilate((lab == big).astype(np.uint8), np.ones((9, 9), np.uint8))
+    return Image.fromarray((a * keep).astype(np.uint8))
+
+
+def cut(sess, path, out_dir, max_side, largest=True):
+    im = ImageOps.exif_transpose(Image.open(path)).convert('RGB')
+    im.thumbnail((max_side, max_side), Image.LANCZOS)
+    m = mask_for(sess, im)
+    if largest:
+        m = keep_largest(m)
+    # borde limpio: sube el contraste de la máscara y suaviza un pelo
+    m = m.point(lambda v: 0 if v < 20 else 255 if v > 235 else int((v - 20) * 255 / 215)).filter(ImageFilter.GaussianBlur(0.6))
+    rgba = im.copy(); rgba.putalpha(m)
+    bb = m.point(lambda v: 255 if v > 30 else 0).getbbox()
+    if bb:
+        pad = 12
+        rgba = rgba.crop((max(0, bb[0] - pad), max(0, bb[1] - pad), min(im.width, bb[2] + pad), min(im.height, bb[3] + pad)))
+    name = os.path.splitext(os.path.basename(path))[0]
+    dst = os.path.join(out_dir, name + '.webp')
+    rgba.save(dst, 'WEBP', quality=85, alpha_quality=95, method=6)
+    return dst
+
+
+if __name__ == '__main__':
+    ap = argparse.ArgumentParser()
+    ap.add_argument('fotos', nargs='+')
+    ap.add_argument('--out', required=True)
+    ap.add_argument('--max', type=int, default=1400)
+    ap.add_argument('--modelo', choices=list(MODELS) + ['persona'], default='general')
+    ap.add_argument('--todo', action='store_true', help='no quitar objetos sueltos (deja todo lo que detecte)')
+    a = ap.parse_args()
+    os.makedirs(a.out, exist_ok=True)
+    s = Persona() if a.modelo == 'persona' else session(a.modelo)
+    for f in a.fotos:
+        print(cut(s, f, a.out, a.max, not a.todo), flush=True)

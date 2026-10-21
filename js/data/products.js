@@ -24,6 +24,8 @@
  *     drop: 'drop-02',                   // opcional: lo bloquea en el drop con clave
  *     soldOut: true,                     // opcional: se muestra "Sold out" y no se puede comprar
  *     soldOutSizes: ['S', 'M'],          // opcional: solo esas tallas agotadas
+ *     gallery: [[{ src, alt, model }], …] // opcional: varias fotos por color (prenda y modelos
+ *                                        // con fondo recortado: tools/recorte/recortar.py)
  *   },
  *
  * Reglas rápidas:
@@ -50,8 +52,43 @@ const NEGRO = { name: 'Negro', hex: '#111111' };
 const BLANCO = { name: 'Blanco', hex: '#f4f4f4' };
 const GRIS = { name: 'Gris', hex: '#8a8a8a' };
 const CARBON = { name: 'Carbón', hex: '#333333' };
+const SAINTS = 'assets/images/productos/saints-mode/';
 
 export const PRODUCTS = [
+  // ---------------- SAINTS MODE (agotada) ----------------
+  // gallery: fotos por color (mismo orden que colors). La primera es la
+  // camiseta sola y las demás los modelos, todas con el fondo recortado.
+  {
+    id: 'tee-saints-mode',
+    name: 'Tee Saints Mode',
+    category: 'camisetas',
+    type: 'tee',
+    price: null, // sin precio mientras esté agotada
+    tag: 'Saints Mode',
+    description: 'Camiseta oversize de la colección Saints Mode: el angelito con SHIFT\'S al frente y las alas en la espalda.',
+    colors: [NEGRO, BLANCO],
+    sizes: SIZES,
+    soldOut: true,
+    gallery: [
+      [
+        { src: `${SAINTS}negro-frente.webp`, alt: 'Tee Saints Mode negra, frente' },
+        { src: `${SAINTS}negro-espalda.webp`, alt: 'Tee Saints Mode negra, espalda' },
+        { src: `${SAINTS}modelo-negro-chica-frente.webp`, alt: 'Modelo con la Tee Saints Mode negra, frente', model: true },
+        { src: `${SAINTS}modelo-negro-chica-espalda.webp`, alt: 'Modelo con la Tee Saints Mode negra, espalda', model: true },
+        { src: `${SAINTS}modelo-negro-chico-frente.webp`, alt: 'Modelo con la Tee Saints Mode negra', model: true },
+        { src: `${SAINTS}modelo-negro-chico-espalda.webp`, alt: 'Modelo con la Tee Saints Mode negra, espalda', model: true },
+      ],
+      [
+        { src: `${SAINTS}blanco-frente.webp`, alt: 'Tee Saints Mode blanca, frente' },
+        { src: `${SAINTS}blanco-espalda.webp`, alt: 'Tee Saints Mode blanca, espalda' },
+        { src: `${SAINTS}modelo-blanco-chico-frente.webp`, alt: 'Modelo con la Tee Saints Mode blanca, frente', model: true },
+        { src: `${SAINTS}modelo-blanco-chico-espalda.webp`, alt: 'Modelo con la Tee Saints Mode blanca, espalda', model: true },
+        { src: `${SAINTS}modelo-blanco-chica-frente.webp`, alt: 'Modelo con la Tee Saints Mode blanca', model: true },
+        { src: `${SAINTS}modelo-blanco-chica-espalda.webp`, alt: 'Modelo con la Tee Saints Mode blanca, espalda', model: true },
+      ],
+    ],
+  },
+
   // ---------------- COLECCIÓN (Drop 01) ----------------
   {
     id: 'tee-tag',

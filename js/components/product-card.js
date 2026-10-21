@@ -9,7 +9,7 @@ import { bus } from '../core/bus.js';
  */
 export function createProductCard(product, index = 0) {
   const card = html(`
-    <article class="card${product.soldOut ? ' card--soldout' : ''}" style="--i:${index}" data-product-id="${product.id}">
+    <article class="card${product.soldOut ? ' card--soldout' : ''}${product.gallery ? ' card--photo' : ''}" style="--i:${index}" data-product-id="${product.id}">
       <button class="card__media" type="button" data-quick-view data-cursor="Ver" data-sfx-hover="hover"
         aria-label="Vista rápida: ${escapeHtml(product.name)}">
         <span class="card__visual">${productVisual(product, 0)}</span>
@@ -21,7 +21,7 @@ export function createProductCard(product, index = 0) {
       <div class="card__info">
         <div>
           <h3 class="card__name">${escapeHtml(product.name)}</h3>
-          <p class="card__price">${product.soldOut ? '<s>' + formatPrice(product.price) + '</s> · Sold out' : formatPrice(product.price)}</p>
+          <p class="card__price">${product.soldOut ? (product.price != null ? '<s>' + formatPrice(product.price) + '</s> · ' : '') + 'Sold out' : formatPrice(product.price)}</p>
         </div>
         <div class="card__swatches" role="radiogroup" aria-label="Colores">
           ${product.colors
