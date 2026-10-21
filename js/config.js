@@ -7,7 +7,7 @@
 
 export const BRAND = {
   name: "Shift's",
-  tagline: 'Shifting your style',
+  tagline: 'Rompiendo esquemas',
   description: 'Ropa urbana con alma de graffiti. Colecciones para tus días de base y drops para tus días de impulso.',
   logo: 'assets/images/logo.svg', // logo vectorial (letras blancas, contorno negro)
   logoSticker: 'assets/images/logo-sticker.svg', // con borde blanco tipo sticker (para fondos negros)
@@ -85,7 +85,7 @@ export const SOUNDS = {
   error: 'assets/sounds/error.mp3?v=080a2560',         // validación fallida (falta talla, clave incorrecta)
   whoosh: 'assets/sounds/whoosh.mp3?v=29767df1',       // transiciones (filtros, intro)
   tick: 'assets/sounds/tick.mp3?v=c3d23c3a',           // pequeños detalles (colores, cantidades, contador)
-  note: 'assets/sounds/note.mp3?v=b1257806',           // letras de "Shifting your style" (se afina por letra)
+  note: 'assets/sounds/note.mp3?v=b1257806',           // letras de "Rompiendo esquemas" (se afina por letra)
   spray: 'assets/sounds/spray.mp3?v=06594c7f',         // clic en el logo (lata de aerosol)
   unlock: 'assets/sounds/unlock.mp3?v=bed277cb',       // drop desbloqueado
   ambient: 'assets/sounds/ambient.mp3?v=8160c148',     // música de fondo en loop
@@ -108,7 +108,7 @@ export const SWAGGY = {
     // Al volver después de 2 días o más
     back: ['¡Volviste! Te estaba guardando el puesto 🥹', 'Mira quién regresó… el que era.', 'Te demoraste, pero valió la pena.'],
     // Al tocarlo
-    tap: ['¡Epa! Con cuidado, que estoy recién planchado.', 'Jaja, eso hace cosquillas 😂', '¿Me llamaste? Aquí estoy.', 'Tócame otra vez y te hago un paso.', 'Shifting my style 😎', '¿Ya viste lo que viene en el drop? 👀'],
+    tap: ['¡Epa! Con cuidado, que estoy recién planchado.', 'Jaja, eso hace cosquillas 😂', '¿Me llamaste? Aquí estoy.', 'Tócame otra vez y te hago un paso.', 'Rompiendo esquemas 😎', '¿Ya viste lo que viene en el drop? 👀'],
     // Al acariciarlo (pasar el dedo/mouse por encima)
     pet: ['Uff… así sí 😌', 'Eso, justo detrás de la oreja.', 'Con cariño, como hacemos la ropa.'],
     // Al tocarlo demasiado
