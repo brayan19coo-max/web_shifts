@@ -1250,3 +1250,14 @@ html.cursor-visible .cursor-ring {
     min-height: 0;
   }
 }
+
+/* Galería centrada: foto y miniaturas en el medio de su columna (simétrico) */
+.qv__media--gallery {
+  position: static;
+  align-self: stretch;
+  justify-content: center;
+}
+
+.qv__thumbs {
+  justify-content: center;
+}
