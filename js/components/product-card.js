@@ -4,14 +4,14 @@ import { productVisual } from './product-art.js';
 import { bus } from '../core/bus.js';
 
 /**
- * Dónde va pegado el sticker de SOLD OUT: cada camiseta (y cada color) lo
- * tiene en un lugar y con un giro distinto, como pegado a mano.
+ * Dónde va pegado el sticker de SOLD OUT: siempre encima del estampado, pero
+ * cada camiseta (y cada color) con un giro y un corrimiento distinto, como pegado a mano.
  */
 function stickerSpot(id, colorIndex) {
   let h = 2166136261;
   for (const ch of `${id}:${colorIndex}`) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
   const r = (k) => (((h >>> (k * 5)) & 1023) / 1023) * 2 - 1; // -1..1
-  return `--st-rot:${(r(0) * 16).toFixed(1)}deg;--st-x:${(r(1) * 14).toFixed(1)}%;--st-y:${(r(2) * 16).toFixed(1)}%;--st-s:${(1 + r(3) * 0.08).toFixed(2)}`;
+  return `--st-rot:${(r(0) * 15).toFixed(1)}deg;--st-x:${(r(1) * 4).toFixed(1)}%;--st-y:${(2 + r(2) * 4).toFixed(1)}%;--st-s:${(1 + r(3) * 0.06).toFixed(2)}`;
 }
 
 /**

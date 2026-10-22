@@ -37,8 +37,8 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{
 <g filter="url(#sh)"><use href="#t" fill="#fff" stroke="#fff" stroke-width="225" stroke-linejoin="round"/></g>
 <!-- contorno negro grueso -->
 <use href="#t" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="140" stroke-linejoin="round"/>
-<!-- sombra 3D de las letras -->
-<use href="#t" transform="translate(8 10)" fill="#e3151a" stroke="#e3151a" stroke-width="22" stroke-linejoin="round"/>
+<!-- sombra 3D de las letras (negra) -->
+<use href="#t" transform="translate(8 10)" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="22" stroke-linejoin="round"/>
 <!-- letras -->
 <use href="#t" fill="#fff" stroke="#0a0a0a" stroke-width="12" stroke-linejoin="round"/>
 </svg>'''

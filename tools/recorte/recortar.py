@@ -84,12 +84,44 @@ def keep_largest(m):
     return Image.fromarray((a * keep).astype(np.uint8))
 
 
-def cut(sess, path, out_dir, max_side, largest=True):
+def grabcut(im, m, band=None, iters=5):
+    """Afina la máscara con GrabCut usando los colores de la foto: lo que la
+    red marcó seguro se queda, lo dudoso del borde se decide por color
+    (así salen los pedacitos de fondo pegados al pelo o entre las piernas)."""
+    import cv2
+    a = np.asarray(m)
+    h, w = a.shape
+    band = band or max(6, int(min(w, h) * 0.012))
+    k = np.ones((band, band), np.uint8)
+    gc = np.full((h, w), cv2.GC_PR_BGD, np.uint8)
+    gc[a > 127] = cv2.GC_PR_FGD
+    gc[cv2.erode((a > 200).astype(np.uint8), k) > 0] = cv2.GC_FGD
+    gc[cv2.dilate((a > 30).astype(np.uint8), k) == 0] = cv2.GC_BGD
+    img = cv2.cvtColor(np.asarray(im), cv2.COLOR_RGB2BGR)
+    bg, fg = np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64)
+    cv2.grabCut(img, gc, None, bg, fg, iters, cv2.GC_INIT_WITH_MASK)
+    hard = np.isin(gc, (cv2.GC_FGD, cv2.GC_PR_FGD)).astype(np.uint8)
+    # quitar islas sueltas y rellenar huecos chiquitos
+    n, lab, st, _ = cv2.connectedComponentsWithStats(hard, 8)
+    if n > 2:
+        big = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+        hard = (lab == big).astype(np.uint8)
+    hard = cv2.morphologyEx(hard, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
+    # borde suave: mezcla con la máscara original solo en la franja del borde
+    soft = cv2.GaussianBlur(hard.astype(np.float32), (5, 5), 0)
+    edge = cv2.dilate(hard, np.ones((7, 7), np.uint8)) - cv2.erode(hard, np.ones((7, 7), np.uint8))
+    out = np.where(edge > 0, np.minimum(soft, a / 255.0 + 0.25), hard.astype(np.float32))
+    return Image.fromarray(np.clip(out * 255, 0, 255).astype(np.uint8))
+
+
+def cut(sess, path, out_dir, max_side, largest=True, refine=True):
     im = ImageOps.exif_transpose(Image.open(path)).convert('RGB')
     im.thumbnail((max_side, max_side), Image.LANCZOS)
     m = mask_for(sess, im)
     if largest:
         m = keep_largest(m)
+    if refine:
+        m = grabcut(im, m)
     # borde limpio: sube el contraste de la máscara y suaviza un pelo
     m = m.point(lambda v: 0 if v < 20 else 255 if v > 235 else int((v - 20) * 255 / 215)).filter(ImageFilter.GaussianBlur(0.6))
     rgba = defringe(im, m)
@@ -110,8 +142,9 @@ if __name__ == '__main__':
     ap.add_argument('--max', type=int, default=1400)
     ap.add_argument('--modelo', choices=list(MODELS) + ['persona'], default='general')
     ap.add_argument('--todo', action='store_true', help='no quitar objetos sueltos (deja todo lo que detecte)')
+    ap.add_argument('--sin-afinar', action='store_true', help='no pasar GrabCut por el borde')
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     s = Persona() if a.modelo == 'persona' else session(a.modelo)
     for f in a.fotos:
-        print(cut(s, f, a.out, a.max, not a.todo), flush=True)
+        print(cut(s, f, a.out, a.max, not a.todo, not a.sin_afinar), flush=True)
