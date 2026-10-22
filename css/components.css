@@ -1283,3 +1283,48 @@ html.cursor-visible .cursor-ring {
     overscroll-behavior: contain;
   }
 }
+
+
+/* ---------- Círculos de color con bala (Bonnie & Clyde) ---------- */
+.swatch {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.card__swatches--bullets .swatch {
+  width: 26px;
+  height: 26px;
+}
+
+.swatch__bullet {
+  width: 88%;
+  height: 88%;
+  pointer-events: none;
+}
+
+.swatch__bullet path {
+  fill: var(--accent);
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 0.5;
+}
+
+.swatch__bullet .b-case {
+  filter: brightness(0.85);
+}
+
+.swatch__bullet .b-rim {
+  filter: brightness(0.7);
+}
+
+/* ---------- Precio pixelado hasta que salga el drop ---------- */
+.price-pixel {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 0;
+}
+
+.price-pixel canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}

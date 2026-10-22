@@ -3,6 +3,7 @@ import { formatPrice } from '../utils/format.js';
 import { getProduct, isSizeSoldOut } from '../data/products.js';
 import { addItem } from '../core/cart-store.js';
 import { productVisual } from './product-art.js';
+import { priceHTML, pixelatePrices, swatchInner, isPriceLocked, releaseLabel } from './price-tag.js';
 import { sound } from '../audio/sound-manager.js';
 import { bus } from '../core/bus.js';
 import { toast } from './toast.js';
@@ -35,6 +36,7 @@ export function initQuickView() {
   const render = () => {
     const singleSize = product.sizes.length === 1;
     const soldOut = Boolean(product.soldOut);
+    const locked = isPriceLocked(product);
     if (singleSize && !isSizeSoldOut(product, product.sizes[0])) selection.size = product.sizes[0];
 
     content.innerHTML = `
@@ -42,7 +44,7 @@ export function initQuickView() {
       <div class="qv__body">
         ${product.tag ? `<span class="qv__tag">${escapeHtml(product.tag)}</span>` : ''}
         <h2 class="qv__name" id="qv-title">${escapeHtml(product.name)}</h2>
-        <p class="qv__price">${soldOut ? `${product.price != null ? `<s>${formatPrice(product.price)}</s> ` : ''}<img class="qv__soldout" src="assets/images/sold-out-sticker.svg" alt="Sold out">` : formatPrice(product.price)}</p>
+        <p class="qv__price">${soldOut ? `${product.price != null ? `<s>${formatPrice(product.price)}</s> ` : ''}<img class="qv__soldout" src="assets/images/sold-out-sticker.svg" alt="Sold out">` : priceHTML(product)}</p>
         <p class="qv__desc">${escapeHtml(product.description)}</p>
         ${product.details?.length ? `<div class="qv__group"><p class="qv__label">Detalles</p>
           <ul class="qv__details">${product.details.map((d) => `<li>${escapeHtml(d)}</li>`).join('')}</ul></div>` : ''}
@@ -54,7 +56,7 @@ export function initQuickView() {
               .map(
                 (c, i) => `<button type="button" class="swatch swatch--lg${i === selection.colorIndex ? ' is-active' : ''}"
                   data-qv-swatch="${i}" aria-label="${escapeHtml(c.name)}" aria-pressed="${i === selection.colorIndex}"
-                  style="--swatch:${c.hex}" data-sfx="tick"></button>`,
+                  style="--swatch:${c.hex}" data-sfx="tick">${swatchInner(c)}</button>`,
               )
               .join('')}
           </div>
@@ -75,7 +77,7 @@ export function initQuickView() {
         </div>
 
         <div class="qv__actions">
-          ${soldOut ? `<button type="button" class="btn btn--ghost btn--block" disabled>Sold out — agotado</button>` : `
+          ${soldOut ? `<button type="button" class="btn btn--ghost btn--block" disabled>Sold out — agotado</button>` : locked ? `<button type="button" class="btn btn--ghost btn--block" disabled>Sale el ${escapeHtml(releaseLabel())}</button>` : `
           <div class="qty" aria-label="Cantidad">
             <button type="button" data-qv-qty="-1" aria-label="Menos" data-sfx="tick">−</button>
             <span data-qv-qty-value>${selection.qty}</span>
@@ -87,6 +89,7 @@ export function initQuickView() {
         </div>
       </div>`;
     renderVisual();
+    pixelatePrices(content);
   };
 
   const open = ({ id, colorIndex = 0 }) => {
@@ -150,7 +153,7 @@ export function initQuickView() {
       return;
     }
 
-    if (t.closest('[data-qv-add]') && !product.soldOut) {
+    if (t.closest('[data-qv-add]') && !product.soldOut && !isPriceLocked(product)) {
       if (!selection.size) {
         sound.play('error');
         const sizes = $('[data-qv-sizes]', content);

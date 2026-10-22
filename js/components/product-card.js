@@ -1,6 +1,7 @@
 import { html, escapeHtml, isFinePointer } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
 import { productVisual } from './product-art.js';
+import { priceHTML, pixelatePrices, swatchInner } from './price-tag.js';
 import { bus } from '../core/bus.js';
 
 /**
@@ -32,21 +33,22 @@ export function createProductCard(product, index = 0) {
       <div class="card__info">
         <div>
           <h3 class="card__name">${escapeHtml(product.name)}</h3>
-          <p class="card__price">${product.soldOut ? (product.price != null ? '<s>' + formatPrice(product.price) + '</s> · ' : '') + 'Sold out' : formatPrice(product.price)}</p>
+          <p class="card__price">${product.soldOut ? (product.price != null ? '<s>' + formatPrice(product.price) + '</s> · ' : '') + 'Sold out' : priceHTML(product)}</p>
         </div>
-        <div class="card__swatches" role="radiogroup" aria-label="Colores">
+        <div class="card__swatches${product.colors.some((c) => c.bullet) ? ' card__swatches--bullets' : ''}" role="radiogroup" aria-label="Colores">
           ${product.colors
             .map(
               (color, i) => `
             <button type="button" class="swatch${i === 0 ? ' is-active' : ''}" role="radio"
               aria-checked="${i === 0}" aria-label="${escapeHtml(color.name)}" title="${escapeHtml(color.name)}"
-              data-color-index="${i}" data-sfx="tick" style="--swatch:${color.hex}"></button>`,
+              data-color-index="${i}" data-sfx="tick" style="--swatch:${color.hex}">${swatchInner(color)}</button>`,
             )
             .join('')}
         </div>
       </div>
     </article>`);
 
+  requestAnimationFrame(() => pixelatePrices(card));
   let colorIndex = 0;
   const visual = card.querySelector('.card__visual');
 

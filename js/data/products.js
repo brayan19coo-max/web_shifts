@@ -12,7 +12,7 @@
  *     price: 189000,                     // en pesos, sin puntos ni signo $
  *     tag: 'Nuevo',                      // etiqueta opcional (bórrala si no quieres)
  *     description: 'Texto que aparece en la vista rápida.',
- *     colors: [
+ *     colors: [                          // accent + bullet: 'uzi' | 'glock' → bala en el círculo
  *       { name: 'Negro', hex: '#111111' },
  *       { name: 'Blanco', hex: '#f4f4f4' },
  *     ],
@@ -55,6 +55,7 @@ const GRIS = { name: 'Gris', hex: '#8a8a8a' };
 const CARBON = { name: 'Carbón', hex: '#333333' };
 const SAINTS = 'assets/images/productos/saints-mode/';
 const SAINTS_NEW = 'assets/images/productos/saint-mode-nuevas/';
+const BC = 'assets/images/productos/bonnie-clyde/';
 // Detalles que llevan todas las prendas de la colección Saint Mode
 const SAINT_MODE_DETAILS = ['100% algodón.', 'Llega en empaque personalizado Shift’s con stickers de regalo.'];
 
@@ -159,8 +160,62 @@ export const PRODUCTS = [
   },
 
   // ---------------- DROP 02 — Bonnie & Clyde (bloqueado con clave) ----------------
-  // Cuando tengas las piezas, agrégalas aquí con la línea  drop: 'drop-02',
-  // Mientras no haya ninguna, al abrir el drop sale "Las piezas se revelan pronto".
+  // Los colores llevan "accent" (color del estampado) y "bullet" (bala del círculo de color).
+  {
+    id: 'tee-clyde',
+    name: 'Camiseta Clyde',
+    category: 'camisetas',
+    type: 'tee',
+    price: 80000,
+    tag: 'Bonnie & Clyde',
+    description: 'Doberman al frente, placas en el hombro y dos fierros atrás listos pa’l golpe.',
+    colors: [
+      { name: 'Negra/Roja', hex: '#111111', accent: '#c0262d', bullet: 'uzi' },
+      { name: 'Negra/Azul', hex: '#111111', accent: '#3b5fe0', bullet: 'uzi' },
+      { name: 'Blanca/Azul', hex: '#f4f4f4', accent: '#3b5fe0', bullet: 'uzi' },
+    ],
+    sizes: SIZES,
+    drop: 'drop-02',
+    gallery: [
+      [
+        { src: `${BC}clyde-negra-roja-frente.webp`, alt: 'Camiseta Clyde negra/roja, frente' },
+        { src: `${BC}clyde-negra-roja-espalda.webp`, alt: 'Camiseta Clyde negra/roja, espalda' },
+      ],
+      [
+        { src: `${BC}clyde-negra-azul-frente.webp`, alt: 'Camiseta Clyde negra/azul, frente' },
+        { src: `${BC}clyde-negra-azul-espalda.webp`, alt: 'Camiseta Clyde negra/azul, espalda' },
+      ],
+      [
+        { src: `${BC}clyde-blanca-azul-frente.webp`, alt: 'Camiseta Clyde blanca/azul, frente' },
+        { src: `${BC}clyde-blanca-azul-espalda.webp`, alt: 'Camiseta Clyde blanca/azul, espalda' },
+      ],
+    ],
+  },
+  {
+    id: 'tee-bonnie',
+    name: 'Camiseta Bonnie',
+    category: 'camisetas',
+    type: 'tee',
+    price: 80000,
+    tag: 'Bonnie & Clyde',
+    description: 'Ella sentada, fierro en mano y otro atrás guardado por si acaso. Se ve tranquila, pero anda armada y no perdona. Sex, love, danger.',
+    colors: [
+      { name: 'Negra/Rosa', hex: '#111111', accent: '#e58bd6', bullet: 'glock' },
+      { name: 'Blanca/Rosa', hex: '#f4f4f4', accent: '#e58bd6', bullet: 'glock' },
+    ],
+    sizes: SIZES,
+    drop: 'drop-02',
+    gallery: [
+      [
+        { src: `${BC}bonnie-negra-rosa-frente.webp`, alt: 'Camiseta Bonnie negra/rosa, frente' },
+        { src: `${BC}bonnie-negra-rosa-espalda.webp`, alt: 'Camiseta Bonnie negra/rosa, espalda' },
+      ],
+      [
+        { src: `${BC}bonnie-blanca-rosa-frente.webp`, alt: 'Camiseta Bonnie blanca/rosa, frente' },
+        { src: `${BC}bonnie-blanca-rosa-espalda.webp`, alt: 'Camiseta Bonnie blanca/rosa, espalda' },
+      ],
+    ],
+  },
 ];
 
 // Versión de las fotos: cámbiala cuando reemplaces una foto con el mismo nombre,
