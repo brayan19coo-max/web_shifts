@@ -76,11 +76,18 @@ export const PRODUCTS = [
       [
         { src: `${SAINTS_NEW}estatua-negro-frente.webp`, alt: 'Camiseta Angel Victoria negra, frente' },
         { src: `${SAINTS_NEW}estatua-negro-espalda.webp`, alt: 'Camiseta Angel Victoria negra, espalda' },
+        { src: `${SAINTS_NEW}modelo-victoria-negro-1.webp`, alt: 'Modelo con la Camiseta Angel Victoria negra', model: true },
+        { src: `${SAINTS_NEW}modelo-victoria-negro-4.webp`, alt: 'Modelo con la Camiseta Angel Victoria negra', model: true },
+        { src: `${SAINTS_NEW}modelo-victoria-negro-2.webp`, alt: 'Modelo con la Camiseta Angel Victoria negra', model: true },
+        { src: `${SAINTS_NEW}modelo-victoria-negro-3.webp`, alt: 'Modelo con la Camiseta Angel Victoria negra', model: true },
       ],
       [
         { src: `${SAINTS_NEW}estatua-blanco-frente.webp`, alt: 'Camiseta Angel Victoria blanca, frente' },
         { src: `${SAINTS_NEW}estatua-blanco-espalda.webp`, alt: 'Camiseta Angel Victoria blanca, espalda' },
+        { src: `${SAINTS_NEW}modelo-victoria-blanco-2.webp`, alt: 'Modelo con la Camiseta Angel Victoria blanca', model: true },
+        { src: `${SAINTS_NEW}modelo-victoria-blanco-4.webp`, alt: 'Modelo con la Camiseta Angel Victoria blanca', model: true },
         { src: `${SAINTS_NEW}modelo-victoria-blanco-1.webp`, alt: 'Modelo con la Camiseta Angel Victoria blanca', model: true },
+        { src: `${SAINTS_NEW}modelo-victoria-blanco-3.webp`, alt: 'Modelo con la Camiseta Angel Victoria blanca', model: true },
       ],
     ],
   },
@@ -234,7 +241,7 @@ export const PRODUCTS = [
 
 // Versión de las fotos: cámbiala cuando reemplaces una foto con el mismo nombre,
 // así el navegador no sigue mostrando la vieja guardada en caché.
-const FOTOS_VERSION = '2026-10-22c';
+const FOTOS_VERSION = '2026-10-22d';
 PRODUCTS.forEach((p) => p.gallery?.forEach((set) => set.forEach((g) => { g.src += `?v=${FOTOS_VERSION}`; })));
 
 /** Productos visibles en la tienda principal (sin los de drops bloqueados). */
