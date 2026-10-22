@@ -1167,3 +1167,32 @@ html.cursor-visible .cursor-ring {
     min-height: 300px;
   }
 }
+
+
+/* ---------- Sticker de SOLD OUT (graffiti) ---------- */
+.card__stamp {
+  width: min(62%, 230px);
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+}
+
+.card__media:hover .card__stamp {
+  transform: translate(-50%, -50%) rotate(-4deg) scale(1.04);
+}
+
+.qv__soldout {
+  display: inline-block;
+  width: 116px;
+  height: auto;
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  vertical-align: middle;
+  transform: rotate(-6deg);
+}

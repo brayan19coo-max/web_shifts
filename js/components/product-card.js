@@ -15,7 +15,7 @@ export function createProductCard(product, index = 0) {
         <span class="card__visual">${productVisual(product, 0)}</span>
         <span class="card__glare" aria-hidden="true"></span>
         ${product.tag ? `<span class="card__tag">${escapeHtml(product.tag)}</span>` : ''}
-        ${product.soldOut ? '<span class="card__stamp" aria-hidden="true">Sold out</span>' : ''}
+        ${product.soldOut ? '<img class="card__stamp" src="assets/images/sold-out-sticker.svg" alt="" aria-hidden="true">' : ''}
         <span class="card__quick" aria-hidden="true">${product.soldOut ? 'Ver detalles' : 'Vista rápida +'}</span>
       </button>
       <div class="card__info">

@@ -42,7 +42,7 @@ export function initQuickView() {
       <div class="qv__body">
         ${product.tag ? `<span class="qv__tag">${escapeHtml(product.tag)}</span>` : ''}
         <h2 class="qv__name" id="qv-title">${escapeHtml(product.name)}</h2>
-        <p class="qv__price">${soldOut ? `${product.price != null ? `<s>${formatPrice(product.price)}</s> ` : ''}<span class="qv__soldout">Sold out</span>` : formatPrice(product.price)}</p>
+        <p class="qv__price">${soldOut ? `${product.price != null ? `<s>${formatPrice(product.price)}</s> ` : ''}<img class="qv__soldout" src="assets/images/sold-out-sticker.svg" alt="Sold out">` : formatPrice(product.price)}</p>
         <p class="qv__desc">${escapeHtml(product.description)}</p>
 
         <div class="qv__group">
