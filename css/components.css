@@ -1225,3 +1225,28 @@ html.cursor-visible .cursor-ring {
   list-style: disc;
   color: var(--muted);
 }
+
+/* Galería de la vista rápida: la foto siempre entra completa (modelo de pies a cabeza)
+   y se queda quieta mientras se baja por el texto */
+.qv__media--gallery {
+  position: sticky;
+  top: 0;
+  align-self: start;
+}
+
+.qv__stage {
+  flex: none;
+  height: min(60dvh, 520px);
+  min-height: 0;
+}
+
+@media (max-width: 720px) {
+  .qv__media--gallery {
+    position: static;
+  }
+
+  .qv__stage {
+    height: min(52dvh, 440px);
+    min-height: 0;
+  }
+}
