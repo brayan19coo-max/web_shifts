@@ -4,6 +4,17 @@ import { productVisual } from './product-art.js';
 import { bus } from '../core/bus.js';
 
 /**
+ * Dónde va pegado el sticker de SOLD OUT: cada camiseta (y cada color) lo
+ * tiene en un lugar y con un giro distinto, como pegado a mano.
+ */
+function stickerSpot(id, colorIndex) {
+  let h = 2166136261;
+  for (const ch of `${id}:${colorIndex}`) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  const r = (k) => (((h >>> (k * 5)) & 1023) / 1023) * 2 - 1; // -1..1
+  return `--st-rot:${(r(0) * 16).toFixed(1)}deg;--st-x:${(r(1) * 14).toFixed(1)}%;--st-y:${(r(2) * 16).toFixed(1)}%;--st-s:${(1 + r(3) * 0.08).toFixed(2)}`;
+}
+
+/**
  * Tarjeta de producto con inclinación 3D y brillo que sigue al mouse.
  * Los swatches cambian el color de la prenda en vivo.
  */
@@ -15,7 +26,7 @@ export function createProductCard(product, index = 0) {
         <span class="card__visual">${productVisual(product, 0)}</span>
         <span class="card__glare" aria-hidden="true"></span>
         ${product.tag ? `<span class="card__tag">${escapeHtml(product.tag)}</span>` : ''}
-        ${product.soldOut ? '<img class="card__stamp" src="assets/images/sold-out-sticker.svg" alt="" aria-hidden="true">' : ''}
+        ${product.soldOut ? `<img class="card__stamp" src="assets/images/sold-out-sticker.svg" alt="" aria-hidden="true" style="${stickerSpot(product.id, 0)}">` : ''}
         <span class="card__quick" aria-hidden="true">${product.soldOut ? 'Ver detalles' : 'Vista rápida +'}</span>
       </button>
       <div class="card__info">
@@ -52,6 +63,13 @@ export function createProductCard(product, index = 0) {
     void visual.offsetWidth;
     visual.classList.add('is-swapping');
     visual.innerHTML = productVisual(product, colorIndex);
+    const stamp = card.querySelector('.card__stamp');
+    if (stamp) {
+      stamp.setAttribute('style', stickerSpot(product.id, colorIndex));
+      stamp.classList.remove('is-slap');
+      void stamp.offsetWidth;
+      stamp.classList.add('is-slap');
+    }
   });
 
   card.getColorIndex = () => colorIndex;

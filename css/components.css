@@ -1170,29 +1170,49 @@ html.cursor-visible .cursor-ring {
 
 
 /* ---------- Sticker de SOLD OUT (graffiti) ---------- */
+/* --st-rot/x/y/s: cada tarjeta lo trae pegado distinto (product-card.js) */
 .card__stamp {
-  width: min(62%, 230px);
+  width: min(84%, 330px);
   height: auto;
   padding: 0;
   border: 0;
   border-radius: 0;
   background: none;
-  transform: translate(-50%, -50%) rotate(-8deg);
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+  transform: translate(calc(-50% + var(--st-x, 0%)), calc(-50% + var(--st-y, 0%))) rotate(var(--st-rot, -8deg)) scale(var(--st-s, 1));
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.4));
+  transition: opacity 0.3s, transform 0.4s var(--ease);
 }
 
 .card__media:hover .card__stamp {
-  transform: translate(-50%, -50%) rotate(-4deg) scale(1.04);
+  transform: translate(calc(-50% + var(--st-x, 0%)), calc(-50% + var(--st-y, 0%))) rotate(calc(var(--st-rot, -8deg) * 0.6)) scale(calc(var(--st-s, 1) * 1.04));
+}
+
+/* al cambiar de color, el sticker se "vuelve a pegar" */
+.card__stamp.is-slap {
+  animation: sticker-slap 0.4s var(--ease);
+}
+
+@keyframes sticker-slap {
+  0% { opacity: 0; scale: 1.35; }
+  60% { opacity: 1; scale: 0.94; }
+  100% { scale: 1; }
 }
 
 .qv__soldout {
   display: inline-block;
-  width: 116px;
+  width: 168px;
   height: auto;
-  margin-left: 4px;
+  margin: 4px 0 0 2px;
   padding: 0;
   border: 0;
   background: none;
   vertical-align: middle;
-  transform: rotate(-6deg);
+  transform: rotate(-7deg);
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__stamp.is-slap {
+    animation: none;
+  }
 }

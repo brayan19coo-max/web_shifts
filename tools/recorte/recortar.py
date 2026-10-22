@@ -51,6 +51,27 @@ def mask_for(sess, im):
     return m
 
 
+def defringe(im, m):
+    """Quita el halo del fondo en el borde: adelgaza un pelo la máscara y
+    rellena el color del borde con el color de adentro de la figura."""
+    import cv2
+    a = np.asarray(m).astype(np.float32) / 255.0
+    a = cv2.erode(a, np.ones((3, 3), np.uint8))
+    a = np.clip((a - 0.12) / 0.88, 0, 1)
+    img = np.asarray(im).astype(np.float32)
+    inner = (a > 0.97).astype(np.float32)
+    inner = cv2.erode(inner, np.ones((5, 5), np.uint8))
+    k = max(15, int(min(im.size) * 0.02) | 1)
+    num = cv2.GaussianBlur(img * inner[..., None], (k, k), 0)
+    den = cv2.GaussianBlur(inner, (k, k), 0)[..., None]
+    fg = np.where(den > 1e-3, num / np.maximum(den, 1e-3), img)
+    band = ((a > 0.01) & (a < 0.97)).astype(np.float32)
+    band = cv2.GaussianBlur(cv2.dilate(band, np.ones((5, 5), np.uint8)), (5, 5), 0)[..., None]
+    out = img * (1 - band) + fg * band
+    rgba = np.dstack([np.clip(out, 0, 255), a * 255]).astype(np.uint8)
+    return Image.fromarray(rgba, 'RGBA')
+
+
 def keep_largest(m):
     """Deja solo la figura más grande (quita lámparas, objetos sueltos)."""
     import cv2
@@ -71,7 +92,7 @@ def cut(sess, path, out_dir, max_side, largest=True):
         m = keep_largest(m)
     # borde limpio: sube el contraste de la máscara y suaviza un pelo
     m = m.point(lambda v: 0 if v < 20 else 255 if v > 235 else int((v - 20) * 255 / 215)).filter(ImageFilter.GaussianBlur(0.6))
-    rgba = im.copy(); rgba.putalpha(m)
+    rgba = defringe(im, m)
     bb = m.point(lambda v: 255 if v > 30 else 0).getbbox()
     if bb:
         pad = 12
