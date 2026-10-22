@@ -28,8 +28,8 @@ export const BRAND = {
     ],
   },
   social: {
-    instagram: 'https://instagram.com/',
-    tiktok: 'https://tiktok.com/',
+    instagram: 'https://www.instagram.com/shifts_st/',
+    tiktok: 'https://www.tiktok.com/@shifts057',
   },
 };
 
@@ -55,7 +55,7 @@ export const DROP = {
   name: 'Drop 02',
   codename: 'Bonnie & Clyde',
   subtitle: 'FUERA DE LA LEY.',
-  releaseDate: '2026-10-20T19:00:00-05:00',
+  releaseDate: '2026-11-02T19:00:00-05:00',
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
   passwordHash: '6c4a1b64aa01374fafc4fc19b9355a13d773750daf0fa9afe4c97450c949485c',
