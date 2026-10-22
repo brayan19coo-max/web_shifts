@@ -1216,3 +1216,12 @@ html.cursor-visible .cursor-ring {
     animation: none;
   }
 }
+
+.qv__details {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+  color: var(--muted);
+}

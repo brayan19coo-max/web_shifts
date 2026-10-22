@@ -24,6 +24,7 @@
  *     drop: 'drop-02',                   // opcional: lo bloquea en el drop con clave
  *     soldOut: true,                     // opcional: se muestra "Sold out" y no se puede comprar
  *     soldOutSizes: ['S', 'M'],          // opcional: solo esas tallas agotadas
+ *     details: ['100% algodón.', …],    // opcional: lista de "Detalles" en la vista rápida
  *     gallery: [[{ src, alt, model }], …] // opcional: varias fotos por color (prenda y modelos
  *                                        // con fondo recortado: tools/recorte/recortar.py)
  *   },
@@ -53,38 +54,41 @@ const BLANCO = { name: 'Blanco', hex: '#f4f4f4' };
 const GRIS = { name: 'Gris', hex: '#8a8a8a' };
 const CARBON = { name: 'Carbón', hex: '#333333' };
 const SAINTS = 'assets/images/productos/saints-mode/';
+// Detalles que llevan todas las prendas de la colección Saint Mode
+const SAINT_MODE_DETAILS = ['100% algodón.', 'Llega en empaque personalizado Shift’s con stickers de regalo.'];
 
 export const PRODUCTS = [
-  // ---------------- SAINTS MODE (agotada) ----------------
+  // ---------------- SAINT MODE (agotada) ----------------
   // gallery: fotos por color (mismo orden que colors). La primera es la
   // camiseta sola y las demás los modelos, todas con el fondo recortado.
   {
     id: 'tee-saints-mode',
-    name: 'Tee Saints Mode',
+    name: 'Camiseta Angelito Alas',
     category: 'camisetas',
     type: 'tee',
-    price: null, // sin precio mientras esté agotada
-    tag: 'Saints Mode',
-    description: 'Camiseta oversize de la colección Saints Mode: el angelito con SHIFT\'S al frente y las alas en la espalda.',
+    price: 80000,
+    tag: 'Saint Mode',
+    description: 'Al frente, un querubín pensativo apoya el mentón sobre SHIFT\'S en rojo desgastado, con la firma en cursiva encima y SAINTS MODE debajo. Atrás, un par de alas de trazo crudo a la altura de los hombros, como si las llevaras puestas.',
+    details: SAINT_MODE_DETAILS,
     colors: [NEGRO, BLANCO],
     sizes: SIZES,
     soldOut: true,
     gallery: [
       [
-        { src: `${SAINTS}negro-frente.webp`, alt: 'Tee Saints Mode negra, frente' },
-        { src: `${SAINTS}negro-espalda.webp`, alt: 'Tee Saints Mode negra, espalda' },
-        { src: `${SAINTS}modelo-negro-chica-frente.webp`, alt: 'Modelo con la Tee Saints Mode negra, frente', model: true },
-        { src: `${SAINTS}modelo-negro-chica-espalda.webp`, alt: 'Modelo con la Tee Saints Mode negra, espalda', model: true },
-        { src: `${SAINTS}modelo-negro-chico-frente.webp`, alt: 'Modelo con la Tee Saints Mode negra', model: true },
-        { src: `${SAINTS}modelo-negro-chico-espalda.webp`, alt: 'Modelo con la Tee Saints Mode negra, espalda', model: true },
+        { src: `${SAINTS}negro-frente.webp`, alt: 'Camiseta Angelito Alas negra, frente' },
+        { src: `${SAINTS}negro-espalda.webp`, alt: 'Camiseta Angelito Alas negra, espalda' },
+        { src: `${SAINTS}modelo-negro-chica-frente.webp`, alt: 'Modelo con la Camiseta Angelito Alas negra, frente', model: true },
+        { src: `${SAINTS}modelo-negro-chica-espalda.webp`, alt: 'Modelo con la Camiseta Angelito Alas negra, espalda', model: true },
+        { src: `${SAINTS}modelo-negro-chico-frente.webp`, alt: 'Modelo con la Camiseta Angelito Alas negra', model: true },
+        { src: `${SAINTS}modelo-negro-chico-espalda.webp`, alt: 'Modelo con la Camiseta Angelito Alas negra, espalda', model: true },
       ],
       [
-        { src: `${SAINTS}blanco-frente.webp`, alt: 'Tee Saints Mode blanca, frente' },
-        { src: `${SAINTS}blanco-espalda.webp`, alt: 'Tee Saints Mode blanca, espalda' },
-        { src: `${SAINTS}modelo-blanco-chico-frente.webp`, alt: 'Modelo con la Tee Saints Mode blanca, frente', model: true },
-        { src: `${SAINTS}modelo-blanco-chico-espalda.webp`, alt: 'Modelo con la Tee Saints Mode blanca, espalda', model: true },
-        { src: `${SAINTS}modelo-blanco-chica-frente.webp`, alt: 'Modelo con la Tee Saints Mode blanca', model: true },
-        { src: `${SAINTS}modelo-blanco-chica-espalda.webp`, alt: 'Modelo con la Tee Saints Mode blanca, espalda', model: true },
+        { src: `${SAINTS}blanco-frente.webp`, alt: 'Camiseta Angelito Alas blanca, frente' },
+        { src: `${SAINTS}blanco-espalda.webp`, alt: 'Camiseta Angelito Alas blanca, espalda' },
+        { src: `${SAINTS}modelo-blanco-chico-frente.webp`, alt: 'Modelo con la Camiseta Angelito Alas blanca, frente', model: true },
+        { src: `${SAINTS}modelo-blanco-chico-espalda.webp`, alt: 'Modelo con la Camiseta Angelito Alas blanca, espalda', model: true },
+        { src: `${SAINTS}modelo-blanco-chica-frente.webp`, alt: 'Modelo con la Camiseta Angelito Alas blanca', model: true },
+        { src: `${SAINTS}modelo-blanco-chica-espalda.webp`, alt: 'Modelo con la Camiseta Angelito Alas blanca, espalda', model: true },
       ],
     ],
   },
