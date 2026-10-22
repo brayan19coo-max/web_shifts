@@ -1261,3 +1261,25 @@ html.cursor-visible .cursor-ring {
 .qv__thumbs {
   justify-content: center;
 }
+
+/* En escritorio: la foto queda fija y centrada; solo el texto de la derecha se desplaza */
+@media (min-width: 721px) {
+  .modal__panel:has(.qv) {
+    overflow: hidden;
+  }
+
+  .qv {
+    height: min(760px, calc(100dvh - 32px));
+  }
+
+  .qv__media {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .qv__body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
