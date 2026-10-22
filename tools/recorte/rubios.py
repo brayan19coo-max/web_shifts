@@ -1,6 +1,6 @@
 import numpy as np, cv2, sys
 from PIL import Image
-def run(name, off, hair_box, arm_boxes, erode_px=15, arm_fix=None, arm_poly=None, hair_matte=False):
+def run(name, off, hair_box, arm_boxes, erode_px=5, hair_sigma=2.0, hair_gamma=1.0, arm_fix=None, arm_poly=None, hair_matte=False):
     src = Image.open(f'src/{name}.png').convert('RGB'); src.thumbnail((1800, 1800), Image.LANCZOS)
     a = np.asarray(Image.open(f'cut3/{name}.webp').convert('RGBA')).astype(np.float32)
     H, W = a.shape[:2]; ox, oy = off
@@ -41,31 +41,32 @@ def run(name, off, hair_box, arm_boxes, erode_px=15, arm_fix=None, arm_poly=None
         pm = cv2.GaussianBlur(pm.astype(np.float32) / 255, (3, 3), 0)
         z = np.zeros((H, W), bool); z[y0:y1, x0:x1] = True
         al = np.where(z, np.maximum(pm, np.where(np.arange(W)[None, :] < arm_poly[2], al, 0)), al)
-    # pelo: borde metido y difuminado (sale el halo de la pared)
+    # pelo: misma forma del recorte, borde apenas metido y difuminado; el color del borde
+    # se limpia restando el color de la pared que se mezcla (descontaminación)
     x0, y0, x1, y1 = hair_box
     zone = np.zeros((H, W), np.float32); zone[y0:y1, x0:x1] = 1; zone = cv2.GaussianBlur(zone, (0, 0), 6)
-    core = cv2.erode((al > 0.5).astype(np.uint8), np.ones((erode_px, erode_px), np.uint8)).astype(np.float32)
-    core = cv2.GaussianBlur(core, (0, 0), 2.4)
-    hair = np.minimum(al, np.clip(core * 1.2, 0, 1))
-    if hair_matte:
-        # filtro guiado: el borde sigue los mechones de la foto
-        I = cv2.cvtColor(O.astype(np.uint8), cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
-        p = hair
-        r = 6; e = 2e-3
-        mI = cv2.boxFilter(I, -1, (r, r)); mp = cv2.boxFilter(p, -1, (r, r))
-        cIp = cv2.boxFilter(I * p, -1, (r, r)) - mI * mp; vI = cv2.boxFilter(I * I, -1, (r, r)) - mI * mI
-        A = cIp / (vI + e); Bb = mp - A * mI
-        q = cv2.boxFilter(A, -1, (r, r)) * I + cv2.boxFilter(Bb, -1, (r, r))
-        q = np.clip((q - 0.15) / 0.7, 0, 1)
-        hair = np.minimum(q, np.clip(cv2.dilate(hair, np.ones((5, 5), np.uint8)), 0, 1))
+    hard = (al > 0.5).astype(np.uint8)
+    hard = cv2.morphologyEx(hard, cv2.MORPH_OPEN, np.ones((7, 7), np.uint8))  # quita los picos sueltos
+    core = cv2.erode(hard, np.ones((erode_px, erode_px), np.uint8)).astype(np.float32)
+    hair = np.clip(cv2.GaussianBlur(core, (0, 0), hair_sigma) * 1.1, 0, 1)
+    hair = np.minimum(hair, al + 0.15) ** hair_gamma  # gamma > 1: la orilla clarita se vuelve más transparente
+    # color de la pared alrededor
+    outside = (al < 0.05).astype(np.float32)
+    k = 41
+    bg = cv2.GaussianBlur(O * outside[..., None], (k, k), 0) / np.maximum(cv2.GaussianBlur(outside, (k, k), 0), 1e-3)[..., None]
+    am = np.clip(hair, 0.25, 1)[..., None]
+    F = np.clip((O - (1 - am) * bg) / am, 0, 255)
+    edge = ((hair > 0.01) & (hair < 0.98)).astype(np.float32)
+    edge = cv2.GaussianBlur(cv2.dilate(edge, np.ones((5, 5), np.uint8)), (5, 5), 0)[..., None] * zone[..., None]
+    a[..., :3] = O * (1 - edge) + F * edge
     al = al * (1 - zone) + hair * zone
     a[..., 3] = np.clip(al, 0, 1) * 255
     im = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'RGBA')
     im.save(f'cut6_{name}.webp', 'WEBP', quality=90, alpha_quality=95, method=6)
     return im
-f = run('blanco-chico-frente', (211, 272), (330, 0, 570, 150), [(585, 895, 690, 1350), (80, 880, 230, 1300)], erode_px=17,
-        arm_poly=((585, 880, 706, 1360), [(593, 884), (632, 884), (633, 950), (634, 1000), (636, 1050), (641, 1100), (646, 1150), (655, 1200), (657, 1250), (652, 1282), (642, 1302), (622, 1322), (600, 1325), (592, 1310), (597, 1250), (596, 1180), (593, 1050)], 593))
-b = run('blanco-chico-espalda', (184, 335), (285, 0, 535, 175), [(590, 905, 700, 1310), (80, 880, 160, 1300)], erode_px=21, hair_matte=True)
+f = run('blanco-chico-frente', (211, 272), (330, 0, 570, 150), [(585, 895, 690, 1350), (80, 880, 230, 1300)], 
+        arm_poly=((585, 880, 706, 1360), [(593, 884), (632, 884), (633, 950), (634, 1000), (636, 1050), (641, 1100), (646, 1150), (655, 1200), (657, 1250), (652, 1282), (642, 1302), (622, 1322), (600, 1325), (592, 1310), (597, 1250), (596, 1180), (593, 1050)], 593), erode_px=11, hair_sigma=3.0, hair_gamma=1.8)
+b = run('blanco-chico-espalda', (184, 335), (285, 0, 535, 175), [(590, 905, 700, 1310), (80, 880, 160, 1300)], erode_px=5, hair_sigma=1.8)
 ims = []
 for im in (f, b):
     for bg in [(28, 28, 30, 255), (255, 63, 164, 255)]:
