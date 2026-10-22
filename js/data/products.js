@@ -54,11 +54,44 @@ const BLANCO = { name: 'Blanco', hex: '#f4f4f4' };
 const GRIS = { name: 'Gris', hex: '#8a8a8a' };
 const CARBON = { name: 'Carbón', hex: '#333333' };
 const SAINTS = 'assets/images/productos/saints-mode/';
+const SAINTS_NEW = 'assets/images/productos/saint-mode-nuevas/';
 // Detalles que llevan todas las prendas de la colección Saint Mode
 const SAINT_MODE_DETAILS = ['100% algodón.', 'Llega en empaque personalizado Shift’s con stickers de regalo.'];
 
 export const PRODUCTS = [
-  // ---------------- SAINT MODE (agotada) ----------------
+  // ---------------- SAINT MODE (agotadas) ----------------
+  {
+    id: 'tee-angel-espada',
+    name: 'Camiseta Angel Espada',
+    category: 'camisetas',
+    type: 'tee',
+    price: 80000,
+    tag: 'Saint Mode',
+    description: 'Al frente, Shift’s en caligrafía roja atravesado por una espada antigua. Atrás, un ángel de mármol blande su espada frente a SHIFT’S repetido tres veces.',
+    details: SAINT_MODE_DETAILS,
+    colors: [NEGRO, BLANCO],
+    sizes: SIZES,
+    soldOut: true,
+    gallery: [
+      [
+        { src: `${SAINTS_NEW}espada-negro-frente.webp`, alt: 'Camiseta Angel Espada negra, frente' },
+        { src: `${SAINTS_NEW}espada-negro-espalda.webp`, alt: 'Camiseta Angel Espada negra, espalda' },
+        { src: `${SAINTS_NEW}modelo-espada-negro-1.webp`, alt: 'Modelo con la Camiseta Angel Espada negra', model: true },
+        { src: `${SAINTS_NEW}modelo-espada-negro-2.webp`, alt: 'Modelo con la Camiseta Angel Espada negra', model: true },
+        { src: `${SAINTS_NEW}modelo-espada-negro-3.webp`, alt: 'Modelo con la Camiseta Angel Espada negra', model: true },
+        { src: `${SAINTS_NEW}modelo-espada-negro-4.webp`, alt: 'Modelo con la Camiseta Angel Espada negra', model: true },
+      ],
+      [
+        { src: `${SAINTS_NEW}espada-blanco-frente.webp`, alt: 'Camiseta Angel Espada blanca, frente' },
+        { src: `${SAINTS_NEW}espada-blanco-espalda.webp`, alt: 'Camiseta Angel Espada blanca, espalda' },
+        { src: `${SAINTS_NEW}modelo-espada-blanco-1.webp`, alt: 'Modelo con la Camiseta Angel Espada blanca', model: true },
+        { src: `${SAINTS_NEW}modelo-espada-blanco-2.webp`, alt: 'Modelo con la Camiseta Angel Espada blanca', model: true },
+        { src: `${SAINTS_NEW}modelo-espada-blanco-3.webp`, alt: 'Modelo con la Camiseta Angel Espada blanca', model: true },
+        { src: `${SAINTS_NEW}modelo-espada-blanco-4.webp`, alt: 'Modelo con la Camiseta Angel Espada blanca', model: true },
+      ],
+    ],
+  },
+
   // gallery: fotos por color (mismo orden que colors). La primera es la
   // camiseta sola y las demás los modelos, todas con el fondo recortado.
   {
