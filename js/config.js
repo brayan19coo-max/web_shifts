@@ -54,7 +54,7 @@ export const DROP = {
   id: 'drop-02',
   name: 'Drop 02',
   codename: 'Bonnie & Clyde',
-  subtitle: 'FUERA DE LA LEY. DENTRO DEL DROP.',
+  subtitle: 'FUERA DE LA LEY.',
   releaseDate: '2026-10-20T19:00:00-05:00',
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
@@ -118,7 +118,7 @@ export const SWAGGY = {
     // Al despertarlo
     wake: ['¡Estoy despierto! …casi.', '¿Eh? ¿Quién? Ah, eras tú 😅', 'Uy, me dormí. ¿Me perdí de algo?'],
     // Lo que dice solo, cuando nadie lo toca
-    idle: ['¿Jugamos algo o qué?', 'El arcade está ahí, eh 👉', 'Día de base o día de impulso: ¿qué eres hoy?', 'Estos lentes no me los quito ni para dormir.', 'Fuera de la ley, dentro del drop 🤫', 'Yo con esta cadena y tú con ese estilo… qué combo.'],
+    idle: ['¿Jugamos algo o qué?', 'El arcade está ahí, eh 👉', 'Día de base o día de impulso: ¿qué eres hoy?', 'Estos lentes no me los quito ni para dormir.', 'Fuera de la ley 🤫', 'Yo con esta cadena y tú con ese estilo… qué combo.'],
     // Cuando se sube los lentes y guiña
     glasses: ['Te guiño, pero no le digas a nadie 😉', 'Sí, hay ojos aquí debajo.'],
     // Cuando baila
