@@ -332,10 +332,13 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd, music } = {})
     if (hit) img = poseFrame('golpe_lado', now / 1000, 10);
     else if (spinning) img = frames('recoger')[0];
     else if (!onGround) img = frames(player.vy < 0 ? 'saltar' : 'caer')[0];
-    else img = frames('correr')[Math.floor(player.step / (Math.PI / 2)) % 4];
+    else {
+      const run = frames('correr');
+      img = run[Math.floor(player.step / ((Math.PI * 2) / run.length)) % run.length];
+    }
     if (!img.complete) return;
-    const bob = onGround ? Math.abs(Math.sin(player.step)) * player.h * 0.06 : 0;
-    const tilt = onGround ? 0.1 + Math.sin(player.step * 2) * 0.04 : Math.max(-0.3, Math.min(0.3, player.vy / (unit() * 8)));
+    const bob = 0; // el galope 3D ya trae su propio rebote
+    const tilt = onGround ? 0.05 + Math.sin(player.step) * 0.02 : Math.max(-0.3, Math.min(0.3, player.vy / (unit() * 8)));
     // sombra
     const shadow = Math.max(0.3, 1 + player.y / (unit() * 0.8));
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
@@ -351,12 +354,13 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd, music } = {})
       ctx.rotate((-player.spinT / 0.45) * Math.PI * 2);
       ctx.translate(0, player.h / 2);
     }
-    const squash = onGround ? 1 - Math.abs(Math.sin(player.step)) * 0.04 : 1.05;
+    const squash = onGround ? 1 : 1.05;
     ctx.scale(1 / squash, squash);
     // el 3D de lado deja aire arriba (para los saltos): se dibuja un poco más grande
     const ih = player.h * 1.3;
     const iw = ih * aspect(img);
-    ctx.drawImage(img, -iw / 2, -ih, iw, ih);
+    // pegado al piso: el borde de abajo del dibujo (img.foot) queda justo en el suelo
+    ctx.drawImage(img, -iw / 2, -ih * (img.foot || 1), iw, ih);
     ctx.restore();
   };
 
@@ -380,7 +384,10 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd, music } = {})
       player.vy = 0;
       player.jumps = 0;
     }
-    if (player.y === 0) player.step += dt * v * 0.045;
+    // zancadas por segundo: tranquilo al empezar y más rápido a medida que sube la velocidad
+    const intensity = Math.min(2.6, 1.05 + elapsed * 0.035);
+    const strides = 1.6 + (intensity - 1.05) * 1.3;
+    if (player.y === 0) player.step += dt * Math.PI * 2 * strides;
     player.spinT = (player.spinT ?? 9) + dt;
 
     // mundo
