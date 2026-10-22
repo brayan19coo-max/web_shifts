@@ -61,6 +61,31 @@ const SAINT_MODE_DETAILS = ['100% algodón.', 'Llega en empaque personalizado Sh
 export const PRODUCTS = [
   // ---------------- SAINT MODE (agotadas) ----------------
   {
+    id: 'tee-angel-victoria',
+    name: 'Camiseta Angel Victoria',
+    category: 'camisetas',
+    type: 'tee',
+    price: 80000,
+    tag: 'Saint Mode',
+    description: 'Al frente, Saints Mode en caligrafía fina tachado con una línea roja. Atrás, un ángel de mármol en su pedestal abre las alas sobre SHIFT’S en rojo desgastado, con Saints Mode en cursiva encima.',
+    details: SAINT_MODE_DETAILS,
+    colors: [NEGRO, BLANCO],
+    sizes: SIZES,
+    soldOut: true,
+    gallery: [
+      [
+        { src: `${SAINTS_NEW}estatua-negro-frente.webp`, alt: 'Camiseta Angel Victoria negra, frente' },
+        { src: `${SAINTS_NEW}estatua-negro-espalda.webp`, alt: 'Camiseta Angel Victoria negra, espalda' },
+      ],
+      [
+        { src: `${SAINTS_NEW}estatua-blanco-frente.webp`, alt: 'Camiseta Angel Victoria blanca, frente' },
+        { src: `${SAINTS_NEW}estatua-blanco-espalda.webp`, alt: 'Camiseta Angel Victoria blanca, espalda' },
+        { src: `${SAINTS_NEW}modelo-victoria-blanco-1.webp`, alt: 'Modelo con la Camiseta Angel Victoria blanca', model: true },
+      ],
+    ],
+  },
+
+  {
     id: 'tee-angel-espada',
     name: 'Camiseta Angel Espada',
     category: 'camisetas',
@@ -209,7 +234,7 @@ export const PRODUCTS = [
 
 // Versión de las fotos: cámbiala cuando reemplaces una foto con el mismo nombre,
 // así el navegador no sigue mostrando la vieja guardada en caché.
-const FOTOS_VERSION = '2026-10-22b';
+const FOTOS_VERSION = '2026-10-22c';
 PRODUCTS.forEach((p) => p.gallery?.forEach((set) => set.forEach((g) => { g.src += `?v=${FOTOS_VERSION}`; })));
 
 /** Productos visibles en la tienda principal (sin los de drops bloqueados). */
