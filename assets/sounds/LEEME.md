@@ -24,7 +24,7 @@ Mientras un sonido esté en `null`, el sitio usa uno **sintetizado en vivo**, as
 | `error`   | Falta talla o correo inválido                   | "error", "denied", "buzz"                   | < 0.4 s        |
 | `whoosh`  | Entrada al sitio, cambiar filtros               | "whoosh", "transition", "swipe"             | 0.3 – 0.8 s    |
 | `tick`    | Colores, cantidades, cambio de look             | "tick", "tiny click", "tap"                 | < 0.05 s       |
-| `note`    | Letras de "Shifting your style" (una nota c/u)  | Una nota musical limpia: "pluck", "piano C" | 0.3 – 1 s      |
+| `note`    | Letras de "Rompiendo esquemas" (una nota c/u)  | Una nota musical limpia: "pluck", "piano C" | 0.3 – 1 s      |
 | `spray`   | Clic en el logo grande                          | "spray can", "aerosol shake and spray"      | 0.5 – 1 s      |
 | `unlock`  | Drop desbloqueado con la clave                  | "unlock", "vault open", "level up"          | 0.5 – 1.5 s    |
 | `ambient` | Música de fondo en loop                         | "lofi loop", "ambient loop", beat propio    | 30 s – 3 min   |
