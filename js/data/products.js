@@ -241,7 +241,7 @@ export const PRODUCTS = [
 
 // Versión de las fotos: cámbiala cuando reemplaces una foto con el mismo nombre,
 // así el navegador no sigue mostrando la vieja guardada en caché.
-const FOTOS_VERSION = '2026-10-22d';
+const FOTOS_VERSION = '2026-10-22e';
 PRODUCTS.forEach((p) => p.gallery?.forEach((set) => set.forEach((g) => { g.src += `?v=${FOTOS_VERSION}`; })));
 
 /** Productos visibles en la tienda principal (sin los de drops bloqueados). */
