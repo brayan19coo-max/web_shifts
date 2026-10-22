@@ -33,7 +33,8 @@ def cut(src, dst, white, thr, eps=0.0025):
         kill = np.isin(lab2, touch[touch > 0])
         kill = cv2.dilate(kill.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0
         a = np.where(kill, 0, a)
-    a = cv2.GaussianBlur(a, (3, 3), 0)
+    if not white:
+        a = cv2.GaussianBlur(a, (3, 3), 0)
     # color del borde: el de la camiseta
     rgb = im.astype(np.float32)
     if not white:
@@ -41,15 +42,16 @@ def cut(src, dst, white, thr, eps=0.0025):
     else:
         # franja ancha del borde pintada de blanco de camiseta (se van piquitos grises del cuello y la manga)
         wide = (a > 0) & (cv2.erode((a > 0.99).astype(np.uint8), np.ones((px * 6, px * 6), np.uint8)) == 0)
-        # en la franja, lo oscuro (motas del fondo) se vuelve transparente y el borde se alisa
-        dark = wide & (g < 215)
-        dark = cv2.dilate(dark.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
-        a = np.where(dark & wide, 0, a)
-        sm = cv2.morphologyEx((a > 0.5).astype(np.uint8), cv2.MORPH_OPEN, np.ones((px * 3, px * 3), np.uint8))
-        sm = cv2.morphologyEx(sm, cv2.MORPH_CLOSE, np.ones((px * 3, px * 3), np.uint8))
-        a = cv2.GaussianBlur(sm.astype(np.float32), (5, 5), 0)
+        # contorno = polígono limpio (líneas rectas, sin picos), metido 2 px dentro de la tela
+        poly = np.zeros((h * S, w * S), np.uint8)
+        cv2.fillPoly(poly, [(ap * S).astype(np.int32)], 255, lineType=cv2.LINE_AA)
+        pa = cv2.resize(poly, (w, h), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
+        pa = cv2.erode(pa, np.ones((px * 2 + 1, px * 2 + 1), np.uint8))
+        a = cv2.GaussianBlur(pa, (3, 3), 0)
+        wide = (a > 0) & (cv2.erode((a > 0.99).astype(np.uint8), np.ones((px * 7, px * 7), np.uint8)) == 0)
         k = cv2.GaussianBlur(wide.astype(np.float32), (9, 9), 0)[..., None]
-        rgb = rgb * (1 - k) + np.maximum(rgb, 244) * k
+        rgb = rgb * (1 - k) + np.maximum(rgb, 246) * k
+        a = np.where(a > 0.995, 1.0, a)
     x, y, bw, bh = cv2.boundingRect((a > 0.5).astype(np.uint8))
     rgba = np.dstack([rgb, a * 255])[max(0, y - 6):y + bh + 6, max(0, x - 6):x + bw + 6]
     out = Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8), 'RGBA'); out.thumbnail((1400, 1400), Image.LANCZOS)
