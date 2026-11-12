@@ -66,7 +66,7 @@ export function startFlapGame(canvas, { onScore, onInfo, onEnd, music } = {}) {
     }
     bird.vy = -u() * 1.05;
     bird.flapT = 0.18;
-    sound.play('whoosh');
+    sound.play('puff');
     for (let i = 0; i < 3; i++) particles.spray(bird.x - bird.r * 0.6, bird.y + bird.r * 0.6, Math.random() < 0.5 ? COLORS.red : COLORS.white, -1, 2);
   };
   kit.on(canvas, 'pointerdown', (e) => {

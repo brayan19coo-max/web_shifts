@@ -88,6 +88,14 @@ export const RECIPES = {
   whoosh: (ctx, out) =>
     noise(ctx, out, { duration: 0.45, volume: 0.09, filterFrom: 250, filterTo: 3500, q: 0.8 }),
 
+  // Impulso de la lata en Swaggy Flap: un "pff" corto, grave y bajito
+  // (suena en cada toque, por eso es suave y cambia un poquito cada vez)
+  puff: (ctx, out) => {
+    const k = 0.92 + Math.random() * 0.16;
+    noise(ctx, out, { duration: 0.16, volume: 1, filterFrom: 620 * k, filterTo: 300 * k, q: 0.7 });
+    tone(ctx, out, { from: 210 * k, to: 150 * k, duration: 0.11, volume: 0.12, attack: 0.02 });
+  },
+
   tick: (ctx, out) => tone(ctx, out, { from: 2200, duration: 0.025, volume: 0.05 }),
 
   // Lata de aerosol: sacudida (clics de la bolita) + disparo de spray
