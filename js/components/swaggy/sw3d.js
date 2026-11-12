@@ -135,7 +135,9 @@ function tick(now) {
     acc %= 1 / FPS;
     visible.forEach((el) => (el.isConnected ? step(el) : visible.delete(el)));
   }
-  raf = requestAnimationFrame(tick);
+  // anima a pocos cuadros por segundo: esperar hasta el siguiente en vez de
+  // despertar el navegador 60-120 veces por segundo
+  raf = setTimeout(() => requestAnimationFrame(tick), Math.max(0, 1000 / FPS - (acc * 1000) - 4));
 }
 
 function start() {

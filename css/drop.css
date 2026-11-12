@@ -315,3 +315,20 @@
     padding: 0 16px;
   }
 }
+
+/* inclinación suave del logo 3D (capa aparte, la mueve la tarjeta gráfica) */
+.logo3d__tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: logo3d-tilt 8.8s ease-in-out infinite alternate;
+}
+
+.logo3d__tilt.is-paused {
+  animation-play-state: paused;
+}
+
+@keyframes logo3d-tilt {
+  from { transform: rotateX(-8deg); }
+  to { transform: rotateX(8deg); }
+}

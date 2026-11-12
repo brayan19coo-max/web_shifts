@@ -6,6 +6,9 @@
   <title>Shift's — Rompiendo esquemas</title>
   <meta name="description" content="Shift's: ropa urbana con alma de graffiti. Rompiendo esquemas.">
   <meta name="theme-color" content="#0b0b0c">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- Seguridad: solo se cargan scripts, estilos e imágenes de esta misma web (y las fuentes de Google) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self'; frame-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com">
   <!-- Vista previa al compartir el link (WhatsApp, Instagram, Facebook, X) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Shift's">
@@ -28,15 +31,27 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/base.css?v=cd880eee">
+  <link rel="stylesheet" href="css/base.css?v=37fcafa0">
   <link rel="stylesheet" href="css/layout.css?v=6f7146b4">
-  <link rel="stylesheet" href="css/components.css?v=1fb6026f">
-  <link rel="stylesheet" href="css/sections.css?v=f6ad2bb8">
+  <link rel="stylesheet" href="css/components.css?v=79526770">
+  <link rel="stylesheet" href="css/sections.css?v=90f3c52e">
   <link rel="stylesheet" href="css/vault.css?v=872ba58b">
-  <link rel="stylesheet" href="css/drop.css?v=ba5a64d7">
+  <link rel="stylesheet" href="css/drop.css?v=c498c878">
   <link rel="stylesheet" href="css/swaggy.css?v=0d022411">
-  <link rel="stylesheet" href="css/animations.css?v=8105807c">
+  <link rel="stylesheet" href="css/animations.css?v=90533688">
 
+  <script>
+    // Modo liviano: celulares y equipos de pocos recursos usan efectos más
+    // ligeros (menos calor y batería). Ver js/utils/perf.js
+    (function () {
+      var n = navigator, mm = window.matchMedia && function (q) { return matchMedia(q).matches; };
+      var lite = (mm && (mm('(pointer: coarse)') || mm('(prefers-reduced-motion: reduce)'))) ||
+        (n.hardwareConcurrency && n.hardwareConcurrency <= 4) ||
+        (n.deviceMemory && n.deviceMemory <= 4) ||
+        (n.connection && n.connection.saveData);
+      if (lite) document.documentElement.classList.add('perf-lite');
+    })();
+  </script>
   <script>
     // Rescate: si el JavaScript no arranca (p.ej. archivos viejos en caché),
     // en vez de quedarse congelado el loader ofrece recargar la página.
@@ -58,22 +73,22 @@
       "./js/audio/synth.js": "./js/audio/synth.js?v=681a6b64",
       "./js/components/cart.js": "./js/components/cart.js?v=8077ce02",
       "./js/components/crew.js": "./js/components/crew.js?v=964c9a34",
-      "./js/components/cursor.js": "./js/components/cursor.js?v=6a4e4948",
-      "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=e29bc6d3",
+      "./js/components/cursor.js": "./js/components/cursor.js?v=d15bbcf9",
+      "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=3ea5dde4",
       "./js/components/header.js": "./js/components/header.js?v=40fb4220",
       "./js/components/hero.js": "./js/components/hero.js?v=99187fc2",
       "./js/components/loader.js": "./js/components/loader.js?v=172946b4",
-      "./js/components/logo3d.js": "./js/components/logo3d.js?v=91dddf14",
+      "./js/components/logo3d.js": "./js/components/logo3d.js?v=766ada5b",
       "./js/components/lookbook-deck.js": "./js/components/lookbook-deck.js?v=fade19a9",
       "./js/components/lookbook.js": "./js/components/lookbook.js?v=0e319f0c",
       "./js/components/magnetic.js": "./js/components/magnetic.js?v=f62cf8eb",
       "./js/components/manifesto.js": "./js/components/manifesto.js?v=b0ba1172",
-      "./js/components/marquee.js": "./js/components/marquee.js?v=251a2a8a",
-      "./js/components/price-tag.js": "./js/components/price-tag.js?v=56f9a933",
+      "./js/components/marquee.js": "./js/components/marquee.js?v=5ca6294c",
+      "./js/components/price-tag.js": "./js/components/price-tag.js?v=04d2845c",
       "./js/components/product-art.js": "./js/components/product-art.js?v=f1c7eda1",
       "./js/components/product-card.js": "./js/components/product-card.js?v=414b79b2",
       "./js/components/product-grid.js": "./js/components/product-grid.js?v=92202891",
-      "./js/components/quick-view.js": "./js/components/quick-view.js?v=ae162408",
+      "./js/components/quick-view.js": "./js/components/quick-view.js?v=29d87022",
       "./js/components/reveal.js": "./js/components/reveal.js?v=1d3f83fc",
       "./js/components/swaggy/art.js": "./js/components/swaggy/art.js?v=f1ceb202",
       "./js/components/swaggy/games/catch-can.js": "./js/components/swaggy/games/catch-can.js?v=8620e70e",
@@ -90,27 +105,29 @@
       "./js/components/swaggy/games/scenes.js": "./js/components/swaggy/games/scenes.js?v=ce5f546f",
       "./js/components/swaggy/games/stack.js": "./js/components/swaggy/games/stack.js?v=33dbffe2",
       "./js/components/swaggy/games/tap-drop.js": "./js/components/swaggy/games/tap-drop.js?v=e552210c",
-      "./js/components/swaggy/roam.js": "./js/components/swaggy/roam.js?v=8b6e754a",
-      "./js/components/swaggy/spot.js": "./js/components/swaggy/spot.js?v=75f4f77a",
-      "./js/components/swaggy/sw3d.js": "./js/components/swaggy/sw3d.js?v=2f84d8a1",
+      "./js/components/swaggy/roam.js": "./js/components/swaggy/roam.js?v=d94702c5",
+      "./js/components/swaggy/spot.js": "./js/components/swaggy/spot.js?v=6c9d6bfb",
+      "./js/components/swaggy/sw3d.js": "./js/components/swaggy/sw3d.js?v=d4be7a42",
       "./js/components/toast.js": "./js/components/toast.js?v=f55399e9",
       "./js/components/vault.js": "./js/components/vault.js?v=af313f69",
-      "./js/config.js": "./js/config.js?v=bf6c1537",
+      "./js/config.js": "./js/config.js?v=09477140",
       "./js/core/bus.js": "./js/core/bus.js?v=5e70cdf0",
-      "./js/core/cart-store.js": "./js/core/cart-store.js?v=0a8191d0",
+      "./js/core/cart-store.js": "./js/core/cart-store.js?v=a624abba",
+      "./js/core/drop-state.js": "./js/core/drop-state.js?v=7890fa81",
       "./js/core/store.js": "./js/core/store.js?v=3f80d2ec",
-      "./js/data/lookbook.js": "./js/data/lookbook.js?v=4e79963a",
-      "./js/data/products.js": "./js/data/products.js?v=f55548b9",
-      "./js/main.js": "./js/main.js?v=37902f06",
+      "./js/data/lookbook.js": "./js/data/lookbook.js?v=a13f46f8",
+      "./js/data/products.js": "./js/data/products.js?v=b80552fd",
+      "./js/main.js": "./js/main.js?v=a7aa42eb",
       "./js/utils/dom.js": "./js/utils/dom.js?v=9f430828",
       "./js/utils/format.js": "./js/utils/format.js?v=1576479a",
+      "./js/utils/perf.js": "./js/utils/perf.js?v=1b911291",
       "./js/utils/sha256.js": "./js/utils/sha256.js?v=eef59daa",
       "./js/utils/storage.js": "./js/utils/storage.js?v=d7949e69"
     }
   }
   </script>
   <!-- importmap:end -->
-  <script type="module" src="js/main.js?v=37902f06"></script>
+  <script type="module" src="js/main.js?v=a7aa42eb"></script>
 </head>
 <body>
   <a class="skip-link" href="#tienda">Saltar a la tienda</a>

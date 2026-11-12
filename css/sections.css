@@ -176,12 +176,24 @@
 }
 
 .dot {
+  position: relative;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 0 var(--accent);
-  animation: pulse 1.8s infinite;
+}
+
+/* el pulso es un anillo que crece y se desvanece (solo transform y
+   opacidad: lo mueve la tarjeta gráfica sin redibujar la página) */
+.dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: currentColor;
+  color: rgba(255, 255, 255, 0.6);
+  animation: dot-ring 1.8s ease-out infinite;
+  will-change: transform, opacity;
 }
 
 .hero__logo-wrap {
@@ -927,7 +939,10 @@ html.is-entered .hero__letter {
 
 .dot--red {
   background: var(--crew);
-  animation-name: pulse-red;
+}
+
+.dot--red::after {
+  color: rgba(227, 21, 26, 0.7);
 }
 
 .crew__title {

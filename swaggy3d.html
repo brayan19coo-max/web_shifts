@@ -708,9 +708,9 @@ function runBeat(on, loud){
 // ================= Escena =================
 const canvas = document.getElementById('stage');
 let renderer;
-try{ renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance'}); }
+try{ renderer = new THREE.WebGLRenderer({canvas, antialias:!MOBILE, powerPreference: MOBILE ? 'default' : 'high-performance'}); }
 catch(e){ showErr('este navegador no tiene 3D (WebGL) activado.'); return; }
-let pixelRatio = Math.min(window.devicePixelRatio||1, MOBILE ? 1.5 : 2);
+let pixelRatio = Math.min(window.devicePixelRatio||1, MOBILE ? 1.5 : 1.75);
 renderer.setPixelRatio(pixelRatio);
 renderer.setClearColor(0x38c4ff, 1);
 const scene = new THREE.Scene();
@@ -3809,8 +3809,14 @@ function lowerQuality(){
   outlinesB.forEach(o => o.visible = false);
 }
 let worldPaused = false;
-function tick(){
+// Tope de cuadros por segundo: en celular 30 (pantallas de 120 Hz calentaban
+// el teléfono dibujando el doble), en PC 60.
+const FPS_CAP = MOBILE ? 30 : 60;
+let lastDraw = 0;
+function tick(now){
   if(worldPaused){ clock.getDelta(); setTimeout(() => requestAnimationFrame(tick), 250); return; }
+  if(now && now - lastDraw < 1000 / FPS_CAP - 3){ requestAnimationFrame(tick); return; }
+  lastDraw = now || performance.now();
   const rawDt = clock.getDelta();
   const dt = Math.min(rawDt, 0.05), t = clock.elapsedTime;
   if(t > 2 && quality < 3){ perfSum += rawDt; perfN++; if(perfN >= 90){ if(perfSum/perfN > 0.042) lowerQuality(); perfSum = 0; perfN = 0; } }

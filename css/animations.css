@@ -72,6 +72,11 @@
   100% { transform: translate(0, 0); }
 }
 
+@keyframes dot-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
 @keyframes pulse {
   0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6); }
   100% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
@@ -125,4 +130,48 @@
   .vault.is-open .vault__glow {
     animation: none !important;
   }
+}
+
+/* =========================================================
+   RENDIMIENTO
+   ========================================================= */
+
+/* Secciones fuera de pantalla: sus animaciones infinitas se pausan */
+.is-offscreen,
+.is-offscreen *,
+.is-offscreen *::before,
+.is-offscreen *::after {
+  animation-play-state: paused !important;
+}
+
+/* Modo liviano (celular y equipos de pocos recursos):
+   mismos colores y diseño, pero sin los efectos que más calientan */
+.perf-lite .header.is-scrolled {
+  background: rgba(11, 11, 12, 0.94);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.perf-lite .grain {
+  display: none;
+}
+
+/* las manchas de luz del inicio: degradado en vez de desenfoque de 80px */
+.perf-lite .blob {
+  filter: none;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.35) 45%, transparent 100%) !important;
+  animation: none;
+}
+
+.perf-lite *,
+.perf-lite *::before,
+.perf-lite *::after {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* sin desenfoque, el fondo de los paneles se oscurece un poco más */
+.perf-lite .modal,
+.perf-lite .drawer {
+  background: rgba(0, 0, 0, 0.78);
 }

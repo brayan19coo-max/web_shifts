@@ -4,6 +4,7 @@ import { BRAND, SWAGGY } from '../../config.js';
 import { sound } from '../../audio/sound-manager.js';
 import { talk } from './art.js';
 import { swaggy3d, mountSwaggy3d, preloadSwaggy3d, ACTION_TIME } from './sw3d.js';
+import { LITE } from '../../utils/perf.js';
 import { GAMES } from './games/index.js';
 import { createMusic } from './games/music.js';
 
@@ -75,7 +76,7 @@ export function initSwaggy() {
   document.body.append(launcher);
   const launcherBubble = launcher.querySelector('.swaggy-launcher__bubble');
   const launcherSvg = mountSwaggy3d(launcher);
-  preloadSwaggy3d(['quieto', 'hablar', 'risa', 'saltar', 'gafas']);
+  preloadSwaggy3d(LITE ? ['quieto'] : ['quieto', 'hablar', 'risa', 'saltar', 'gafas']);
 
   // Te sigue con la mirada por toda la página
   let lookFrame = 0;

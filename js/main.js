@@ -22,6 +22,7 @@ import { initReveal } from './components/reveal.js';
 import { initToasts } from './components/toast.js';
 import { initSwaggy } from './components/swaggy/spot.js';
 import { initSwaggyRoam } from './components/swaggy/roam.js';
+import { pauseOffscreenSections } from './utils/perf.js';
 
 // Avisa al "rescate" del index.html que el JavaScript sí arrancó
 window.__shiftsBooted = true;
@@ -49,6 +50,7 @@ safe('marca', () => {
   document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = new Date().getFullYear()));
 });
 
+safe('rendimiento', () => pauseOffscreenSections());
 safe('sonido', () => sound.bindDeclarative());
 safe('toasts', initToasts);
 safe('cursor', initCursor);

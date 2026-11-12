@@ -41,6 +41,38 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent; /* sin el recuadro azul/gris al tocar */
+}
+
+/* En celular y tablet: nada se selecciona (texto azul, lupa ni menú de
+   "copiar/compartir" al dejar el dedo quieto). Los campos de texto sí. */
+@media (hover: none), (pointer: coarse) {
+  html {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  input,
+  textarea,
+  [contenteditable='true'] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
+
+  img {
+    -webkit-user-drag: none;
+  }
+
+  /* toques rápidos sin el zoom de doble toque */
+  a,
+  button,
+  canvas,
+  [role='button'],
+  [data-game] {
+    touch-action: manipulation;
+  }
 }
 
 html.is-locked,

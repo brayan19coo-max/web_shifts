@@ -6,6 +6,7 @@ import { bus } from '../../core/bus.js';
 import { cartStore, getTotals } from '../../core/cart-store.js';
 import { talk } from './art.js';
 import { swaggy3d, mountSwaggy3d, preloadSwaggy3d, ACTION_TIME } from './sw3d.js';
+import { LITE } from '../../utils/perf.js';
 import { toast } from '../toast.js';
 
 /**
@@ -179,5 +180,6 @@ export function initSwaggyRoam() {
   // Se esconde un rato después de entrar, para no delatarse de una
   setTimeout(hideSecret, 3000);
   // Precarga las animaciones con las que se asoma y reacciona
-  setTimeout(() => preloadSwaggy3d(['saludar', 'gafas', 'mirar', 'bailar', 'triste', 'chocala', 'saltar', 'girar']), 4000);
+  // En celular no se precargan (cada animación se baja cuando se usa: menos datos y memoria)
+  if (!LITE) setTimeout(() => preloadSwaggy3d(['saludar', 'gafas', 'mirar', 'bailar', 'triste', 'chocala', 'saltar', 'girar']), 4000);
 }

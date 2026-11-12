@@ -1,5 +1,6 @@
 import { $, prefersReducedMotion } from '../utils/dom.js';
 import { sound } from '../audio/sound-manager.js';
+import { whileVisible } from '../utils/perf.js';
 
 /**
  * Cinta (marquee) interactiva
@@ -41,6 +42,38 @@ export function initMarquee() {
     if (offset > 0) offset -= loopWidth;
   };
 
+  // "Crucero": cuando va a velocidad normal (sin arrastre ni inercia) el
+  // movimiento lo hace la tarjeta gráfica con una animación nativa y el
+  // JavaScript descansa. Al tocarla vuelve el control por cuadros.
+  let cruise = null;
+  let cruiseStart = 0;
+  let cruiseSpeed = 0;
+
+  const startCruise = () => {
+    if (cruise || !loopWidth || !track.animate) return false;
+    wrap();
+    cruiseStart = offset;
+    cruiseSpeed = target;
+    const duration = (loopWidth / Math.abs(cruiseSpeed)) * 1000;
+    cruise = track.animate(
+      [{ transform: `translate3d(${offset}px, 0, 0)` }, { transform: `translate3d(${offset - loopWidth}px, 0, 0)` }],
+      { duration, iterations: Infinity, easing: 'linear' },
+    );
+    if (!running) cruise.pause();
+    return true;
+  };
+
+  const stopCruise = () => {
+    if (!cruise) return;
+    const t = (Number(cruise.currentTime) || 0) / 1000;
+    offset = cruiseStart + cruiseSpeed * t;
+    wrap();
+    track.style.transform = `translate3d(${offset}px, 0, 0)`;
+    cruise.cancel();
+    cruise = null;
+    velocity = cruiseSpeed;
+  };
+
   const frame = (now) => {
     // dt en segundos: misma velocidad en pantallas de 60 Hz, 120 Hz o 144 Hz
     const dt = Math.min(0.05, (now - lastFrame) / 1000);
@@ -51,14 +84,29 @@ export function initMarquee() {
     }
     wrap();
     track.style.transform = `translate3d(${offset}px, 0, 0)`;
-    requestAnimationFrame(frame);
+    // ya se calmó: pasar a modo crucero y soltar el ciclo de cuadros
+    if (!dragging && Math.abs(velocity - target) < 1 && startCruise()) {
+      raf = 0;
+      return;
+    }
+    raf = running ? requestAnimationFrame(frame) : 0;
   };
+  const kick = () => {
+    stopCruise();
+    if (running && !raf) {
+      lastFrame = performance.now();
+      raf = requestAnimationFrame(frame);
+    }
+  };
+  let raf = 0;
+  let running = false;
 
   marquee.addEventListener('pointerdown', (event) => {
     if (event.pointerType === 'mouse') {
       if (event.button !== 0) return;
       event.preventDefault(); // evita que el navegador seleccione texto en vez de arrastrar
     }
+    stopCruise();
     dragging = true;
     moved = false;
     lastX = event.clientX;
@@ -66,6 +114,7 @@ export function initMarquee() {
     velocity = 0;
     marquee.setPointerCapture(event.pointerId);
     marquee.classList.add('is-dragging');
+    kick();
   });
 
   marquee.addEventListener('pointermove', (event) => {
@@ -88,18 +137,40 @@ export function initMarquee() {
     if (performance.now() - lastTime > 80) velocity = 0;
     velocity = Math.max(-3600, Math.min(3600, velocity));
     if (moved && Math.abs(velocity) > 700) sound.play('whoosh');
+    kick();
   };
   marquee.addEventListener('pointerup', release);
   marquee.addEventListener('pointercancel', release);
 
   marquee.addEventListener('pointerenter', (event) => {
-    if (event.pointerType === 'mouse') target = HOVER_SPEED;
+    if (event.pointerType === 'mouse') {
+      target = HOVER_SPEED;
+      kick();
+    }
   });
-  marquee.addEventListener('pointerleave', () => (target = BASE_SPEED));
+  marquee.addEventListener('pointerleave', () => {
+    target = BASE_SPEED;
+    kick();
+  });
 
   marquee.addEventListener('dragstart', (event) => event.preventDefault());
-  window.addEventListener('resize', measure);
-  document.fonts?.ready.then(measure);
+  const remeasure = () => {
+    stopCruise();
+    measure();
+    kick();
+  };
+  window.addEventListener('resize', remeasure);
+  document.fonts?.ready.then(remeasure);
   measure();
-  requestAnimationFrame(frame);
+  // Solo se mueve mientras se ve en pantalla (ahorra batería)
+  whileVisible(marquee, (on) => {
+    running = on;
+    if (cruise) {
+      if (on) cruise.play();
+      else cruise.pause();
+    } else if (on && !raf) {
+      lastFrame = performance.now();
+      raf = requestAnimationFrame(frame);
+    }
+  });
 }

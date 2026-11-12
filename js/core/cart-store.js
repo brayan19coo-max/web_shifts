@@ -7,7 +7,13 @@ const KEY = 'cart';
 
 // Prendas de un drop que todavía no se puede comprar se sacan del carrito
 // (por si alguien las agregó cuando el drop estaba abierto por error)
-const saved = storage.get(KEY, []).filter((item) => !getProduct(item.id)?.drop || canBuyDrop());
+// Lo guardado en el navegador se revisa antes de usarlo (cantidades
+// enteras y razonables, productos que existan)
+const raw = storage.get(KEY, []);
+const saved = (Array.isArray(raw) ? raw : [])
+  .filter((item) => item && getProduct(item.id))
+  .map((item) => ({ ...item, qty: Math.min(20, Math.max(1, Math.floor(Number(item.qty)) || 1)) }))
+  .filter((item) => !getProduct(item.id).drop || canBuyDrop());
 export const cartStore = createStore({ items: saved });
 
 cartStore.subscribe((state) => storage.set(KEY, state.items));

@@ -46,12 +46,17 @@ export function initCursor() {
     label.textContent = labelled ? labelled.dataset.cursor : '';
   });
 
+  // Solo anima mientras el mouse se mueve y el anillo lo alcanza
+  let raf = 0;
   const tick = () => {
     ringPos.x = lerp(ringPos.x, pos.x, 0.18);
     ringPos.y = lerp(ringPos.y, pos.y, 0.18);
     dot.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
     ring.style.transform = `translate3d(${ringPos.x}px, ${ringPos.y}px, 0)`;
-    requestAnimationFrame(tick);
+    const settled = Math.abs(ringPos.x - pos.x) < 0.2 && Math.abs(ringPos.y - pos.y) < 0.2;
+    raf = settled ? 0 : requestAnimationFrame(tick);
   };
-  requestAnimationFrame(tick);
+  window.addEventListener('pointermove', () => {
+    if (!raf) raf = requestAnimationFrame(tick);
+  });
 }
