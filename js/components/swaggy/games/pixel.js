@@ -11,8 +11,12 @@
  *   fitPixel(canvas, ctx)  → ajusta el tamaño; devuelve { W, H } en px de pantalla
  *   pixelPost(ctx)         → aplica la paleta al cuadro ya dibujado
  *   PIXEL.enabled          → apágalo para volver al dibujo normal
+ *
+ * Rendimiento: la paleta la aplica la tarjeta gráfica (un lienzo WebGL
+ * encima del juego, con el mismo resultado). Si el equipo no tiene WebGL,
+ * se hace con el procesador como antes (PIXEL.gpu = false lo fuerza).
  */
-export const PIXEL = { enabled: true };
+export const PIXEL = { enabled: true, gpu: true };
 
 // Paleta del arcade de Swaggy (40 colores)
 const PALETTE = [
@@ -56,6 +60,13 @@ export function pixelScale(width) {
   return width > 760 ? 3 : 2;
 }
 
+/**
+ * Tope de 60 cuadros por segundo para los juegos: en pantallas de 120 o
+ * 144 Hz no hace falta dibujar el doble (calienta más y no se nota).
+ * Uso al inicio de cada cuadro:  if (skipFrame(now, last)) { ...pedir otro cuadro; return; }
+ */
+export const skipFrame = (now, last) => now - last < 10;
+
 /** Ajusta el lienzo al modo pixel. Devuelve el tamaño en px de pantalla. */
 export function fitPixel(canvas, ctx) {
   const rect = canvas.getBoundingClientRect();
@@ -68,14 +79,134 @@ export function fitPixel(canvas, ctx) {
   ctx.imageSmoothingEnabled = !PIXEL.enabled;
   canvas.style.imageRendering = PIXEL.enabled ? 'pixelated' : '';
   canvas.classList.toggle('is-pixel', PIXEL.enabled);
+  // si el lienzo de la tarjeta gráfica ya está sobre este, se reacomoda de una vez
+  if (gpu && gpu.canvas.previousElementSibling === canvas) placeGpu(canvas);
+  else canvas._pxDirty = true;
   return { W, H };
+}
+
+// ---------- Paleta con la tarjeta gráfica (WebGL) ----------
+const VERT = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
+const FRAG = `
+precision highp float;
+uniform sampler2D uSrc, uLut, uBayer;
+uniform vec2 uSize;
+void main(){
+  float x = floor(gl_FragCoord.x);
+  float y = uSize.y - 1.0 - floor(gl_FragCoord.y); // fila contando desde arriba
+  vec4 c = texture2D(uSrc, vec2((x + 0.5) / uSize.x, (y + 0.5) / uSize.y));
+  // casi transparente: se ve el fondo de la pantalla del arcade (#050505)
+  if (c.a * 255.0 < 109.5) { gl_FragColor = vec4(vec3(5.0 / 255.0), 1.0); return; }
+  float t = floor(texture2D(uBayer, vec2((x + 0.5) / 4.0, (y + 0.5) / 4.0)).r * 255.0 + 0.5) - 6.0;
+  vec3 q = floor(clamp(floor(c.rgb * 255.0 + 0.5) + t, 0.0, 255.0) / 8.0);
+  gl_FragColor = vec4(texture2D(uLut, vec2((q.g * 32.0 + q.b + 0.5) / 1024.0, (q.r + 0.5) / 32.0)).rgb, 1.0);
+}`;
+
+let gpu = null; // { canvas, gl, src, uSize } | false si no se puede
+
+function initGpu() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.className = 'game__gl';
+    canvas.setAttribute('aria-hidden', 'true');
+    const gl = canvas.getContext('webgl', { alpha: true, antialias: false, depth: false, stencil: false, premultipliedAlpha: true, powerPreference: 'low-power' });
+    if (!gl) return false;
+    const hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+    if (!hp || !hp.precision) return false; // sin precisión alta el color no saldría exacto
+    const shader = (type, code) => {
+      const sh = gl.createShader(type);
+      gl.shaderSource(sh, code);
+      gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      return sh;
+    };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, shader(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'p');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const texture = (unit, name, repeat) => {
+      const tex = gl.createTexture();
+      gl.activeTexture(gl.TEXTURE0 + unit);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE);
+      gl.uniform1i(gl.getUniformLocation(prog, name), unit);
+      return tex;
+    };
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    // tabla de la paleta: 1024 × 32 (columna = verde·32 + azul, fila = rojo)
+    texture(1, 'uLut', false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1024, 32, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(LUT.buffer));
+    // tramado 4 × 4 (guardado como valor + 6 para que no sea negativo)
+    texture(2, 'uBayer', true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 4, 4, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, new Uint8Array(BAYER.map((v) => v + 6)));
+    const src = texture(0, 'uSrc', false);
+    gl.activeTexture(gl.TEXTURE0);
+    if (gl.getError() !== gl.NO_ERROR) return false;
+    // si el navegador le quita el WebGL (poca memoria), se sigue con el procesador
+    canvas.addEventListener('webglcontextlost', () => {
+      canvas.remove();
+      gpu = false;
+    });
+    return { canvas, gl, src, uSize: gl.getUniformLocation(prog, 'uSize') };
+  } catch (error) {
+    console.warn('[pixel] sin tarjeta gráfica para la paleta, se usa el procesador:', error);
+    return false;
+  }
+}
+
+/** Pone el lienzo WebGL justo encima del lienzo del juego, del mismo tamaño. */
+function placeGpu(source) {
+  const { canvas, gl } = gpu;
+  const w = source.width;
+  const h = source.height;
+  if (canvas.previousElementSibling !== source) source.after(canvas);
+  source._pxDirty = false;
+  if (canvas.width !== w) canvas.width = w;
+  if (canvas.height !== h) canvas.height = h;
+  canvas.style.left = `${source.offsetLeft}px`;
+  canvas.style.top = `${source.offsetTop}px`;
+  canvas.style.width = `${source.offsetWidth}px`;
+  canvas.style.height = `${source.offsetHeight}px`;
+  gl.viewport(0, 0, w, h);
+  gl.uniform2f(gpu.uSize, w, h);
+}
+
+/** Dibuja el cuadro con la paleta usando la tarjeta gráfica. false = no se pudo. */
+function gpuPost(ctx) {
+  if (gpu === null) gpu = initGpu();
+  if (!gpu) return false;
+  const source = ctx.canvas;
+  const { canvas, gl } = gpu;
+  if (canvas.previousElementSibling !== source || source._pxDirty) {
+    if (!source.parentNode) return false;
+    placeGpu(source);
+  }
+  gl.bindTexture(gl.TEXTURE_2D, gpu.src);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  return true;
 }
 
 /** Pasa el cuadro dibujado a la paleta del arcade. */
 export function pixelPost(ctx) {
-  if (!PIXEL.enabled) return;
+  if (!PIXEL.enabled) {
+    if (gpu) gpu.canvas.remove();
+    return;
+  }
   const { width: w, height: h } = ctx.canvas;
   if (!w || !h) return;
+  if (PIXEL.gpu && gpuPost(ctx)) return;
+  if (gpu) gpu.canvas.remove();
   const img = ctx.getImageData(0, 0, w, h);
   const px = new Uint32Array(img.data.buffer);
   const d = img.data;

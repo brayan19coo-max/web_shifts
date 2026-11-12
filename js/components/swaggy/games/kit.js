@@ -1,4 +1,4 @@
-import { fitPixel, pixelPost } from './pixel.js';
+import { fitPixel, pixelPost, skipFrame } from './pixel.js';
 
 /**
  * Kit para los mini juegos de canvas
@@ -33,6 +33,10 @@ export function createKit(canvas) {
 
   const frame = (now) => {
     if (!running) return;
+    if (skipFrame(now, last)) {
+      raf = requestAnimationFrame(frame);
+      return;
+    }
     const dt = Math.max(0, Math.min(0.05, (now - last) / 1000));
     last = now;
     tick?.(dt, now);

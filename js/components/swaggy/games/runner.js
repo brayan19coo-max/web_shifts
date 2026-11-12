@@ -1,5 +1,5 @@
 import { frames, frame as poseFrame, aspect } from './poses.js';
-import { fitPixel, pixelPost } from './pixel.js';
+import { fitPixel, pixelPost, skipFrame } from './pixel.js';
 import { sound } from '../../../audio/sound-manager.js';
 import { drawScene, drawSceneBanner, SCENES } from './scenes.js';
 
@@ -367,6 +367,10 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd, music } = {})
   // ---------- Bucle ----------
   const frame = (now) => {
     if (!running) return;
+    if (skipFrame(now, last)) {
+      raf = requestAnimationFrame(frame);
+      return;
+    }
     const dt = Math.max(0, Math.min(0.05, (now - last) / 1000));
     last = now;
     elapsed += dt;

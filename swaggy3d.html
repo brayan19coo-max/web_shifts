@@ -710,7 +710,9 @@ const canvas = document.getElementById('stage');
 let renderer;
 try{ renderer = new THREE.WebGLRenderer({canvas, antialias:!MOBILE, powerPreference: MOBILE ? 'default' : 'high-performance'}); }
 catch(e){ showErr('este navegador no tiene 3D (WebGL) activado.'); return; }
-let pixelRatio = Math.min(window.devicePixelRatio||1, MOBILE ? 1.5 : 1.75);
+// Celulares de poca memoria (gama baja): arrancan con menos resolución
+const LOW_END = !!(navigator.deviceMemory && navigator.deviceMemory <= 4);
+let pixelRatio = Math.min(window.devicePixelRatio||1, LOW_END ? 1.25 : MOBILE ? 1.5 : 1.75);
 renderer.setPixelRatio(pixelRatio);
 renderer.setClearColor(0x38c4ff, 1);
 const scene = new THREE.Scene();
