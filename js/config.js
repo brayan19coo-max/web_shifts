@@ -60,7 +60,7 @@ export const DROP = {
   // Compra anticipada: quien ponga la clave puede comprar desde esta fecha
   // (antes de releaseDate). Si la clave se pone antes, ve las prendas pero
   // el precio sigue pixelado hasta aquí. En null = la clave solo deja ver.
-  earlyAccessDate: '2026-11-13T00:00:00-05:00',
+  earlyAccessDate: '2026-11-13T19:00:00-05:00',
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
   passwordHash: '6c4a1b64aa01374fafc4fc19b9355a13d773750daf0fa9afe4c97450c949485c',

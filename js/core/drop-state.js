@@ -24,4 +24,4 @@ const fmt = (time) =>
   new Date(time).toLocaleString('es-CO', { day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit', timeZone: DROP.timeZone });
 export const releaseLabel = () => fmt(release);
 export const earlyLabel = () =>
-  new Date(earlyAccess).toLocaleString('es-CO', { weekday: 'long', day: 'numeric', month: 'long', timeZone: DROP.timeZone });
+  new Date(earlyAccess).toLocaleString('es-CO', { weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit', timeZone: DROP.timeZone });
