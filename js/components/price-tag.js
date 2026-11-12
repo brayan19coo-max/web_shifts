@@ -29,6 +29,10 @@ export function priceHTML(product) {
   if (isPriceLocked(product)) {
     return `<span class="price-pixel" data-pixel-price="${escapeHtml(formatPrice(product.price))}" role="img" aria-label="Precio: se revela el ${escapeHtml(releaseLabel())}"></span>`;
   }
+  // En oferta: el precio original tachado y al lado el de ahora
+  if (product.compareAt && product.compareAt > product.price) {
+    return `<s class="price-old">${formatPrice(product.compareAt)}</s> <span class="price-sale">${formatPrice(product.price)}</span>`;
+  }
   return formatPrice(product.price);
 }
 

@@ -10,6 +10,7 @@
  *     category: 'hoodies',               // una de las categorías de CATEGORIES
  *     type: 'hoodie',                    // dibujo si no hay foto: tee | hoodie | jacket | pants | cap | tote
  *     price: 189000,                     // en pesos, sin puntos ni signo $
+ *     compareAt: 220000,                 // opcional: precio antes de la oferta (sale tachado)
  *     tag: 'Nuevo',                      // etiqueta opcional (bórrala si no quieres)
  *     description: 'Texto que aparece en la vista rápida.',
  *     colors: [                          // accent + bullet: 'uzi' | 'glock' → bala en el círculo
@@ -166,7 +167,8 @@ export const PRODUCTS = [
     name: 'Camiseta Clyde',
     category: 'camisetas',
     type: 'tee',
-    price: 80000,
+    price: 70000, // oferta de lanzamiento
+    compareAt: 80000, // precio original (sale tachado)
     tag: 'Bonnie & Clyde',
     description: 'Doberman al frente, placas en el hombro y dos fierros atrás listos pa’l golpe.',
     colors: [
@@ -196,7 +198,8 @@ export const PRODUCTS = [
     name: 'Camiseta Bonnie',
     category: 'camisetas',
     type: 'tee',
-    price: 80000,
+    price: 60000, // oferta de lanzamiento
+    compareAt: 70000, // precio original (sale tachado)
     tag: 'Bonnie & Clyde',
     description: 'Ella sentada, fierro en mano y otro atrás guardado por si acaso. Se ve tranquila, pero anda armada y no perdona. Sex, love, danger.',
     colors: [

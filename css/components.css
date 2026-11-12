@@ -1328,3 +1328,16 @@ html.cursor-visible .cursor-ring {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+
+/* ---------- Precio en oferta ---------- */
+.price-old {
+  margin-right: 0.35em;
+  color: var(--muted, #8a8a8a);
+  font-weight: 400;
+  text-decoration-thickness: 1.5px;
+  opacity: 0.8;
+}
+
+.price-sale {
+  color: var(--fg);
+}
