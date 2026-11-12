@@ -63,7 +63,7 @@ export const DROP = {
   earlyAccessDate: '2026-11-13T19:00:00-05:00',
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
-  passwordHash: '6c4a1b64aa01374fafc4fc19b9355a13d773750daf0fa9afe4c97450c949485c',
+  passwordHash: 'f9d1c62dc9fee76e7a71c65671eff6f4140c951348830ed419d9e7e5d040a449',
 };
 
 /**
