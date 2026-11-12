@@ -42,6 +42,7 @@ export const BRAND = {
  *
  * - releaseDate: fecha y hora del lanzamiento (con zona horaria de Colombia -05:00).
  *   Formato: 'AAAA-MM-DDTHH:MM:00-05:00'  (hora en formato 24 h: 7 p. m. = 19:00)
+ * - earlyAccessDate: desde cuándo los que tienen la clave ya pueden comprar.
  * - autoUnlock: si es true, el drop se abre solo para todos cuando termina el contador.
  * - passwordHash: la clave NO se guarda en texto plano. Para cambiarla, abre
  *   /tools/generar-clave.html en el navegador, escribe tu nueva clave y
@@ -55,7 +56,11 @@ export const DROP = {
   name: 'Drop 02',
   codename: 'Bonnie & Clyde',
   subtitle: 'FUERA DE LA LEY.',
-  releaseDate: '2026-11-02T19:00:00-05:00',
+  releaseDate: '2026-11-15T19:00:00-05:00',
+  // Compra anticipada: quien ponga la clave puede comprar desde esta fecha
+  // (antes de releaseDate). Si la clave se pone antes, ve las prendas pero
+  // el precio sigue pixelado hasta aquí. En null = la clave solo deja ver.
+  earlyAccessDate: '2026-11-13T00:00:00-05:00',
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
   passwordHash: '6c4a1b64aa01374fafc4fc19b9355a13d773750daf0fa9afe4c97450c949485c',

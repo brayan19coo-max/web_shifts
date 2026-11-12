@@ -1,20 +1,22 @@
-import { DROP } from '../config.js';
 import { escapeHtml } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
+import { canBuyDrop, hasCode, earlyAccess, releaseLabel, earlyLabel } from '../core/drop-state.js';
+
+export { releaseLabel };
 
 /**
  * Precio y círculos de color de las prendas.
  * - Las prendas de un drop muestran el precio PIXELADO hasta la fecha de
- *   lanzamiento (DROP.releaseDate) y no se pueden comprar antes.
+ *   lanzamiento (DROP.releaseDate) y no se pueden comprar antes. Quien puso
+ *   la clave puede comprar desde DROP.earlyAccessDate.
  * - Los colores con `bullet` ('uzi' | 'glock') muestran una bala del color
  *   del estampado (`accent`) centrada en el círculo.
  */
-const release = new Date(DROP.releaseDate).getTime();
+export const isPriceLocked = (product) => Boolean(product.drop) && !canBuyDrop();
 
-export const isPriceLocked = (product) => Boolean(product.drop) && Date.now() < release;
-
-export function releaseLabel() {
-  return new Date(release).toLocaleString('es-CO', { day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit', timeZone: DROP.timeZone });
+/** Texto del botón mientras la prenda no se puede comprar. */
+export function lockedLabel() {
+  return hasCode() && earlyAccess != null ? `Compra anticipada: ${earlyLabel()}` : `Sale el ${releaseLabel()}`;
 }
 
 /** HTML del precio (o el precio pixelado si aún no sale el drop). */

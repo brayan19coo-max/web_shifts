@@ -1,10 +1,14 @@
 import { createStore } from './store.js';
 import { storage } from '../utils/storage.js';
 import { getProduct } from '../data/products.js';
+import { canBuyDrop } from './drop-state.js';
 
 const KEY = 'cart';
 
-export const cartStore = createStore({ items: storage.get(KEY, []) });
+// Prendas de un drop que todavía no se puede comprar se sacan del carrito
+// (por si alguien las agregó cuando el drop estaba abierto por error)
+const saved = storage.get(KEY, []).filter((item) => !getProduct(item.id)?.drop || canBuyDrop());
+export const cartStore = createStore({ items: saved });
 
 cartStore.subscribe((state) => storage.set(KEY, state.items));
 

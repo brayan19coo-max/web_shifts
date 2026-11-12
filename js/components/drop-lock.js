@@ -8,6 +8,7 @@ import { createLogo3D } from './logo3d.js';
 import { playVault } from './vault.js';
 import { sound } from '../audio/sound-manager.js';
 import { toast } from './toast.js';
+import { release, isReleased, isEarlyOpen, earlyAccess, earlyLabel, unlockedKey as storageKey, vaultSeenKey } from '../core/drop-state.js';
 
 /**
  * Drop bloqueado
@@ -25,13 +26,6 @@ export function initDropLock() {
   if (!section) return;
 
   const products = getDropProducts(DROP.id);
-  const release = new Date(DROP.releaseDate).getTime();
-  // El estado se liga a la clave actual: si cambias la clave, el drop
-  // (o la fecha de lanzamiento) vuelve a aparecer bloqueado para todos
-  const lockId = `${DROP.id}:${DROP.passwordHash.slice(0, 8)}:${DROP.releaseDate.slice(0, 10)}`;
-  const storageKey = `${lockId}:unlocked`;
-  const vaultSeenKey = `${lockId}:vault-seen`;
-  const isReleased = () => Date.now() >= release;
 
   const form = $('[data-drop-form]', section);
   const input = $('input', form);
@@ -95,7 +89,9 @@ export function initDropLock() {
     section.classList.add('is-unlocked');
     granted.textContent = isReleased()
       ? '✓ La bóveda está abierta para todos.'
-      : '✓ Acceso concedido. Eres de los primeros.';
+      : earlyAccess == null || isEarlyOpen()
+        ? '✓ Acceso concedido. Eres de los primeros: ya puedes comprar.'
+        : `✓ Acceso concedido. Puedes comprar desde el ${earlyLabel()}.`;
     if (products.length) {
       grid.replaceChildren(...products.map((p, i) => createProductCard(p, i)));
       grid.hidden = false;

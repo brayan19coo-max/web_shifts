@@ -3,7 +3,7 @@ import { formatPrice } from '../utils/format.js';
 import { getProduct, isSizeSoldOut } from '../data/products.js';
 import { addItem } from '../core/cart-store.js';
 import { productVisual } from './product-art.js';
-import { priceHTML, pixelatePrices, swatchInner, isPriceLocked, releaseLabel } from './price-tag.js';
+import { priceHTML, pixelatePrices, swatchInner, isPriceLocked, lockedLabel } from './price-tag.js';
 import { sound } from '../audio/sound-manager.js';
 import { bus } from '../core/bus.js';
 import { toast } from './toast.js';
@@ -77,7 +77,7 @@ export function initQuickView() {
         </div>
 
         <div class="qv__actions">
-          ${soldOut ? `<button type="button" class="btn btn--ghost btn--block" disabled>Sold out — agotado</button>` : locked ? `<button type="button" class="btn btn--ghost btn--block" disabled>Sale el ${escapeHtml(releaseLabel())}</button>` : `
+          ${soldOut ? `<button type="button" class="btn btn--ghost btn--block" disabled>Sold out — agotado</button>` : locked ? `<button type="button" class="btn btn--ghost btn--block" disabled>${escapeHtml(lockedLabel())}</button>` : `
           <div class="qty" aria-label="Cantidad">
             <button type="button" data-qv-qty="-1" aria-label="Menos" data-sfx="tick">−</button>
             <span data-qv-qty-value>${selection.qty}</span>
