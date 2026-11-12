@@ -1,6 +1,7 @@
 import { escapeHtml } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
-import { canBuyDrop, hasCode, earlyAccess, releaseLabel, earlyLabel } from '../core/drop-state.js';
+import { canBuyDrop, hasCode, earlyAccess, releaseLabel } from '../core/drop-state.js';
+import { DROP } from '../config.js';
 
 export { releaseLabel };
 
@@ -16,7 +17,11 @@ export const isPriceLocked = (product) => Boolean(product.drop) && !canBuyDrop()
 
 /** Texto del botón mientras la prenda no se puede comprar. */
 export function lockedLabel() {
-  return hasCode() && earlyAccess != null ? `Compra anticipada: ${earlyLabel()}` : `Sale el ${releaseLabel()}`;
+  if (hasCode() && earlyAccess != null) {
+    const d = new Date(earlyAccess).toLocaleString('es-CO', { weekday: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: DROP.timeZone });
+    return `Compras desde el ${d}`;
+  }
+  return `Sale el ${releaseLabel()}`;
 }
 
 /** HTML del precio (o el precio pixelado si aún no sale el drop). */

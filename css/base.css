@@ -7,6 +7,8 @@
   --bg: #0a0a0a;
   --bg-2: #141414;
   --bg-3: #1f1f1f;
+  --photo-bg: #2b2b2b; /* fondo de las fotos de producto (gris concreto) */
+  --photo-bg-hover: #333333;
   --fg: #f4f4f4;
   --muted: #8f8f8f;
   --line: rgba(244, 244, 244, 0.14);
