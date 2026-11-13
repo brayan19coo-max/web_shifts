@@ -1,6 +1,6 @@
 import { createStore } from './store.js';
 import { storage } from '../utils/storage.js';
-import { getProduct } from '../data/products.js';
+import { getProduct, priceOf } from '../data/products.js';
 import { canBuyDrop } from './drop-state.js';
 
 const KEY = 'cart';
@@ -59,7 +59,7 @@ export function getTotals(items = cartStore.get().items) {
   return getLines(items).reduce(
     (totals, line) => ({
       count: totals.count + line.qty,
-      subtotal: totals.subtotal + line.qty * line.product.price,
+      subtotal: totals.subtotal + line.qty * priceOf(line.product),
     }),
     { count: 0, subtotal: 0 },
   );

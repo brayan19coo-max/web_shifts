@@ -43,6 +43,7 @@ export const BRAND = {
  * - releaseDate: fecha y hora del lanzamiento (con zona horaria de Colombia -05:00).
  *   Formato: 'AAAA-MM-DDTHH:MM:00-05:00'  (hora en formato 24 h: 7 p. m. = 19:00)
  * - earlyAccessDate: desde cuándo los que tienen la clave ya pueden comprar.
+ * - offerEndDate: hasta cuándo dura el precio de oferta (salePrice) de las prendas del drop.
  * - autoUnlock: si es true, el drop se abre solo para todos cuando termina el contador.
  * - passwordHash: la clave NO se guarda en texto plano. Para cambiarla, abre
  *   /tools/generar-clave.html en el navegador, escribe tu nueva clave y
@@ -61,6 +62,10 @@ export const DROP = {
   // (antes de releaseDate). Si la clave se pone antes, ve las prendas pero
   // el precio sigue pixelado hasta aquí. En null = la clave solo deja ver.
   earlyAccessDate: '2026-11-13T19:00:00-05:00',
+  // Oferta de lanzamiento: hasta esta fecha las prendas del drop se venden
+  // a su "salePrice" (con el precio normal tachado). Después vuelven solas
+  // al precio normal. En null = sin oferta.
+  offerEndDate: '2026-11-14T19:00:00-05:00', // 24 horas desde la compra anticipada
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
   passwordHash: 'f9d1c62dc9fee76e7a71c65671eff6f4140c951348830ed419d9e7e5d040a449',

@@ -2,6 +2,7 @@ import { $, escapeHtml, lockScroll, trapFocus } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
 import { BRAND } from '../config.js';
 import { cartStore, changeQty, removeItem, clearCart, getLines, getTotals } from '../core/cart-store.js';
+import { priceOf } from '../data/products.js';
 import { productVisual } from './product-art.js';
 import { sound } from '../audio/sound-manager.js';
 import { bus } from '../core/bus.js';
@@ -60,7 +61,7 @@ export function initCart() {
             </div>
           </div>
           <div class="line__side">
-            <p class="line__price">${formatPrice(product.price * qty)}</p>
+            <p class="line__price">${formatPrice(priceOf(product) * qty)}</p>
             <button type="button" class="line__remove" data-line-remove>Quitar</button>
           </div>
         </li>`;
@@ -114,7 +115,7 @@ export function initCart() {
     if (BRAND.whatsapp) {
       const text = [
         `Hola ${BRAND.name}, quiero hacer este pedido:`,
-        ...lines.map((l) => `• ${l.qty} x ${l.product.name} (${l.color}, ${l.size}) — ${formatPrice(l.qty * l.product.price)}`),
+        ...lines.map((l) => `• ${l.qty} x ${l.product.name} (${l.color}, ${l.size}) — ${formatPrice(l.qty * priceOf(l.product))}`),
         `Total: ${formatPrice(total)}`,
       ].join('\n');
       window.open(`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');

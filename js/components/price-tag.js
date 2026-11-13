@@ -2,6 +2,7 @@ import { escapeHtml } from '../utils/dom.js';
 import { formatPrice } from '../utils/format.js';
 import { canBuyDrop, hasCode, earlyAccess, releaseLabel } from '../core/drop-state.js';
 import { DROP } from '../config.js';
+import { isOnSale, priceOf, offerEndLabel } from '../data/products.js';
 
 export { releaseLabel };
 
@@ -27,13 +28,20 @@ export function lockedLabel() {
 /** HTML del precio (o el precio pixelado si aún no sale el drop). */
 export function priceHTML(product) {
   if (isPriceLocked(product)) {
-    return `<span class="price-pixel" data-pixel-price="${escapeHtml(formatPrice(product.price))}" role="img" aria-label="Precio: se revela el ${escapeHtml(releaseLabel())}"></span>`;
+    return `<span class="price-pixel" data-pixel-price="${escapeHtml(formatPrice(priceOf(product)))}" role="img" aria-label="Precio: se revela el ${escapeHtml(releaseLabel())}"></span>`;
   }
   // En oferta: el precio original tachado y al lado el de ahora
-  if (product.compareAt && product.compareAt > product.price) {
-    return `<s class="price-old">${formatPrice(product.compareAt)}</s> <span class="price-sale">${formatPrice(product.price)}</span>`;
+  if (isOnSale(product)) {
+    return `<s class="price-old">${formatPrice(product.price)}</s> <span class="price-sale">${formatPrice(product.salePrice)}</span>`;
   }
   return formatPrice(product.price);
+}
+
+/** Aviso de hasta cuándo dura la oferta (para la vista ampliada). '' si no hay oferta. */
+export function saleNoteHTML(product) {
+  if (isPriceLocked(product) || !isOnSale(product)) return '';
+  const until = offerEndLabel(product);
+  return `<p class="qv__sale-note">Precio de lanzamiento${until ? ` · hasta el ${escapeHtml(until)}` : ''}</p>`;
 }
 
 /** Convierte los [data-pixel-price] en un precio pixelado (mosaico). */

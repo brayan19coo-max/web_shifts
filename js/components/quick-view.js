@@ -3,7 +3,7 @@ import { formatPrice } from '../utils/format.js';
 import { getProduct, isSizeSoldOut } from '../data/products.js';
 import { addItem } from '../core/cart-store.js';
 import { productVisual } from './product-art.js';
-import { priceHTML, pixelatePrices, swatchInner, isPriceLocked, lockedLabel } from './price-tag.js';
+import { priceHTML, pixelatePrices, swatchInner, isPriceLocked, lockedLabel, saleNoteHTML } from './price-tag.js';
 import { sound } from '../audio/sound-manager.js';
 import { bus } from '../core/bus.js';
 import { toast } from './toast.js';
@@ -45,6 +45,7 @@ export function initQuickView() {
         ${product.tag ? `<span class="qv__tag">${escapeHtml(product.tag)}</span>` : ''}
         <h2 class="qv__name" id="qv-title">${escapeHtml(product.name)}</h2>
         <p class="qv__price">${soldOut ? `${product.price != null ? `<s>${formatPrice(product.price)}</s> ` : ''}<img class="qv__soldout" src="assets/images/sold-out-sticker.svg" alt="Sold out">` : priceHTML(product)}</p>
+        ${soldOut ? '' : saleNoteHTML(product)}
         <p class="qv__desc">${escapeHtml(product.description)}</p>
         ${product.details?.length ? `<div class="qv__group"><p class="qv__label">Detalles</p>
           <ul class="qv__details">${product.details.map((d) => `<li>${escapeHtml(d)}</li>`).join('')}</ul></div>` : ''}
