@@ -88,6 +88,18 @@ export const RECIPES = {
   whoosh: (ctx, out) =>
     noise(ctx, out, { duration: 0.45, volume: 0.09, filterFrom: 250, filterTo: 3500, q: 0.8 }),
 
+  // Salto de "Escape del muro": un "boing" corto que sube, suave (estilo arcade)
+  jump: (ctx, out) => {
+    const k = 0.96 + Math.random() * 0.08;
+    tone(ctx, out, { type: 'triangle', from: 290 * k, to: 600 * k, duration: 0.14, volume: 0.22, attack: 0.012 });
+  },
+
+  // Segundo salto en el aire: el mismo "boing" pero más agudo y más corto
+  jump2: (ctx, out) => {
+    const k = 0.96 + Math.random() * 0.08;
+    tone(ctx, out, { type: 'triangle', from: 440 * k, to: 880 * k, duration: 0.11, volume: 0.18, attack: 0.012 });
+  },
+
   // Impulso de la lata en Swaggy Flap: un "pff" corto, grave y bajito
   // (suena en cada toque, por eso es suave y cambia un poquito cada vez)
   puff: (ctx, out) => {

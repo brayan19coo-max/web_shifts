@@ -76,12 +76,12 @@ export function startRunnerGame(canvas, { onScore, onLives, onEnd, music } = {})
     if (player.y === 0) {
       player.vy = -u * 2.35;
       player.jumps = 1;
-      sound.play('whoosh');
+      sound.play('jump');
     } else if (player.jumps < 2) {
       player.vy = -u * 1.95;
       player.jumps = 2;
       player.spinT = 0;
-      sound.play('tick');
+      sound.play('jump2');
     }
     player.holding = true;
   };
