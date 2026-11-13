@@ -986,6 +986,22 @@ html.is-parche .cursor-ring {
   letter-spacing: 0.04em;
 }
 
+/* La letra pixel es ancha: el texto del centro puede partirse en dos
+   líneas y los botones (música, Salir) nunca se salen de la pantalla */
+.game__hud > span:first-child,
+.game__btns {
+  flex: none;
+  white-space: nowrap;
+}
+
+.game__lives.is-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.6;
+}
+
 /* La pantalla: marco de máquina, líneas CRT y viñeta */
 .game__stage {
   position: relative;

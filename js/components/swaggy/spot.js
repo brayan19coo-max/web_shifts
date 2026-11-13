@@ -407,6 +407,8 @@ export function initSwaggy() {
   }
 
   function openArcade() {
+    // la letra pixel se carga antes de que los juegos empiecen a dibujar
+    document.fonts?.load('16px "Press Start 2P"').catch(() => {});
     if (!overlay || overlay.classList.contains('is-arcade')) return;
     overlay.classList.add('is-arcade');
     tell3d({ type: 'swaggy:pause', paused: true }); // la calle descansa mientras juegas

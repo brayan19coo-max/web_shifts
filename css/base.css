@@ -2,6 +2,15 @@
    BASE — variables de diseño, reset y tipografía
    Cambia aquí los colores y fuentes de la marca.
    ========================================================= */
+/* Letra pixel del arcade (archivo propio, no depende de Google) */
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('../assets/fonts/PressStart2P-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Paleta Shift's: negro y blanco */
   --bg: #0a0a0a;
