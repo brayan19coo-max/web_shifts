@@ -85,8 +85,10 @@ export const RECIPES = {
     tone(ctx, out, { type: 'square', from: 130, start: 0.11, duration: 0.12, volume: 0.07 });
   },
 
+  // Transiciones: un soplido de aire corto, grave y bajito (reemplaza al
+  // "whoosh" largo y agudo de antes)
   whoosh: (ctx, out) =>
-    noise(ctx, out, { duration: 0.45, volume: 0.09, filterFrom: 250, filterTo: 3500, q: 0.8 }),
+    noise(ctx, out, { duration: 0.24, volume: 1.1, filterFrom: 240, filterTo: 560, q: 1.2 }),
 
   // Salto de "Escape del muro": un "boing" corto que sube, suave (estilo arcade)
   jump: (ctx, out) => {

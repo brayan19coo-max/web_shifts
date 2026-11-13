@@ -88,7 +88,7 @@ export const SOUNDS = {
   remove: 'assets/sounds/remove.mp3?v=c260218f',       // quitar del carrito
   success: 'assets/sounds/success.mp3?v=11176881',     // compra / suscripción exitosa
   error: 'assets/sounds/error.mp3?v=080a2560',         // validación fallida (falta talla, clave incorrecta)
-  whoosh: 'assets/sounds/whoosh.mp3?v=29767df1',       // transiciones (filtros, intro)
+  whoosh: '',                                          // transiciones (filtros, intro): sin archivo, usa el soplido suave de js/audio/synth.js
   tick: 'assets/sounds/tick.mp3?v=c3d23c3a',           // pequeños detalles (colores, cantidades, contador)
   note: 'assets/sounds/note.mp3?v=b1257806',           // letras de "Rompiendo esquemas" (se afina por letra)
   spray: 'assets/sounds/spray.mp3?v=06594c7f',         // clic en el logo (lata de aerosol)
