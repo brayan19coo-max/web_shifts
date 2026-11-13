@@ -33,7 +33,7 @@
 
   <link rel="stylesheet" href="css/base.css?v=37fcafa0">
   <link rel="stylesheet" href="css/layout.css?v=6f7146b4">
-  <link rel="stylesheet" href="css/components.css?v=54f80dbb">
+  <link rel="stylesheet" href="css/components.css?v=a92227e3">
   <link rel="stylesheet" href="css/sections.css?v=90f3c52e">
   <link rel="stylesheet" href="css/vault.css?v=872ba58b">
   <link rel="stylesheet" href="css/drop.css?v=c498c878">
@@ -76,6 +76,7 @@
       "./js/components/cursor.js": "./js/components/cursor.js?v=d15bbcf9",
       "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=3ea5dde4",
       "./js/components/header.js": "./js/components/header.js?v=40fb4220",
+      "./js/components/help.js": "./js/components/help.js?v=c3cdf7a6",
       "./js/components/hero.js": "./js/components/hero.js?v=bd91903b",
       "./js/components/loader.js": "./js/components/loader.js?v=172946b4",
       "./js/components/logo3d.js": "./js/components/logo3d.js?v=766ada5b",
@@ -110,14 +111,14 @@
       "./js/components/swaggy/sw3d.js": "./js/components/swaggy/sw3d.js?v=d4be7a42",
       "./js/components/toast.js": "./js/components/toast.js?v=f55399e9",
       "./js/components/vault.js": "./js/components/vault.js?v=af313f69",
-      "./js/config.js": "./js/config.js?v=fd2e1bbb",
+      "./js/config.js": "./js/config.js?v=55a3dccd",
       "./js/core/bus.js": "./js/core/bus.js?v=5e70cdf0",
       "./js/core/cart-store.js": "./js/core/cart-store.js?v=00db101a",
       "./js/core/drop-state.js": "./js/core/drop-state.js?v=7890fa81",
       "./js/core/store.js": "./js/core/store.js?v=3f80d2ec",
       "./js/data/lookbook.js": "./js/data/lookbook.js?v=a13f46f8",
       "./js/data/products.js": "./js/data/products.js?v=7c26178b",
-      "./js/main.js": "./js/main.js?v=a7aa42eb",
+      "./js/main.js": "./js/main.js?v=56c1d7c1",
       "./js/utils/dom.js": "./js/utils/dom.js?v=9f430828",
       "./js/utils/format.js": "./js/utils/format.js?v=1576479a",
       "./js/utils/perf.js": "./js/utils/perf.js?v=1b911291",
@@ -127,7 +128,7 @@
   }
   </script>
   <!-- importmap:end -->
-  <script type="module" src="js/main.js?v=a7aa42eb"></script>
+  <script type="module" src="js/main.js?v=56c1d7c1"></script>
 </head>
 <body>
   <a class="skip-link" href="#tienda">Saltar a la tienda</a>
@@ -330,9 +331,9 @@
       <div>
         <p class="footer__label">Ayuda</p>
         <ul class="footer__links">
-          <li><a href="#" data-sfx-hover="hover">Envíos</a></li>
-          <li><a href="#" data-sfx-hover="hover">Cambios y devoluciones</a></li>
-          <li><a href="#" data-sfx-hover="hover">Guía de tallas</a></li>
+          <li><a href="#" data-help="envios" data-sfx-hover="hover">Envíos</a></li>
+          <li><a href="#" data-help="cambios" data-sfx-hover="hover">Cambios y devoluciones</a></li>
+          <li><a href="#" data-help="guia-tallas" data-sfx-hover="hover">Guía de tallas</a></li>
         </ul>
       </div>
       <div>
@@ -368,6 +369,14 @@
         </button>
       </div>
     </aside>
+  </div>
+
+  <!-- ============ AYUDA (envíos, cambios, tallas) ============ -->
+  <div class="modal" id="help" hidden>
+    <div class="modal__panel help" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <button type="button" class="icon-btn modal__close" data-help-close aria-label="Cerrar">✕</button>
+      <div class="help__content" data-help-content></div>
+    </div>
   </div>
 
   <!-- ============ VISTA RÁPIDA ============ -->

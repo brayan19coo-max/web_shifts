@@ -72,6 +72,50 @@ export const DROP = {
 };
 
 /**
+ * AYUDA (enlaces del pie de página)
+ * -------------------------------------------------------------
+ * Cada página se abre en una ventana al tocar su enlace en el pie.
+ * Para cambiar un texto, edítalo aquí. Para ocultar una página, bórrala
+ * (su enlace desaparece solo). Puedes agregar "guia-tallas" cuando tengas
+ * las medidas.
+ *   blocks: lista de bloques con título (title) y texto (text, o una
+ *   lista de textos para varios párrafos)
+ */
+export const HELP = {
+  envios: {
+    title: 'Envíos',
+    blocks: [
+      { title: '¿A dónde enviamos?', text: 'A todo el país, con Inter Rapidísimo.' },
+      {
+        title: '¿Cuánto cuesta y cuánto tarda?',
+        text: 'Depende de tu ciudad. Te confirmamos el costo y el tiempo de entrega por WhatsApp cuando haces tu pedido, antes de que pagues.',
+      },
+      { title: 'Tu pedido', text: 'Cada prenda sale en empaque personalizado Shift’s con stickers de regalo.' },
+    ],
+  },
+  cambios: {
+    title: 'Cambios y devoluciones',
+    blocks: [
+      {
+        title: '¿No te quedó la talla?',
+        text: 'Tienes 7 días desde que recibes tu pedido para pedir cambio de talla o color. La prenda debe estar sin usar, sin lavar y con su empaque. El cambio depende de que haya disponibilidad; si no hay, te devolvemos tu dinero. Los envíos del cambio van por cuenta tuya.',
+      },
+      {
+        title: '¿Llegó con un defecto o no era lo que pediste?',
+        text: 'Escríbenos con fotos dentro de los 15 días siguientes a la entrega. Te la cambiamos o te devolvemos el dinero, y los envíos los pagamos nosotros.',
+      },
+      {
+        title: '¿Te arrepentiste?',
+        text: 'Puedes devolver tu compra dentro de los 5 días hábiles siguientes a la entrega. La prenda debe volver como la recibiste y el envío de devolución corre por tu cuenta. Te devolvemos el dinero en máximo 15 días calendario.',
+      },
+      { title: 'No recibimos', text: 'Prendas usadas, lavadas, manchadas o con olores.' },
+      { title: '¿Cómo lo pido?', text: 'Escríbenos por WhatsApp con tu nombre y una foto de la prenda.' },
+    ],
+    whatsapp: 'Hola Shift’s, necesito ayuda con un cambio o devolución.',
+  },
+};
+
+/**
  * SONIDOS
  * -------------------------------------------------------------
  * Cada evento del sitio tiene un sonido. Si dejas `null`, se usa un
