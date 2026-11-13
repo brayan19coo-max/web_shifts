@@ -117,6 +117,12 @@ export function initCart() {
         `Hola ${BRAND.name}, quiero hacer este pedido:`,
         ...lines.map((l) => `• ${l.qty} x ${l.product.name} (${l.color}, ${l.size}) — ${formatPrice(l.qty * priceOf(l.product))}`),
         `Total: ${formatPrice(total)}`,
+        '',
+        // el cliente los llena en WhatsApp antes de enviar
+        'Mis datos para el envío:',
+        'Nombre: ',
+        'Ciudad: ',
+        'Dirección: ',
       ].join('\n');
       window.open(`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
     }

@@ -25,6 +25,15 @@ export function initHero() {
       Date.now() >= release.getTime() ? `${DROP.name} — ${name} · Ya disponible` : `Próximo drop: ${name} · ${date}`;
   }
 
+  // Botón principal: mientras el drop no ha salido para todos lleva al drop
+  // (la colección de siempre puede estar agotada); después, a la colección,
+  // donde las prendas del drop ya salen de primeras.
+  const cta = $('[data-hero-cta]', hero);
+  if (cta && DROP && Date.now() < new Date(DROP.releaseDate).getTime()) {
+    cta.setAttribute('href', '#drop');
+    $('[data-hero-cta-text]', cta).textContent = 'Ver el drop';
+  }
+
   logo.src = BRAND.logoSticker;
   logo.alt = BRAND.name;
 

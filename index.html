@@ -71,12 +71,12 @@
     "imports": {
       "./js/audio/sound-manager.js": "./js/audio/sound-manager.js?v=1b984c6b",
       "./js/audio/synth.js": "./js/audio/synth.js?v=be2f3fd1",
-      "./js/components/cart.js": "./js/components/cart.js?v=46528f52",
+      "./js/components/cart.js": "./js/components/cart.js?v=6e458101",
       "./js/components/crew.js": "./js/components/crew.js?v=964c9a34",
       "./js/components/cursor.js": "./js/components/cursor.js?v=d15bbcf9",
       "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=3ea5dde4",
       "./js/components/header.js": "./js/components/header.js?v=40fb4220",
-      "./js/components/hero.js": "./js/components/hero.js?v=99187fc2",
+      "./js/components/hero.js": "./js/components/hero.js?v=bd91903b",
       "./js/components/loader.js": "./js/components/loader.js?v=172946b4",
       "./js/components/logo3d.js": "./js/components/logo3d.js?v=766ada5b",
       "./js/components/lookbook-deck.js": "./js/components/lookbook-deck.js?v=fade19a9",
@@ -116,7 +116,7 @@
       "./js/core/drop-state.js": "./js/core/drop-state.js?v=7890fa81",
       "./js/core/store.js": "./js/core/store.js?v=3f80d2ec",
       "./js/data/lookbook.js": "./js/data/lookbook.js?v=a13f46f8",
-      "./js/data/products.js": "./js/data/products.js?v=917deb4e",
+      "./js/data/products.js": "./js/data/products.js?v=7c26178b",
       "./js/main.js": "./js/main.js?v=a7aa42eb",
       "./js/utils/dom.js": "./js/utils/dom.js?v=9f430828",
       "./js/utils/format.js": "./js/utils/format.js?v=1576479a",
@@ -205,8 +205,8 @@
         <p class="hero__hint" aria-hidden="true">↑ <span class="only-mouse">pasa el mouse por</span><span class="only-touch">toca o desliza sobre</span> las letras</p>
         <div class="hero__bottom">
           <p class="hero__tagline" data-hero-tagline></p>
-          <a href="#tienda" class="btn btn--accent btn--lg" data-magnetic data-sfx="click" data-sfx-hover="hover">
-            <span>Ver colección</span><span class="btn__arrow">↓</span>
+          <a href="#tienda" class="btn btn--accent btn--lg" data-hero-cta data-magnetic data-sfx="click" data-sfx-hover="hover">
+            <span data-hero-cta-text>Ver colección</span><span class="btn__arrow">↓</span>
           </a>
         </div>
       </div>
@@ -251,7 +251,7 @@
 
           <form class="drop__form" data-drop-form novalidate>
             <label class="sr-only" for="drop-key">Clave del drop</label>
-            <input id="drop-key" type="password" placeholder="Clave de acceso" autocomplete="off" spellcheck="false">
+            <input id="drop-key" type="text" placeholder="Clave de acceso" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go">
             <button type="submit" class="btn btn--accent" data-sfx-hover="hover"><span>Desbloquear</span><span class="btn__arrow">→</span></button>
           </form>
           <p class="drop__msg" data-drop-msg aria-live="polite"></p>

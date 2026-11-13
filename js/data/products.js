@@ -59,6 +59,7 @@ const SAINTS = 'assets/images/productos/saints-mode/';
 const SAINTS_NEW = 'assets/images/productos/saint-mode-nuevas/';
 const BC = 'assets/images/productos/bonnie-clyde/';
 // Detalles que llevan todas las prendas de la colección Saint Mode
+// Detalles que comparten todas las prendas (100% algodón y empaque)
 const SAINT_MODE_DETAILS = ['100% algodón.', 'Llega en empaque personalizado Shift’s con stickers de regalo.'];
 
 export const PRODUCTS = [
@@ -177,6 +178,7 @@ export const PRODUCTS = [
       { name: 'Negra/Azul', hex: '#111111', accent: '#3b5fe0', bullet: 'uzi' },
       { name: 'Blanca/Azul', hex: '#f4f4f4', accent: '#3b5fe0', bullet: 'uzi' },
     ],
+    details: SAINT_MODE_DETAILS,
     sizes: SIZES,
     drop: 'drop-02',
     gallery: [
@@ -207,6 +209,7 @@ export const PRODUCTS = [
       { name: 'Negra/Rosa', hex: '#111111', accent: '#e58bd6', bullet: 'glock' },
       { name: 'Blanca/Rosa', hex: '#f4f4f4', accent: '#e58bd6', bullet: 'glock' },
     ],
+    details: SAINT_MODE_DETAILS,
     sizes: SIZES,
     drop: 'drop-02',
     gallery: [
@@ -227,8 +230,15 @@ export const PRODUCTS = [
 const FOTOS_VERSION = '2026-11-12e';
 PRODUCTS.forEach((p) => p.gallery?.forEach((set) => set.forEach((g) => { g.src += `?v=${FOTOS_VERSION}`; })));
 
-/** Productos visibles en la tienda principal (sin los de drops bloqueados). */
-export const CATALOG = PRODUCTS.filter((p) => !p.drop);
+/**
+ * Productos visibles en la tienda principal: los de siempre y, cuando el
+ * drop ya salió para todos, también sus prendas (de primeras).
+ */
+const dropIsOut = Date.now() >= new Date(DROP.releaseDate).getTime();
+export const CATALOG = [
+  ...PRODUCTS.filter((p) => p.drop === DROP.id && dropIsOut),
+  ...PRODUCTS.filter((p) => !p.drop),
+];
 
 export const getDropProducts = (dropId) => PRODUCTS.filter((p) => p.drop === dropId);
 
