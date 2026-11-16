@@ -7,6 +7,7 @@ import { createProductCard, bindQuickView } from './product-card.js';
 import { createLogo3D } from './logo3d.js';
 import { playVault } from './vault.js';
 import { initXray } from './xray.js';
+import { playScanner } from './scanner.js';
 import { sound } from '../audio/sound-manager.js';
 import { toast } from './toast.js';
 import { release, isReleased, isEarlyOpen, earlyAccess, earlyLabel, unlockedKey as storageKey, vaultSeenKey } from '../core/drop-state.js';
@@ -116,10 +117,12 @@ export function initDropLock() {
     input.blur();
     if (announce) {
       storage.set(vaultSeenKey, true);
-      await playVault({
+      const show = {
         title: [DROP.name, DROP.codename].filter(Boolean).join(' — '),
         subtitle: DROP.subtitle || DROP.tagline || '',
-      });
+      };
+      // Drop con rayos X: la maleta escaneada; si no, la caja fuerte de siempre
+      await (DROP.xray ? playScanner({ ...show, colors: DROP.xray.colors }) : playVault(show));
     }
     reveal();
     unlocking = false;

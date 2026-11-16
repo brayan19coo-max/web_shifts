@@ -370,3 +370,413 @@
   opacity: 1;
   transform: none;
 }
+
+/* =========================================================
+   ESCÁNER — desbloqueo del Drop 03 (maleta + rayos X)
+   Todo es CSS 3D: sin librerías ni modelos, para que no pese.
+   ========================================================= */
+.scan {
+  --w: min(74vw, 440px, 78svh);
+  --hb: calc(var(--w) * 0.16);
+  --hl: calc(var(--w) * 0.1);
+  --d: calc(var(--w) * 0.66);
+  --xr: #b0101c;
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: clamp(10px, 3svh, 28px);
+  padding: 16px;
+  background: radial-gradient(ellipse at center, #111115, #030304 75%);
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.35s, transform 0.5s var(--ease);
+}
+
+.scan.is-in {
+  opacity: 1;
+}
+
+.scan.is-leaving {
+  opacity: 0;
+  transform: scale(1.06);
+}
+
+/* Cuadrícula de escáner de fondo */
+.scan__grid {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(color-mix(in srgb, var(--xr) 18%, transparent) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, color-mix(in srgb, var(--xr) 18%, transparent) 1px, transparent 1px) 0 0 / 44px 44px;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  transition: background-color 0.3s;
+}
+
+.scan__stage {
+  position: relative;
+  width: var(--w);
+  height: calc(var(--w) * 0.95);
+  margin-bottom: calc(var(--w) * 0.06);
+  perspective: 1300px;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- La maleta ---------- */
+.scan__case {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: translateY(calc(var(--w) * 0.08)) rotateX(-52deg) rotateY(-16deg) rotateZ(4deg) scale(0.7);
+  opacity: 0;
+  transition: transform 0.9s var(--ease), opacity 0.4s;
+}
+
+.scan.is-in .scan__case {
+  transform: translateY(calc(var(--w) * 0.08)) rotateX(-52deg) rotateY(-10deg) rotateZ(2deg);
+  opacity: 1;
+}
+
+.scan.is-open .scan__case {
+  transform: translateY(calc(var(--w) * 0.12)) rotateX(-40deg) rotateY(-6deg);
+}
+
+.scan__body,
+.scan__lid {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+.scan__lid {
+  --open: 0deg;
+  transform: translateY(calc(var(--hb) / -2)) translateZ(calc(var(--d) / -2)) rotateX(var(--open))
+    translateZ(calc(var(--d) / 2)) translateY(calc(var(--hl) / -2));
+  transition: transform 0.9s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.scan.is-open .scan__lid {
+  --open: 105deg;
+}
+
+.scan__face {
+  position: absolute;
+  box-sizing: border-box;
+  background: linear-gradient(160deg, #34343a, #1a1a1e 60%, #121214);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+/* Cuerpo: ancho w, alto hb, fondo d */
+.scan__body .scan__face--front,
+.scan__body .scan__face--back {
+  width: var(--w);
+  height: var(--hb);
+  left: calc(var(--w) / -2);
+  top: calc(var(--hb) / -2);
+}
+
+.scan__body .scan__face--left,
+.scan__body .scan__face--right {
+  width: var(--d);
+  height: var(--hb);
+  left: calc(var(--d) / -2);
+  top: calc(var(--hb) / -2);
+}
+
+.scan__body .scan__face--top,
+.scan__body .scan__face--bottom {
+  width: var(--w);
+  height: var(--d);
+  left: calc(var(--w) / -2);
+  top: calc(var(--d) / -2);
+}
+
+.scan__body .scan__face--front { transform: translateZ(calc(var(--d) / 2)); }
+.scan__body .scan__face--back { transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); }
+.scan__body .scan__face--right { transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); }
+.scan__body .scan__face--left { transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); }
+.scan__body .scan__face--top { transform: rotateX(90deg) translateZ(calc(var(--hb) / 2)); }
+.scan__body .scan__face--bottom { transform: rotateX(-90deg) translateZ(calc(var(--hb) / 2)); }
+
+/* Tapa: ancho w, alto hl, fondo d */
+.scan__lid .scan__face--front,
+.scan__lid .scan__face--back {
+  width: var(--w);
+  height: var(--hl);
+  left: calc(var(--w) / -2);
+  top: calc(var(--hl) / -2);
+}
+
+.scan__lid .scan__face--left,
+.scan__lid .scan__face--right {
+  width: var(--d);
+  height: var(--hl);
+  left: calc(var(--d) / -2);
+  top: calc(var(--hl) / -2);
+}
+
+.scan__lid .scan__face--top,
+.scan__lid .scan__face--bottom {
+  width: var(--w);
+  height: var(--d);
+  left: calc(var(--w) / -2);
+  top: calc(var(--d) / -2);
+}
+
+.scan__lid .scan__face--front { transform: translateZ(calc(var(--d) / 2)); }
+.scan__lid .scan__face--back { transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); }
+.scan__lid .scan__face--right { transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); }
+.scan__lid .scan__face--left { transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); }
+.scan__lid .scan__face--top { transform: rotateX(90deg) translateZ(calc(var(--hl) / 2)); }
+.scan__lid .scan__face--bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--hl) / 2));
+  background: #0b0b0d;
+  backface-visibility: visible;
+}
+
+/* Detalles de la maleta */
+.scan__ribs {
+  position: absolute;
+  inset: 22% 6% 10%;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 2px, transparent 2px 9%);
+  border-radius: 4px;
+}
+
+.scan__ribs--top {
+  inset: 10%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.scan__latch {
+  position: absolute;
+  top: 0;
+  width: 12%;
+  height: 26%;
+  background: linear-gradient(#5a5a62, #2c2c31);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0 0 5px 5px;
+  transform-origin: 50% 100%;
+  transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+  z-index: 2;
+}
+
+.scan__latch--l { left: 16%; }
+.scan__latch--r { right: 16%; }
+
+.scan.is-unlocked .scan__latch {
+  transform: perspective(200px) rotateX(-75deg);
+}
+
+.scan__plate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26%;
+  transform: translate(-50%, -50%);
+}
+
+.scan__plate img {
+  display: block;
+  width: 100%;
+}
+
+.scan__handle {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: 22%;
+  height: 40%;
+  transform: translateX(-50%);
+  border: 3px solid #4a4a52;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+/* Interior (se ve al abrir) */
+.scan__body .scan__face--top {
+  background: #09090b;
+}
+
+.scan__tray {
+  position: absolute;
+  inset: 6%;
+  border-radius: 4px;
+  background: repeating-linear-gradient(45deg, #121214 0 6px, #0d0d0f 6px 12px);
+  box-shadow: inset 0 0 20px #000;
+}
+
+.scan__light {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle, var(--xr), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.6s 0.3s;
+}
+
+.scan.is-open .scan__light {
+  opacity: 0.9;
+}
+
+/* ---------- Rayos X ---------- */
+.scan__xray {
+  position: absolute;
+  inset: 0;
+  color: var(--xr);
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0 2px, transparent 2px 4px),
+    radial-gradient(ellipse at center, color-mix(in srgb, var(--xr) 22%, #050508), #050508 80%);
+  border: 1px solid var(--xr);
+  border-radius: 6px;
+  clip-path: inset(0 0 100% 0);
+  z-index: 3;
+  transition: opacity 0.4s, border-color 0.3s;
+}
+
+.scan.is-scanning .scan__xray {
+  animation: scan-reveal 1.8s linear forwards;
+}
+
+.scan.is-scanned .scan__xray {
+  opacity: 0;
+}
+
+@keyframes scan-reveal {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.scan__thing {
+  position: absolute;
+  aspect-ratio: 1;
+  background: var(--xr);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: background-color 0.3s;
+}
+
+.scan__pistol {
+  position: absolute;
+  left: 32%;
+  top: 46%;
+  width: 34%;
+  stroke: currentColor;
+  stroke-width: 2;
+  transform: rotate(-8deg);
+}
+
+.scan__beam {
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  top: 30%;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--xr);
+  box-shadow: 0 0 12px 3px var(--xr), 0 0 40px 8px color-mix(in srgb, var(--xr) 50%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scan.is-scanning .scan__beam {
+  animation: scan-beam 1.8s linear forwards;
+}
+
+.scan.is-scanned .scan__beam {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+@keyframes scan-beam {
+  0% { top: 22%; opacity: 1; }
+  100% { top: 68%; opacity: 1; }
+}
+
+/* ---------- Lo que sale de la maleta ---------- */
+.scan__reveal {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 70%;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  transform: translate(-50%, 10%) scale(0.5);
+  opacity: 0;
+  transition: transform 0.9s 0.35s cubic-bezier(0.2, 1.3, 0.4, 1), opacity 0.5s 0.35s;
+  pointer-events: none;
+}
+
+.scan.is-open .scan__reveal {
+  transform: translate(-50%, -78%) scale(1);
+  opacity: 1;
+}
+
+.scan__logo {
+  width: 72%;
+  filter: drop-shadow(0 0 18px var(--xr));
+}
+
+.scan__title {
+  display: grid;
+  margin: 0;
+  font-family: 'Black Ops One', var(--font-display);
+  font-size: clamp(20px, 4.4vw, 34px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 0 14px var(--xr);
+}
+
+.scan__caption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: clamp(13px, 1.6vw, 16px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #ddd;
+}
+
+.scan__rec {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e3343f;
+  box-shadow: 0 0 8px #e3343f;
+  animation: drop-rec 1.4s steps(1, end) infinite;
+}
+
+.scan__skip {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--fg);
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.scan__title span + span {
+  font-size: 0.7em;
+}
