@@ -49,8 +49,28 @@ window.__dress = function(o){
     const armShift = y => 0.02 + 0.12*sstep(1.15, 1.78, y);
     for (let j = 0; j < A.length; j += 3){ A[j] -= armShift(A[j+1])*sg; A[j] -= pv[0]; A[j+1] -= pv[1]; A[j+2] -= pv[2]; }
     g.computeVertexNormals();
-    const cut = (ep[1] - pv[1]) + (sh.long ? -0.35 : 0.03);
-    addMesh(shell(g, 0.055, (x, y) => y > cut), arms[i]);
+    const ey = ep[1] - pv[1];
+    const cut = ey + (sh.long ? -0.42 : 0.03);
+    const sg2 = shell(g, 0.055, (x, y) => y > cut);
+    addMesh(sg2, arms[i]);
+    // la manga se dobla con el codo igual que el brazo (misma piel), así no se parte
+    const P0 = sg2.attributes.position.array.slice(), n = P0.length/3, W = new Float32Array(n);
+    for (let v = 0; v < n; v++) W[v] = sstep(ey + 0.16, ey - 0.16, P0[v*3+1]);
+    const mesh = window.__clothes[window.__clothes.length - 1];
+    const e = elbows[i], qi = new THREE.Quaternion(), qq = new THREE.Quaternion(), M = new THREE.Matrix4(), T = new THREE.Matrix4(), tv = new THREE.Vector3();
+    let key = '';
+    mesh.onBeforeRender = () => {
+      const k = e.quaternion.x.toFixed(4) + e.quaternion.y.toFixed(4) + e.quaternion.z.toFixed(4) + e.quaternion.w.toFixed(4);
+      if (k === key) return; key = k;
+      const P = sg2.attributes.position.array, L = 40, MS = [], back = new THREE.Matrix4().makeTranslation(-e.position.x, -e.position.y, -e.position.z);
+      for (let l = 0; l <= L; l++){ qq.copy(qi).slerp(e.quaternion, l/L); MS[l] = new THREE.Matrix4().makeTranslation(e.position.x, e.position.y, e.position.z).multiply(T.makeRotationFromQuaternion(qq)).multiply(back); }
+      for (let v = 0; v < n; v++){
+        const o = v*3, l = Math.round(W[v]*L);
+        if (l === 0){ P[o] = P0[o]; P[o+1] = P0[o+1]; P[o+2] = P0[o+2]; continue; }
+        tv.set(P0[o], P0[o+1], P0[o+2]).applyMatrix4(MS[l]); P[o] = tv.x; P[o+1] = tv.y; P[o+2] = tv.z;
+      }
+      sg2.attributes.position.needsUpdate = true; sg2.computeVertexNormals(); sg2.computeBoundingSphere();
+    };
   });
 };
 

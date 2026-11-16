@@ -24,7 +24,7 @@ Herramientas en `tools/swaggy3d/`: `patch.py` arma una copia "estudio" de la esc
 
 ## Ropa (clóset de Swaggy)
 
-`looks/<look>/` tiene las mismas 20 tiras pero con Swaggy vestido (camiseta de cada drop, gorra, pijama) y `foto.webp` (foto en alta para "Foto con Swaggy"). La página escoge la carpeta según lo que el visitante eligió en el clóset (`js/components/swaggy/closet.js`, lista en `SWAGGY.looks` de `config.js`). De noche, si no eligió nada, usa `pijama`.
+`looks/<look>/` tiene las mismas 20 tiras pero con Swaggy vestido (camiseta de cada drop, gorra, pijama) y `foto.webp` (foto en alta para "Foto con Swaggy"). La página escoge la carpeta según lo que el visitante eligió en el clóset (`js/components/swaggy/closet.js`, lista en `SWAGGY.looks` de `config.js`). La pijama es un premio del clóset.
 
 Para agregar o cambiar ropa:
 1. `tools/swaggy3d/dress.js` arma la camiseta (tronco + mangas) con su estampado; `looks.json` tiene cada look.

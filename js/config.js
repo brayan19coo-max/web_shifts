@@ -277,7 +277,6 @@ export const SWAGGY = {
   //   'days3'  → visitar la web 3 días distintos
   //   'drop03' → desbloquear el Drop 03 (con la clave o cuando salga)
   //   'found3' → encontrar a Swaggy escondido 3 veces
-  // La pijama se la pone solo de noche (10 p. m. a 5 a. m.) si no le escogiste nada.
   looks: [
     { id: 'base', name: 'Al natural' },
     { id: 'clyde-roja', name: 'Clyde negra/roja' },

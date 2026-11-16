@@ -38,7 +38,7 @@ export const ACTION_TIME = Object.fromEntries(Object.entries(ACTION_ANIM).map(([
 
 // ---------- Ropa (clóset) ----------
 // Cada "look" es Swaggy grabado con esa ropa (assets/images/swaggy/3d/looks/<look>/).
-// 'base' = sin camiseta. De noche (10 p. m. a 5 a. m.), si no escogiste nada, se pone la pijama.
+// 'base' = sin camiseta.
 const LOOK_KEY = 'swaggy-look';
 const LOOK_VERSION = '1';
 const readLook = () => {
@@ -49,12 +49,8 @@ const readLook = () => {
   }
 };
 let chosen = readLook();
-const isNight = () => {
-  const h = new Date().getHours();
-  return h >= 22 || h < 5;
-};
-/** Look que se ve ahora (el escogido, o la pijama de noche si no escogiste ninguno). */
-export const currentLook = () => (chosen === 'base' && isNight() ? 'pijama' : chosen);
+/** Look que se ve ahora (el que escogiste en el clóset). */
+export const currentLook = () => chosen;
 export const chosenLook = () => chosen;
 
 // si una ropa no carga (no existe o falla la red), Swaggy sigue con la de siempre
