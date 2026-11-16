@@ -22,6 +22,9 @@ export function countVisitDay() {
   const today = new Date().toISOString().slice(0, 10);
   const days = storage.get(DAYS_KEY, []);
   if (!days.includes(today)) storage.set(DAYS_KEY, [...days, today].slice(-30));
+  // si tenía puesto un outfit que ahora está bloqueado, vuelve al natural
+  const worn = (SWAGGY.looks || []).find((l) => l.id === chosenLook());
+  if (worn?.locked) setSwaggyLook('base');
 }
 
 /** Marca algo como ganado (por ejemplo 'drop03' al desbloquear el drop). */
@@ -30,11 +33,12 @@ export function grantUnlock(rule) {
   if (got[rule]) return false;
   storage.set(UNLOCKS_KEY, { ...got, [rule]: Date.now() });
   const look = (SWAGGY.looks || []).find((l) => l.unlock === rule);
-  if (look) toast(`👕 Nuevo outfit para ${SWAGGY.name}: ${look.name}. Búscalo en el clóset del parche.`, 'success', 5200);
+  if (look && !look.locked) toast(`👕 Nuevo outfit para ${SWAGGY.name}: ${look.name}. Búscalo en el clóset del parche.`, 'success', 5200);
   return true;
 }
 
 export function isUnlocked(look) {
+  if (look.locked) return false;
   if (!look.unlock) return true;
   const got = storage.get(UNLOCKS_KEY, {});
   if (got[look.unlock]) return true;

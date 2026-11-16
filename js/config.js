@@ -283,7 +283,8 @@ export const SWAGGY = {
     { id: 'clyde-azul', name: 'Clyde blanca/azul' },
     { id: 'bonnie', name: 'Bonnie negra/rosa' },
     { id: 'saint', name: 'Saint Mode', unlock: 'days3', hint: 'Visita la web 3 días distintos' },
-    { id: 'xcops', name: 'X-Cops Division', unlock: 'drop03', hint: 'Desbloquea el Drop 03' },
+    // locked: true = bloqueado para todos (no se puede ganar todavía). Quita "locked" cuando salga el drop.
+    { id: 'xcops', name: '???', unlock: 'drop03', locked: true, hint: 'Llega con el Drop 03' },
     { id: 'pijama', name: 'Pijama', unlock: 'found3', hint: 'Encuentra a Swaggy escondido 3 veces' },
   ],
   // Premio de los mini juegos. En null = sin premio.
