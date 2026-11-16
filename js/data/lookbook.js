@@ -23,8 +23,8 @@
 const DROP_02 = {
   title: 'Lookbook',
   season: 'Drop 02 — Bonnie & Clyde',
-  // Crédito de las fotos (se muestra debajo del lookbook). Sin crédito: credit: null
-  credit: null,
+  // Crédito de las fotos (se muestra debajo del lookbook)
+  credit: { label: 'Fotos: @venegas_ft', url: 'https://instagram.com/venegas_ft' },
   cover: {
     image: 'assets/images/lookbook/drop-02/portada.webp',
     title: 'Bonnie & Clyde',
