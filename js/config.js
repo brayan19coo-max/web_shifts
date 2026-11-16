@@ -56,7 +56,7 @@ export const DROP = {
   id: 'drop-03',
   name: 'Drop 03',
   codename: 'X-Cops Division',
-  subtitle: 'NADA SE ESCONDE.',
+  subtitle: '',
   // Línea extra debajo del subtítulo (con un punto rojo de "grabando"). En '' no sale.
   tagline: 'THE SYSTEM IS WATCHING.',
   releaseDate: '2026-11-30T19:00:00-05:00',

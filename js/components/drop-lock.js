@@ -38,7 +38,9 @@ export function initDropLock() {
 
   $('[data-drop-name]', section).textContent = DROP.name;
   $('[data-drop-codename]', section).textContent = DROP.codename || '';
-  $('[data-drop-subtitle]', section).textContent = DROP.subtitle;
+  const subtitleEl = $('[data-drop-subtitle]', section);
+  subtitleEl.textContent = DROP.subtitle || '';
+  subtitleEl.hidden = !DROP.subtitle;
   const tagline = $('[data-drop-tagline]', section);
   if (tagline && DROP.tagline) {
     $('[data-drop-tagline-text]', tagline).textContent = DROP.tagline;
@@ -116,7 +118,7 @@ export function initDropLock() {
       storage.set(vaultSeenKey, true);
       await playVault({
         title: [DROP.name, DROP.codename].filter(Boolean).join(' — '),
-        subtitle: DROP.subtitle,
+        subtitle: DROP.subtitle || DROP.tagline || '',
       });
     }
     reveal();
