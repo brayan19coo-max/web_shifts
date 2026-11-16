@@ -48,8 +48,8 @@ const DROP_02 = {
     },
     {
       title: 'Cara de inocente',
-      text: 'Clyde blanca/azul.',
-      image: 'assets/images/lookbook/drop-02/look-04.webp',
+      text: 'De frente nadie sospecha. De espaldas, la evidencia.',
+      image: 'assets/images/lookbook/drop-02/look-04-v2.webp',
     },
     {
       title: 'Cubriendo la salida',
