@@ -28,7 +28,7 @@ const CAM_FROM = 5; // nivel desde el que aparece la cámara
  */
 // dónde queda la mano levantada en cada cuadro de 'pintar' (fracción del cuadro)
 const PAINT_HAND = [[0.179, 0.223], [0.193, 0.225], [0.203, 0.219], [0.213, 0.225], [0.222, 0.225], [0.232, 0.216], [0.246, 0.209], [0.256, 0.209], [0.271, 0.209], [0.28, 0.205], [0.295, 0.198], [0.3, 0.32]];
-const WORDS = ["SHIFT'S", 'SWAGGY', 'CREW', 'B&C', 'DROP 02', 'STYLE', 'LEY', 'PARCHE'];
+const WORDS = ["SHIFT'S", 'SWAGGY', 'CREW', 'B&C', 'DROP 03', 'STYLE', 'LEY', 'PARCHE'];
 
 export function startGuardGame(canvas, { onScore, onLives, onInfo, onEnd, music } = {}) {
   const kit = createKit(canvas);

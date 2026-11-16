@@ -6,6 +6,7 @@ import { getDropProducts } from '../data/products.js';
 import { createProductCard, bindQuickView } from './product-card.js';
 import { createLogo3D } from './logo3d.js';
 import { playVault } from './vault.js';
+import { initXray } from './xray.js';
 import { sound } from '../audio/sound-manager.js';
 import { toast } from './toast.js';
 import { release, isReleased, isEarlyOpen, earlyAccess, earlyLabel, unlockedKey as storageKey, vaultSeenKey } from '../core/drop-state.js';
@@ -47,6 +48,7 @@ export function initDropLock() {
   }) + ' (hora Colombia)';
 
   const logo = createLogo3D($('[data-drop-logo]', section));
+  if (DROP.xray) initXray(section, $('[data-drop-logo]', section), DROP.xray);
 
   // ---------- Contador ----------
   let timer;

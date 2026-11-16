@@ -17,7 +17,7 @@ export const rnd = (n) => {
   return x - Math.floor(x);
 };
 
-const TAGS = ["SHIFT'S", 'SWAGGY', 'CREW', 'B&C', 'DROP 02', 'STYLE', '★', 'LEY'];
+const TAGS = ["SHIFT'S", 'SWAGGY', 'CREW', 'B&C', 'DROP 03', 'STYLE', '★', 'LEY'];
 
 export const SCENES = {
   barrio: { name: 'Barrio de noche', sky: ['#07080f', '#1b1622'] },

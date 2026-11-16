@@ -36,7 +36,7 @@ export const BRAND = {
 /**
  * DROP BLOQUEADO
  * -------------------------------------------------------------
- * Los productos con `drop: 'drop-02'` (en products.js) quedan ocultos
+ * Los productos con `drop: 'drop-03'` (en products.js) quedan ocultos
  * detrás de una clave hasta la fecha de lanzamiento. Si todavía no hay
  * productos con ese drop, al abrirse se muestra "Las piezas se revelan pronto".
  *
@@ -53,22 +53,32 @@ export const BRAND = {
  * seguridad bancaria; alguien con conocimientos técnicos podría saltarlo.
  */
 export const DROP = {
-  id: 'drop-02',
-  name: 'Drop 02',
-  codename: 'Bonnie & Clyde',
-  subtitle: 'FUERA DE LA LEY.',
-  releaseDate: '2026-11-15T19:00:00-05:00',
+  id: 'drop-03',
+  name: 'Drop 03',
+  codename: "X-Cops",
+  subtitle: 'NADA SE ESCONDE.',
+  releaseDate: '2026-11-30T19:00:00-05:00',
   // Compra anticipada: quien ponga la clave puede comprar desde esta fecha
   // (antes de releaseDate). Si la clave se pone antes, ve las prendas pero
   // el precio sigue pixelado hasta aquí. En null = la clave solo deja ver.
-  earlyAccessDate: '2026-11-13T19:00:00-05:00',
+  earlyAccessDate: null,
   // Oferta de lanzamiento: hasta esta fecha las prendas del drop se venden
   // a su "salePrice" (con el precio normal tachado). Después vuelven solas
   // al precio normal. En null = sin oferta.
-  offerEndDate: '2026-11-14T19:00:00-05:00', // 24 horas desde la compra anticipada
+  offerEndDate: null,
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
   passwordHash: 'f9d1c62dc9fee76e7a71c65671eff6f4140c951348830ed419d9e7e5d040a449',
+  // Estética de rayos X: de vez en cuando el logo parpadea en estos colores
+  // y en el fondo aparecen armas, cuchillos y dinero como en un escáner.
+  // Para quitarla, borra "xray" (o pon xray: null).
+  xray: {
+    colors: [
+      '#b0101c', // rojo sangre oscuro (camiseta negra)
+      '#ff5cbe', // rosa (camiseta blanca y negra)
+      '#9b4dff', // morado (camiseta negra)
+    ],
+  },
 };
 
 /**

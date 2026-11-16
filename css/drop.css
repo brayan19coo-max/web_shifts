@@ -332,3 +332,80 @@
   from { transform: rotateX(-8deg); }
   to { transform: rotateX(8deg); }
 }
+
+/* =========================================================
+   RAYOS X (Drop 03 — X-Cops)
+   El logo parpadea en los colores del drop y en el fondo
+   aparecen radiografías de armas, cuchillos y dinero.
+   ========================================================= */
+.drop--xray > *:not(.xray) {
+  position: relative;
+  z-index: 1;
+}
+
+.xray {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Destello del escáner sobre toda la sección */
+.xray::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.35) 0 2px, transparent 2px 4px),
+    radial-gradient(ellipse 70% 60% at 30% 50%, var(--xr, #fff), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.06s linear;
+}
+
+.drop.is-xray .xray::before {
+  opacity: 0.16;
+}
+
+.xray__item {
+  position: absolute;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  fill: color-mix(in srgb, var(--xr, #fff) 14%, transparent);
+  stroke: var(--xr, #fff);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0;
+  transform: rotate(var(--rot, 0deg)) scale(0.96);
+  transition: opacity 0.05s linear;
+}
+
+.xray__item .xr-in {
+  fill: none;
+  stroke-width: 1.2;
+  opacity: 0.7;
+}
+
+.drop.is-xray .xray__item.is-on {
+  opacity: 0.55;
+  filter: drop-shadow(0 0 6px var(--xr, #fff));
+}
+
+/* En celular y equipos de pocos recursos: sin brillo (más liviano) */
+.perf-lite .drop.is-xray .xray__item.is-on {
+  filter: none;
+  opacity: 0.45;
+}
+
+/* El reflejo del piso del logo también toma el color */
+.drop.is-xray .logo3d::after {
+  background: radial-gradient(ellipse, var(--xr, #fff), transparent 70%);
+  opacity: 0.45;
+}
+
+@media (max-width: 720px) {
+  .xray__item {
+    min-width: 70px;
+  }
+}

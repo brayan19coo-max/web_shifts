@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="css/components.css?v=a92227e3">
   <link rel="stylesheet" href="css/sections.css?v=65b5e4e5">
   <link rel="stylesheet" href="css/vault.css?v=872ba58b">
-  <link rel="stylesheet" href="css/drop.css?v=c498c878">
+  <link rel="stylesheet" href="css/drop.css?v=067a3f79">
   <link rel="stylesheet" href="css/swaggy.css?v=b9497802">
   <link rel="stylesheet" href="css/animations.css?v=90533688">
 
@@ -74,7 +74,7 @@
       "./js/components/cart.js": "./js/components/cart.js?v=6e458101",
       "./js/components/crew.js": "./js/components/crew.js?v=964c9a34",
       "./js/components/cursor.js": "./js/components/cursor.js?v=d15bbcf9",
-      "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=3ea5dde4",
+      "./js/components/drop-lock.js": "./js/components/drop-lock.js?v=4e2154c8",
       "./js/components/header.js": "./js/components/header.js?v=40fb4220",
       "./js/components/help.js": "./js/components/help.js?v=c3cdf7a6",
       "./js/components/hero.js": "./js/components/hero.js?v=bd91903b",
@@ -95,7 +95,7 @@
       "./js/components/swaggy/games/catch-can.js": "./js/components/swaggy/games/catch-can.js?v=cc91ceaf",
       "./js/components/swaggy/games/combo.js": "./js/components/swaggy/games/combo.js?v=278a5035",
       "./js/components/swaggy/games/flap.js": "./js/components/swaggy/games/flap.js?v=18fb5d02",
-      "./js/components/swaggy/games/guard.js": "./js/components/swaggy/games/guard.js?v=3dcf0cb2",
+      "./js/components/swaggy/games/guard.js": "./js/components/swaggy/games/guard.js?v=67db2a75",
       "./js/components/swaggy/games/index.js": "./js/components/swaggy/games/index.js?v=6e49241e",
       "./js/components/swaggy/games/kit.js": "./js/components/swaggy/games/kit.js?v=07d3d38e",
       "./js/components/swaggy/games/music.js": "./js/components/swaggy/games/music.js?v=1470790a",
@@ -103,7 +103,7 @@
       "./js/components/swaggy/games/poses.js": "./js/components/swaggy/games/poses.js?v=4d7d61e7",
       "./js/components/swaggy/games/rhythm.js": "./js/components/swaggy/games/rhythm.js?v=93329307",
       "./js/components/swaggy/games/runner.js": "./js/components/swaggy/games/runner.js?v=63193b92",
-      "./js/components/swaggy/games/scenes.js": "./js/components/swaggy/games/scenes.js?v=ce5f546f",
+      "./js/components/swaggy/games/scenes.js": "./js/components/swaggy/games/scenes.js?v=d9dce8ed",
       "./js/components/swaggy/games/stack.js": "./js/components/swaggy/games/stack.js?v=33dbffe2",
       "./js/components/swaggy/games/tap-drop.js": "./js/components/swaggy/games/tap-drop.js?v=e552210c",
       "./js/components/swaggy/roam.js": "./js/components/swaggy/roam.js?v=d94702c5",
@@ -111,13 +111,14 @@
       "./js/components/swaggy/sw3d.js": "./js/components/swaggy/sw3d.js?v=d4be7a42",
       "./js/components/toast.js": "./js/components/toast.js?v=f55399e9",
       "./js/components/vault.js": "./js/components/vault.js?v=af313f69",
-      "./js/config.js": "./js/config.js?v=55a3dccd",
+      "./js/components/xray.js": "./js/components/xray.js?v=5e2783ec",
+      "./js/config.js": "./js/config.js?v=d9778020",
       "./js/core/bus.js": "./js/core/bus.js?v=5e70cdf0",
       "./js/core/cart-store.js": "./js/core/cart-store.js?v=00db101a",
       "./js/core/drop-state.js": "./js/core/drop-state.js?v=7890fa81",
       "./js/core/store.js": "./js/core/store.js?v=3f80d2ec",
       "./js/data/lookbook.js": "./js/data/lookbook.js?v=6f599063",
-      "./js/data/products.js": "./js/data/products.js?v=7c26178b",
+      "./js/data/products.js": "./js/data/products.js?v=15e4f152",
       "./js/main.js": "./js/main.js?v=56c1d7c1",
       "./js/utils/dom.js": "./js/utils/dom.js?v=9f430828",
       "./js/utils/format.js": "./js/utils/format.js?v=1576479a",
@@ -155,7 +156,7 @@
 
     <nav class="header__nav" aria-label="Principal">
       <a href="#tienda" data-sfx-hover="hover">Tienda</a>
-      <a href="#drop" data-sfx-hover="hover">Drop 02 🔒</a>
+      <a href="#drop" data-sfx-hover="hover">Drop 03 🔒</a>
       <a href="#lookbook" data-sfx-hover="hover">Lookbook</a>
       <a href="#nosotros" data-sfx-hover="hover">Nosotros</a>
       <a href="#crew" data-sfx-hover="hover">Crew</a>
@@ -181,7 +182,7 @@
 
   <nav class="mobile-menu" id="mobile-menu" aria-label="Menú móvil">
     <a href="#tienda" data-sfx="click"><sup>01</sup>Tienda</a>
-    <a href="#drop" data-sfx="click"><sup>02</sup>Drop 02</a>
+    <a href="#drop" data-sfx="click"><sup>02</sup>Drop 03</a>
     <a href="#lookbook" data-sfx="click"><sup>03</sup>Lookbook</a>
     <a href="#nosotros" data-sfx="click"><sup>04</sup>Nosotros</a>
     <a href="#crew" data-sfx="click"><sup>05</sup>Crew</a>
@@ -238,7 +239,7 @@
 
         <div class="drop__info" data-reveal>
           <p class="drop__label"><span class="drop__lock" aria-hidden="true"></span><span class="drop__status-locked">Bloqueado</span><span class="drop__status-open">Desbloqueado</span></p>
-          <h2 class="drop__title"><span data-drop-name>Drop 02</span>
+          <h2 class="drop__title"><span data-drop-name>Drop 03</span>
             <span class="drop__codename" data-drop-codename></span></h2>
           <p class="drop__subtitle" data-drop-subtitle></p>
 
