@@ -39,6 +39,11 @@ export function initDropLock() {
   $('[data-drop-name]', section).textContent = DROP.name;
   $('[data-drop-codename]', section).textContent = DROP.codename || '';
   $('[data-drop-subtitle]', section).textContent = DROP.subtitle;
+  const tagline = $('[data-drop-tagline]', section);
+  if (tagline && DROP.tagline) {
+    $('[data-drop-tagline-text]', tagline).textContent = DROP.tagline;
+    tagline.hidden = false;
+  }
   $('[data-drop-date]', section).textContent = new Date(release).toLocaleString('es-CO', {
     day: 'numeric',
     month: 'long',

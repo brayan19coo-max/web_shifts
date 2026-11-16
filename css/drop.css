@@ -137,8 +137,6 @@
   font-size: 0.34em;
   line-height: 1;
   text-transform: none;
-  transform: rotate(-3deg);
-  transform-origin: left;
 }
 
 .drop__subtitle {
@@ -412,3 +410,48 @@
   opacity: 0.45;
 }
 
+
+/* Textos del Drop 03: letra táctica para el nombre y de sistema/cámara abajo */
+.drop--xray .drop__codename {
+  font-family: 'Black Ops One', var(--font-display);
+  font-size: 0.3em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.drop--xray .drop__subtitle {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: clamp(15px, 1.4vw, 18px);
+  letter-spacing: 0.22em;
+  margin-bottom: 8px;
+}
+
+.drop__tagline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: clamp(12px, 1.1vw, 14px);
+  letter-spacing: 0.3em;
+  color: #e3343f;
+}
+
+.drop__tagline[hidden] {
+  display: none;
+}
+
+.drop__rec {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e3343f;
+  box-shadow: 0 0 8px #e3343f;
+  animation: drop-rec 1.4s steps(1, end) infinite;
+}
+
+@keyframes drop-rec {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.15; }
+}

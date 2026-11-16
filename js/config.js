@@ -55,8 +55,10 @@ export const BRAND = {
 export const DROP = {
   id: 'drop-03',
   name: 'Drop 03',
-  codename: "X-Cops",
+  codename: 'X-Cops Division',
   subtitle: 'NADA SE ESCONDE.',
+  // Línea extra debajo del subtítulo (con un punto rojo de "grabando"). En '' no sale.
+  tagline: 'THE SYSTEM IS WATCHING.',
   releaseDate: '2026-11-30T19:00:00-05:00',
   // Compra anticipada: quien ponga la clave puede comprar desde esta fecha
   // (antes de releaseDate). Si la clave se pone antes, ve las prendas pero
