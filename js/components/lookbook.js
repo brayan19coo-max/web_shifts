@@ -4,6 +4,7 @@ import { garmentSvg } from './product-art.js';
 import { LOOKBOOKS } from '../data/lookbook.js';
 import { sound } from '../audio/sound-manager.js';
 import { initDeck } from './lookbook-deck.js';
+import { bus } from '../core/bus.js';
 
 /**
  * Lookbook: empieza con un carrusel de mazos, uno por drop (se pasa de
@@ -61,6 +62,7 @@ export function initLookbook() {
   };
 
   showDrop(LOOKBOOKS[0]);
+  let lastDrop = 0;
 
   let current = -1;
   const setCurrent = (index, withSound) => {
@@ -181,7 +183,11 @@ export function initLookbook() {
     section,
     drops: LOOKBOOKS,
     getPanels: () => panels,
-    onSelect: (index) => showDrop(LOOKBOOKS[index]),
+    onSelect: (index) => {
+      if (index !== lastDrop) bus.emit('lookbook:drop', { index });
+      lastDrop = index;
+      showDrop(LOOKBOOKS[index]);
+    },
     onOpen: (index) => {
       renderLooks(LOOKBOOKS[index]);
       track.scrollLeft = 0;

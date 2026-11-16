@@ -217,7 +217,56 @@ export const SWAGGY = {
     // Dentro de la bóveda cuando se abre el drop
     vault: ['Fuera de la ley 😎', 'Yo no vi nada… 🤫'],
     // Swaggy escondido: lo que dice cuando alguien lo encuentra
-    secret: ['¡Me encontraste! 👀', 'Shhh… no le digas a nadie que me escondo aquí.', 'Pista: las claves se sueltan en el Crew 🤫', 'Pista: el drop se abre solo cuando llega la hora ⏰'],
+    secret: ['¡Me encontraste! 👀', 'Shhh… no le digas a nadie que me escondo aquí.', 'Pista: las claves se sueltan en el Crew 🤫', 'Pista: el drop se abre solo cuando llega la hora ⏰', 'Tienes buen ojo. Eso se nota hasta en cómo te vistes 😎', 'Me escondo bien, pero tú buscas mejor.'],
+
+    // ----- Más frases por la web -----
+    // Al cerrar una prenda que estabas mirando ({name} = la prenda)
+    afterView: ['La {name} te estaba mirando también 👀', 'Esa {name} no se va a comprar sola, eh.', 'Buen ojo con la {name}.', 'Mírala por detrás también, ahí está lo bueno.'],
+    // Si vuelves otro día, recuerda lo último que miraste
+    remember: ['¿Todavía pensando en la {name}? Yo también 👀', 'Volviste por la {name}, ¿cierto? Te entiendo.', 'La {name} sigue aquí… por ahora.'],
+    // Carrito y envío gratis ({falta} = lo que falta)
+    almostFree: ['Te faltan {falta} para el envío gratis 👀', 'Uy, a {falta} del envío gratis…'],
+    freeShipping: ['¡Envío gratis desbloqueado! 🚚', 'Listo, el envío va por nuestra cuenta 📦'],
+    // Clave incorrecta en el drop
+    dropWrong: ['Esa no es, brother 😅', 'Casi… pero no. Las claves salen en el Crew.', 'Intenta otra, que yo no te la puedo decir 🤐'],
+    // Último minuto antes del lanzamiento
+    dropFinal: ['¡Ya casi! No te muevas de aquí ⏰', 'Último minuto… ¿sientes eso?', 'Prepárate, que esto se abre ya.'],
+    // Al cambiar de drop en el lookbook
+    lookbookSwitch: ['Ese drop fue una locura.', 'Clásico. Todavía lo uso.', 'Mira cómo hemos crecido 🥹'],
+    // Si bajas la página muy rápido (una vez por visita)
+    scrollFast: ['¡Ey, más despacio! Te estás saltando lo bueno 😵‍💫', 'Frena, frena, que me mareo 🌀'],
+    // Frases escondidas: salen muy de vez en cuando al tocarlo
+    rare: [
+      'Si lees esto, eres de los reales 🫡',
+      'Esta frase sale muy poco. Tómale captura 📸',
+      'Psst… en el Crew pasan cosas que aquí no salen.',
+      'Dato: las nutrias se toman de la mano para no separarse. Como el parche.',
+      'Doble clic al logo del drop. No te digo más.',
+    ],
+  },
+
+  // Frases que cambian con el drop activo (DROP.id en config): se suman a las de arriba
+  byDrop: {
+    'drop-03': {
+      sections: {
+        drop: ['El sistema te está mirando 👁️', 'Aquí se escanea todo… hasta las intenciones 🔍', 'X-Cops Division: nadie entra sin clave.'],
+        tienda: ['Todo lo que ves aquí pasó por el escáner 🔍'],
+      },
+      idle: ['Estos lentes ven a través de todo 😎', 'Psst… algo se está escaneando en el drop.', 'The system is watching… y yo también 👀'],
+      tap: ['¡Alto ahí! Era broma 🚨', 'Manos arriba… para el selfie 📸'],
+      dropWrong: ['Acceso denegado 🚨', 'El escáner dice que no.'],
+      secret: ['Pista: X-Cops sale el 30 a las 7 de la noche ⏰'],
+    },
+  },
+
+  // Frases por fecha y hora (salen a veces, mezcladas con las normales).
+  // from/to = 'MM-DD' · days = días del mes · weekday = 0 domingo … 6 sábado · hours = [desde, hasta)
+  dates: {
+    navidad: { from: '12-01', to: '12-25', phrases: ['¿Ya tienes el regalo? Yo digo que una Shift’s 🎁', 'Navidad sin estrenar no es Navidad 🎄'] },
+    anoNuevo: { from: '12-26', to: '01-06', phrases: ['Año nuevo, outfit nuevo 🎆', 'Este año también rompemos esquemas.'] },
+    quincena: { days: [14, 15, 16, 29, 30, 31, 1], phrases: ['¿Ya cayó la quincena? 👀', 'Quincena y drop nuevo… qué casualidad.'] },
+    viernesNoche: { weekday: 5, hours: [18, 24], phrases: ['Viernes en la noche… ¿y ese outfit para salir?', 'Hoy se sale bien vestido 😎'] },
+    madrugada: { hours: [0, 5], phrases: ['¿Qué haces despierto a esta hora? Yo cuidando la tienda 🌙', 'Las mejores compras se hacen de madrugada 🦉'] },
   },
   // Premio de los mini juegos. En null = sin premio.
   // Ejemplo: { minScore: 60, text: '10 % de descuento en tu próxima compra' }

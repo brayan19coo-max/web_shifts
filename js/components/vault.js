@@ -2,6 +2,7 @@ import { html, escapeHtml, lockScroll } from '../utils/dom.js';
 import { BRAND, SWAGGY } from '../config.js';
 import { sound } from '../audio/sound-manager.js';
 import { swaggy3d, mountSwaggy3d } from './swaggy/sw3d.js';
+import { merged } from './swaggy/phrases.js';
 
 /**
  * Animación de caja fuerte abriéndose (pantalla completa).
@@ -49,7 +50,7 @@ export function playVault({ title = '', subtitle = '' } = {}) {
         </div>
       </div>
       <div class="vault__swaggy" aria-hidden="true">
-        <p class="vault__swaggy-say">${escapeHtml(pickPhrase(SWAGGY.phrases?.vault))}</p>
+        <p class="vault__swaggy-say">${escapeHtml(pickPhrase(merged().vault))}</p>
         ${swaggy3d('party')}
       </div>
       <p class="vault__caption" aria-live="polite">Abriendo la bóveda…</p>

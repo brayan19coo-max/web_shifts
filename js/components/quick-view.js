@@ -108,6 +108,7 @@ export function initQuickView() {
 
   const close = () => {
     if (modal.hidden) return;
+    bus.emit('quickview:close', { id: product?.id });
     modal.classList.remove('is-open');
     lockScroll('quickview', false);
     sound.play('close');

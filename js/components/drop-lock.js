@@ -10,6 +10,7 @@ import { initXray } from './xray.js';
 import { playScanner } from './scanner.js';
 import { sound } from '../audio/sound-manager.js';
 import { toast } from './toast.js';
+import { bus } from '../core/bus.js';
 import { release, isReleased, isEarlyOpen, earlyAccess, earlyLabel, unlockedKey as storageKey, vaultSeenKey } from '../core/drop-state.js';
 
 /**
@@ -60,6 +61,7 @@ export function initDropLock() {
 
   // ---------- Contador ----------
   let timer;
+  let finalWarned = false;
   const renderCountdown = () => {
     const diff = Math.max(0, release - Date.now());
     const values = {
@@ -78,6 +80,11 @@ export function initDropLock() {
         el.classList.add('is-flip');
       }
     });
+    // Último minuto: Swaggy avisa (una vez)
+    if (diff > 0 && diff <= 60000 && !finalWarned && !section.classList.contains('is-unlocked')) {
+      finalWarned = true;
+      bus.emit('drop:final');
+    }
     // Los últimos 10 segundos suenan
     if (diff > 0 && diff <= 10000 && !section.classList.contains('is-unlocked')) sound.play('tick');
     if (diff === 0) {
@@ -144,6 +151,7 @@ export function initDropLock() {
       return;
     }
     sound.play('error');
+    bus.emit('drop:wrong');
     logo.spin(-18);
     form.classList.remove('is-shake');
     void form.offsetWidth;

@@ -7,6 +7,7 @@ import { swaggy3d, mountSwaggy3d, preloadSwaggy3d, ACTION_TIME } from './sw3d.js
 import { LITE } from '../../utils/perf.js';
 import { GAMES } from './games/index.js';
 import { createMusic } from './games/music.js';
+import { merged, seasonal, rare } from './phrases.js';
 
 /**
  * El parche de Swaggy
@@ -65,7 +66,11 @@ function lookAt(svg, x, y) {
 
 export function initSwaggy() {
   const data = storage.get(KEY, { lastVisit: 0, best: {} });
-  const phrases = SWAGGY.phrases || {};
+  const phrases = merged();
+  const withSeason = (list, chance = 0.3) => {
+    const dated = seasonal();
+    return dated.length && Math.random() < chance ? pick(dated) : pick(list);
+  };
 
   // ---------- Botón flotante ----------
   const launcher = html(`
@@ -218,7 +223,7 @@ export function initSwaggy() {
     storage.set(KEY, { ...storage.get(KEY, {}), ...data });
     const isBack = away > 2 * 86400000 && !firstTime;
     if (use3d) return; // en 3D saluda él mismo, y se acuerda de ti
-    setTimeout(() => react(isBack ? 'party' : 'happy', pick(isBack ? phrases.back : phrases.greet), 3200, isBack ? 'dance' : 'wave'), 350);
+    setTimeout(() => react(isBack ? 'party' : 'happy', (isBack ? pick(phrases.back) : withSeason(phrases.greet, 0.35)), 3200, isBack ? 'dance' : 'wave'), 350);
     scheduleIdleAction();
   }
 
@@ -287,7 +292,7 @@ export function initSwaggy() {
         act(name);
         if (Math.random() < 0.45) {
           const own = { glasses: phrases.glasses, dance: phrases.dance, stretch: phrases.stretch };
-          say(pick(own[name]?.length && Math.random() < 0.6 ? own[name] : phrases.idle), 2800);
+          say(own[name]?.length && Math.random() < 0.6 ? pick(own[name]) : withSeason(phrases.idle), 2800);
         }
       }
       scheduleIdleAction();
@@ -361,7 +366,7 @@ export function initSwaggy() {
       } else {
         sound.play('note', { index: Math.floor(Math.random() * 8) });
         const party = Math.random() < 0.25;
-        react(party ? 'party' : 'happy', pick(phrases.tap), party ? 2200 : 1500, party ? 'dance' : pick(['jump', 'surprise', 'flip', 'highfive', 'wave', 'flex']));
+        react(party ? 'party' : 'happy', rare() || pick(phrases.tap), party ? 2200 : 1500, party ? 'dance' : pick(['jump', 'surprise', 'flip', 'highfive', 'wave', 'flex']));
       }
     });
 

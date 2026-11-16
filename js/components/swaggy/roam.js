@@ -8,6 +8,10 @@ import { talk } from './art.js';
 import { swaggy3d, mountSwaggy3d, preloadSwaggy3d, ACTION_TIME } from './sw3d.js';
 import { LITE } from '../../utils/perf.js';
 import { toast } from '../toast.js';
+import { merged, seasonal, rare } from './phrases.js';
+import { BRAND } from '../../config.js';
+import { getProduct } from '../../data/products.js';
+import { formatPrice } from '../../utils/format.js';
 
 /**
  * Swaggy por la página
@@ -36,7 +40,12 @@ const root = document.documentElement;
 const parcheOpen = () => !!document.querySelector('.parche');
 
 export function initSwaggyRoam() {
-  const phrases = SWAGGY.phrases || {};
+  const phrases = merged();
+  // A veces dice una frase de la fecha (Navidad, quincena, viernes…) en vez de la normal
+  const withSeason = (list, chance = 0.3) => {
+    const dated = seasonal();
+    return dated.length && Math.random() < chance ? pick(dated) : pick(list);
+  };
 
   // ---------- El que se asoma ----------
   const roam = html(`
@@ -95,7 +104,7 @@ export function initSwaggyRoam() {
     sound.play('note', { index: Math.floor(Math.random() * 8) });
     svg.dataset.mood = 'party';
     act(pick(['flip', 'highfive', 'jump']));
-    bubble.textContent = pick(phrases.tap);
+    bubble.textContent = rare() || pick(phrases.tap);
     roam.classList.add('is-talking');
     talk(svg, bubble.textContent);
     clearTimeout(hideTimer);
@@ -112,7 +121,7 @@ export function initSwaggyRoam() {
         if (!sec || seen.has(sec.key)) return;
         if (!root.classList.contains('is-entered') || root.classList.contains('is-locked')) return;
         if (Date.now() - lastShow < COOLDOWN || document.hidden) return;
-        const text = pick(phrases.sections?.[sec.key]);
+        const text = withSeason(phrases.sections?.[sec.key], 0.2);
         if (!text) return;
         if (show({ side: sec.side, mood: 'chill', action: pick(['wave', 'glasses', 'look', 'wave']), text })) {
           seen.add(sec.key);
@@ -128,6 +137,7 @@ export function initSwaggyRoam() {
 
   // ---------- Reacciona al carrito ----------
   let count = getTotals().count;
+  let subtotalBefore = getTotals().subtotal;
   let checkingOut = false;
   bus.on('cart:checkout', () => (checkingOut = true));
   cartStore.subscribe((state) => {
@@ -139,9 +149,79 @@ export function initSwaggyRoam() {
       setTimeout(() => show({ side: 'bottom', mood: 'party', action: 'dance', text: pick(phrases.checkout), ms: 3600 }), 500);
       return;
     }
-    if (next > prev) show({ side: 'left', mood: 'party', action: 'dance', text: pick(phrases.cartAdd), ms: 3000 });
-    else if (next < prev) show({ side: 'left', mood: 'sad', action: '', text: pick(phrases.cartRemove), ms: 3000 });
+    if (next > prev) {
+      // Envío gratis: avisa cuando lo desbloqueas o cuando te falta poquito
+      const limit = BRAND.freeShippingFrom || 0;
+      const { subtotal } = getTotals(state.items);
+      let text = pick(phrases.cartAdd);
+      if (limit && subtotal >= limit && subtotalBefore < limit) text = pick(phrases.freeShipping);
+      else if (limit && subtotal < limit && limit - subtotal <= limit * 0.35) text = fill(pick(phrases.almostFree), { falta: formatPrice(limit - subtotal) });
+      subtotalBefore = subtotal;
+      show({ side: 'left', mood: 'party', action: 'dance', text, ms: 3200 });
+      return;
+    }
+    subtotalBefore = getTotals(state.items).subtotal;
+    if (next < prev) show({ side: 'left', mood: 'sad', action: '', text: pick(phrases.cartRemove), ms: 3000 });
   });
+
+  // ---------- Frases según lo que hagas ----------
+  const fill = (text, vars = {}) => text.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+  // Dice algo solo si no hay una ventana abierta y no habló hace poco
+  const say = (key, { side = 'right', mood = 'happy', action = 'wave', ms = 3400, vars, cool = 9000 } = {}) => {
+    if (root.classList.contains('is-locked') || document.hidden) return false;
+    if (Date.now() - lastShow < cool) return false;
+    const text = fill(pick(phrases[key]), vars);
+    return text ? show({ side, mood, action, text, ms }) : false;
+  };
+
+  // Lo último que miraste: lo recuerda al cerrar la prenda y en la próxima visita
+  const memory = storage.get('swaggy-memory', {});
+  let viewing = null;
+  bus.on('quickview:open', ({ id }) => {
+    viewing = getProduct(id);
+    if (viewing) storage.set('swaggy-memory', { ...storage.get('swaggy-memory', {}), lastViewed: id, at: Date.now() });
+  });
+  bus.on('quickview:close', () => {
+    const name = viewing?.name?.replace(/^Camiseta\s+/i, '');
+    viewing = null;
+    if (name && Math.random() < 0.5) setTimeout(() => say('afterView', { side: 'right', action: 'look', vars: { name } }), 700);
+  });
+  if (memory.lastViewed && Date.now() - (memory.at || 0) > 60 * 60 * 1000) {
+    const product = getProduct(memory.lastViewed);
+    const name = product?.name?.replace(/^Camiseta\s+/i, '');
+    if (name) {
+      const tryRemember = () => {
+        if (!root.classList.contains('is-entered')) return setTimeout(tryRemember, 2000);
+        say('remember', { side: 'left', action: 'glasses', vars: { name }, cool: 0 });
+      };
+      setTimeout(tryRemember, 9000);
+    }
+  }
+
+  // Clave incorrecta y último minuto del drop
+  bus.on('drop:wrong', () => say('dropWrong', { side: 'left', mood: 'annoyed', action: 'surprise', ms: 2600, cool: 4000 }));
+  bus.on('drop:final', () => say('dropFinal', { side: 'left', mood: 'party', action: 'dance', ms: 4000, cool: 0 }));
+  // Cambio de drop en el lookbook (no siempre, para no cansar)
+  bus.on('lookbook:drop', () => Math.random() < 0.5 && say('lookbookSwitch', { side: 'bottom', action: 'look', cool: 12000 }));
+
+  // Si bajas la página muy rápido (una vez por visita)
+  let lastY = window.scrollY;
+  let lastT = performance.now();
+  let warned = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (warned) return;
+      const now = performance.now();
+      const speed = Math.abs(window.scrollY - lastY) / Math.max(1, now - lastT); // px por ms
+      lastY = window.scrollY;
+      lastT = now;
+      if (speed > 9 && root.classList.contains('is-entered')) {
+        warned = say('scrollFast', { side: 'right', mood: 'annoyed', action: 'surprise', ms: 2600, cool: 6000 });
+      }
+    },
+    { passive: true },
+  );
 
   // ---------- Swaggy escondido ----------
   const data = storage.get('swaggy', {});
