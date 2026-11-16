@@ -22,56 +22,54 @@
 
 export const LOOKBOOK = {
   title: 'Lookbook',
-  season: 'Drop 01 — Saint Mode',
-  // Crédito de las fotos (se muestra debajo del lookbook)
-  credit: { label: 'Fotos: @crisstian._s', url: 'https://instagram.com/crisstian._s' },
+  season: 'Drop 02 — Bonnie & Clyde',
+  // Crédito de las fotos (se muestra debajo del lookbook). Sin crédito: credit: null
+  credit: null,
   cover: {
-    image: 'assets/images/lookbook/portada-saint.webp',
-    title: 'Saint Mode',
-    kicker: 'Drop 01',
+    image: 'assets/images/lookbook/drop-02/portada.webp',
+    title: 'Bonnie & Clyde',
+    kicker: 'Drop 02',
   },
   looks: [
     {
-      title: 'Saint Mode',
-      image: 'assets/images/lookbook/saint-01.webp',
+      title: 'Bolsa en mano',
+      text: 'Clyde negra/azul. Cero preguntas.',
+      image: 'assets/images/lookbook/drop-02/look-01.webp',
     },
     {
-      title: 'Alas',
-      text: 'Donde otros ven límites, nosotros vemos camino.',
-      image: 'assets/images/lookbook/saint-02.webp',
+      title: 'El botín',
+      text: 'Clyde negra/roja y blanca/azul, repartiendo lo robado.',
+      image: 'assets/images/lookbook/drop-02/look-02.webp',
     },
     {
-      title: 'Devoción',
-      text: 'Por lo que somos.',
-      image: 'assets/images/lookbook/saint-03.webp',
+      title: 'Sin coartada',
+      text: 'Clyde negra/roja.',
+      image: 'assets/images/lookbook/drop-02/look-03.webp',
     },
     {
-      title: 'Arcangel',
-      text: 'Blessed in the streets.',
-      image: 'assets/images/lookbook/saint-04.webp',
+      title: 'Cara de inocente',
+      text: 'Clyde blanca/azul.',
+      image: 'assets/images/lookbook/drop-02/look-04.webp',
     },
     {
-      title: 'Querubín',
-      text: 'No preguntes de dónde vienen las alas.',
-      image: 'assets/images/lookbook/saint-05.webp',
+      title: 'Cubriendo la salida',
+      text: 'Clyde blanca/azul al frente, negra/roja de espaldas.',
+      image: 'assets/images/lookbook/drop-02/look-05.webp',
     },
     {
-      title: 'Dúo celestial',
-      text: 'Two icons, one frequency.',
-      image: 'assets/images/lookbook/saint-06.webp',
+      title: 'Sospechosos de siempre',
+      text: 'Rojo, azul y blanco: todos culpables.',
+      image: 'assets/images/lookbook/drop-02/look-06.webp',
     },
     {
-      title: 'Señal divina',
-      text: 'El comienzo de algo escrito.',
-      image: 'assets/images/lookbook/saint-07.webp',
+      title: 'Manos arriba',
+      text: 'Aquí nadie se rinde.',
+      image: 'assets/images/lookbook/drop-02/look-07.webp',
     },
     {
-      title: 'BLACK & LIGHT',
-      image: 'assets/images/lookbook/saint-09.webp',
-    },
-    {
-      title: 'Es el fin. ¿O no?',
-      image: 'assets/images/lookbook/saint-10.webp',
+      title: 'Bonnie & Clyde',
+      text: 'Estado: ¿capturados?',
+      image: 'assets/images/lookbook/drop-02/look-08.webp',
     },
   ],
 };
