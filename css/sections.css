@@ -659,6 +659,7 @@ html.is-entered .hero__letter {
 .deck {
   --card-w: min(64vw, 340px);
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   justify-items: center;
   gap: 22px;
   padding: 20px var(--gutter) 10px;
@@ -716,6 +717,111 @@ html.is-entered .hero__letter {
   height: 100%;
   object-fit: cover;
   -webkit-user-drag: none;
+}
+
+/* ---------- Carrusel de drops (un mazo por drop) ---------- */
+.deck__carousel {
+  position: relative;
+  justify-self: stretch;
+  width: 100%;
+}
+
+.deck__viewport {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.deck__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.deck__slide {
+  flex: 0 0 100%;
+  display: grid;
+  place-items: center;
+  padding: 22px 0 26px;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.deck__slide--landscape {
+  --card-w: min(76vw, 580px, 70svh);
+}
+
+.deck__slide--landscape .deck__stack {
+  aspect-ratio: 3 / 2;
+}
+
+.deck__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(10, 10, 10, 0.75);
+  color: var(--fg);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+.deck__arrow--prev {
+  left: 0;
+}
+
+.deck__arrow--next {
+  right: 0;
+}
+
+.deck__arrow:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .deck__arrow:not(:disabled):hover {
+    border-color: var(--fg);
+  }
+}
+
+.deck__dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.deck__dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: var(--line);
+  cursor: pointer;
+  transition: width 0.3s var(--ease), background 0.3s;
+}
+
+.deck__dot.is-active {
+  width: 28px;
+  background: var(--fg);
+}
+
+/* En celular se cambia de drop deslizando; las flechas sobran */
+@media (max-width: 720px), (hover: none) {
+  .deck__arrow {
+    display: none;
+  }
 }
 
 /* Portada horizontal: el mazo entero se vuelve horizontal */

@@ -5,8 +5,9 @@ import { sound } from '../audio/sound-manager.js';
 /**
  * Mazo del lookbook
  * -------------------------------------------------------------
- * El lookbook arranca "cerrado": se ve la portada del drop como la
- * carta de arriba de un mazo. Al tocarla, las cartas (los looks) salen
+ * El lookbook arranca "cerrado": un carrusel lateral con un mazo por
+ * drop (flechas, puntos o deslizar para cambiar). Cada portada es la
+ * carta de arriba de su mazo. Al tocarla, las cartas (los looks) salen
  * volando una por una hasta su lugar en el carrusel. Con "Volver a la
  * portada" se recogen de nuevo en el mazo.
  */
@@ -31,50 +32,118 @@ function coverMarkup(cover, season) {
     </span>`;
 }
 
-export function initDeck({ section, track, getPanels, onOpen, cover = {}, season = '' }) {
+export function initDeck({ section, drops, getPanels, onOpen, onSelect }) {
   const deck = $('[data-look-deck]', section);
   const closeBtn = $('[data-look-close]', section);
+  const track = $('[data-look-track]', section);
   if (!deck) {
+    onOpen?.(0);
     section.classList.add('is-open');
     return;
   }
 
+  const multi = drops.length > 1;
   const backs = Array.from(
     { length: BACK_CARDS },
     (_, i) => `<span class="deck__card deck__card--back" style="--i:${i + 1}"></span>`,
   ).join('');
+  const slides = drops
+    .map((drop, i) => {
+      const name = escapeHtml(drop.cover?.title || drop.season);
+      return `
+      <div class="deck__slide" data-deck-slide role="group" aria-roledescription="drop" aria-label="${i + 1} de ${drops.length}: ${name}">
+        <button type="button" class="deck__stack" data-deck-open="${i}" data-cursor="Abrir" aria-label="Abrir el lookbook ${name}">
+          ${backs}
+          <span class="deck__card deck__card--cover">${coverMarkup(drop.cover || {}, drop.season)}</span>
+        </button>
+      </div>`;
+    })
+    .join('');
+
   deck.innerHTML = `
-    <button type="button" class="deck__stack" data-deck-open data-cursor="Abrir"
-      aria-label="Abrir el lookbook ${escapeHtml(cover.title || season)}">
-      ${backs}
-      <span class="deck__card deck__card--cover">${coverMarkup(cover, season)}</span>
-    </button>
-    <p class="deck__hint"><span class="only-mouse">Haz clic en</span><span class="only-touch">Toca</span> la portada para abrir el lookbook</p>`;
+    <div class="deck__carousel">
+      ${multi ? '<button type="button" class="deck__arrow deck__arrow--prev" data-deck-prev aria-label="Drop anterior">‹</button>' : ''}
+      <div class="deck__viewport" data-deck-viewport>${slides}</div>
+      ${multi ? '<button type="button" class="deck__arrow deck__arrow--next" data-deck-next aria-label="Drop siguiente">›</button>' : ''}
+    </div>
+    ${
+      multi
+        ? `<div class="deck__dots">${drops
+            .map((drop, i) => `<button type="button" class="deck__dot" data-deck-dot="${i}" aria-label="${escapeHtml(drop.season)}"></button>`)
+            .join('')}</div>`
+        : ''
+    }
+    <p class="deck__hint"><span class="only-mouse">Haz clic en</span><span class="only-touch">Toca</span> la portada para abrir el lookbook${
+      multi ? '<br><span class="only-mouse">Usa las flechas</span><span class="only-touch">Desliza</span> para ver los otros drops' : ''
+    }</p>`;
 
-  const stack = $('[data-deck-open]', deck);
+  const viewport = $('[data-deck-viewport]', deck);
+  const slideEls = Array.from(deck.querySelectorAll('[data-deck-slide]'));
+  const dots = Array.from(deck.querySelectorAll('[data-deck-dot]'));
+  const prev = $('[data-deck-prev]', deck);
+  const next = $('[data-deck-next]', deck);
 
-  // Si la foto de portada es horizontal, el mazo entero se vuelve horizontal
-  const photo = $('.deck__photo', deck);
-  const checkOrientation = () =>
-    deck.classList.toggle('deck--landscape', photo.naturalWidth > photo.naturalHeight);
-  if (photo) {
-    if (photo.complete && photo.naturalWidth) checkOrientation();
-    else photo.addEventListener('load', checkOrientation, { once: true });
-  }
+  // Cada portada horizontal vuelve su mazo horizontal
+  slideEls.forEach((slide) => {
+    const photo = $('.deck__photo', slide);
+    if (!photo) return;
+    const check = () => slide.classList.toggle('deck__slide--landscape', photo.naturalWidth > photo.naturalHeight);
+    if (photo.complete && photo.naturalWidth) check();
+    else photo.addEventListener('load', check, { once: true });
+  });
+
+  // ---------- Carrusel de drops ----------
+  let active = 0;
+  const setActive = (index) => {
+    index = Math.max(0, Math.min(drops.length - 1, index));
+    if (index !== active) sound.play('tick');
+    active = index;
+    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+    slideEls.forEach((slide, i) => slide.toggleAttribute('inert', i !== index));
+    if (prev) prev.disabled = index === 0;
+    if (next) next.disabled = index === drops.length - 1;
+    onSelect?.(index);
+  };
+  const goTo = (index, smooth = true) => {
+    index = Math.max(0, Math.min(drops.length - 1, index));
+    viewport.scrollTo({ left: index * viewport.clientWidth, behavior: smooth ? 'smooth' : 'auto' });
+  };
+
+  let scrollFrame = 0;
+  viewport.addEventListener(
+    'scroll',
+    () => {
+      cancelAnimationFrame(scrollFrame);
+      scrollFrame = requestAnimationFrame(() => {
+        const index = Math.round(viewport.scrollLeft / Math.max(1, viewport.clientWidth));
+        if (index !== active) setActive(index);
+      });
+    },
+    { passive: true },
+  );
+  prev?.addEventListener('click', () => goTo(active - 1));
+  next?.addEventListener('click', () => goTo(active + 1));
+  dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+  window.addEventListener('resize', () => {
+    if (!section.classList.contains('is-open')) goTo(active, false);
+  });
+  setActive(0);
+
+  // ---------- Abrir y cerrar ----------
   let busy = false;
 
-  const open = () => {
+  const open = (index) => {
     if (busy || section.classList.contains('is-open')) return;
     busy = true;
+    const stack = slideEls[index].querySelector('.deck__stack');
     const from = stack.getBoundingClientRect();
     const fromX = from.left + from.width / 2;
     const fromY = from.top + from.height / 2;
 
+    onOpen?.(index);
     sound.play('whoosh');
     section.classList.add('is-open');
     closeBtn.hidden = false;
-    track.scrollLeft = 0;
-    onOpen?.();
 
     // Cada carta sale del mazo hacia su lugar, girando
     const panels = getPanels();
@@ -118,11 +187,12 @@ export function initDeck({ section, track, getPanels, onOpen, cover = {}, season
       section.classList.remove('is-open');
       closeBtn.hidden = true;
       anims.forEach((a) => a.cancel());
+      goTo(active, false); // el carrusel vuelve al mismo drop
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
       busy = false;
     });
   };
 
-  stack.addEventListener('click', open);
+  slideEls.forEach((slide, i) => $('.deck__stack', slide).addEventListener('click', () => open(i)));
   closeBtn.addEventListener('click', close);
 }

@@ -6,56 +6,61 @@ import { sound } from '../audio/sound-manager.js';
 import { initDeck } from './lookbook-deck.js';
 
 /**
- * Lookbook: empieza como un mazo con la portada del drop; al tocarla
+ * Lookbook: empieza con un carrusel de mazos, uno por drop (se pasa de
+ * uno a otro con las flechas o deslizando). Al tocar una portada
  * los looks salen como cartas a un carrusel que se arrastra con el mouse
  * (PC) o se desliza con el dedo (celular). Suena un tick al cambiar de look.
  * Los looks se definen en js/data/lookbook.js.
  */
 export function initLookbook() {
-  $$('[data-lookbook]').forEach((section) => {
-    const data = LOOKBOOKS[Number(section.dataset.lookbook)];
-    if (data) initOne(section, data);
-  });
-}
-
-function initOne(section, LOOKBOOK) {
+  const section = $('#lookbook');
+  if (!section || !LOOKBOOKS.length) return;
   const track = $('[data-look-track]', section);
   const progress = $('[data-look-progress]', section);
 
-  $('[data-look-title]', section).textContent = LOOKBOOK.title;
-  $('[data-look-season]', section).textContent = LOOKBOOK.season;
-
-  track.innerHTML = LOOKBOOK.looks
-    .map((look, i) => {
-      const media = look.image
-        ? `<img src="${escapeHtml(look.image)}" alt="${escapeHtml(look.title)}" loading="lazy">`
-        : garmentSvg(look.art || 'tee', look.color || '#111111');
-      return `
-      <article class="look${look.image ? ' look--photo' : ''}" data-look
-        style="--look-bg:${escapeHtml(look.bg || '#f4f4f4')};--look-fg:${escapeHtml(look.fg || '#0a0a0a')}">
-        <span class="look__num">${String(i + 1).padStart(2, '0')}</span>
-        <div class="look__art">${media}</div>
-        <div class="look__text"><h3>${escapeHtml(look.title)}</h3>${look.text ? `<p>${escapeHtml(look.text)}</p>` : ''}</div>
-      </article>`;
-    })
-    .join('');
-  const panels = $$('[data-look]', section);
-
-  // Si todos los looks tienen foto, las cartas son verticales
-  section.classList.toggle('has-photos', LOOKBOOK.looks.every((look) => look.image));
-
-  // Crédito del fotógrafo
+  const seasonEl = $('[data-look-season]', section);
   const credit = $('[data-look-credit]', section);
-  if (credit && LOOKBOOK.credit?.label) {
-    credit.textContent = LOOKBOOK.credit.label;
-    if (LOOKBOOK.credit.url) credit.href = LOOKBOOK.credit.url;
-    credit.hidden = false;
-  }
+  $('[data-look-title]', section).textContent = 'Lookbook';
 
-  // Recalcular medidas cuando carguen las fotos
-  track.querySelectorAll('img').forEach((img) =>
-    img.addEventListener('load', () => window.dispatchEvent(new Event('resize')), { once: true }),
-  );
+  // Muestra el nombre y el crédito del drop que está al frente del carrusel
+  const showDrop = (drop) => {
+    seasonEl.textContent = drop.season;
+    if (credit) {
+      credit.hidden = !drop.credit?.label;
+      if (drop.credit?.label) {
+        credit.textContent = drop.credit.label;
+        credit.href = drop.credit.url || '#';
+      }
+    }
+  };
+
+  // Pone en el carrusel los looks del drop elegido
+  let panels = [];
+  const renderLooks = (drop) => {
+    track.innerHTML = drop.looks
+      .map((look, i) => {
+        const media = look.image
+          ? `<img src="${escapeHtml(look.image)}" alt="${escapeHtml(look.title)}" loading="lazy">`
+          : garmentSvg(look.art || 'tee', look.color || '#111111');
+        return `
+        <article class="look${look.image ? ' look--photo' : ''}" data-look
+          style="--look-bg:${escapeHtml(look.bg || '#f4f4f4')};--look-fg:${escapeHtml(look.fg || '#0a0a0a')}">
+          <span class="look__num">${String(i + 1).padStart(2, '0')}</span>
+          <div class="look__art">${media}</div>
+          <div class="look__text"><h3>${escapeHtml(look.title)}</h3>${look.text ? `<p>${escapeHtml(look.text)}</p>` : ''}</div>
+        </article>`;
+      })
+      .join('');
+    panels = $$('[data-look]', section);
+    // Si todos los looks tienen foto, las cartas son verticales
+    section.classList.toggle('has-photos', drop.looks.every((look) => look.image));
+    // Recalcular medidas cuando carguen las fotos
+    track.querySelectorAll('img').forEach((img) =>
+      img.addEventListener('load', () => window.dispatchEvent(new Event('resize')), { once: true }),
+    );
+  };
+
+  showDrop(LOOKBOOKS[0]);
 
   let current = -1;
   const setCurrent = (index, withSound) => {
@@ -174,11 +179,12 @@ function initOne(section, LOOKBOOK) {
 
   initDeck({
     section,
-    track,
+    drops: LOOKBOOKS,
     getPanels: () => panels,
-    cover: LOOKBOOK.cover,
-    season: LOOKBOOK.season,
-    onOpen: () => {
+    onSelect: (index) => showDrop(LOOKBOOKS[index]),
+    onOpen: (index) => {
+      renderLooks(LOOKBOOKS[index]);
+      track.scrollLeft = 0;
       current = -1;
       onScroll();
     },
