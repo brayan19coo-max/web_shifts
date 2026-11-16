@@ -128,10 +128,10 @@ export function playScanner({ title = '', subtitle = '', colors = [] } = {}) {
     // --- Línea de tiempo ---
     requestAnimationFrame(() => overlay.classList.add('is-in'));
 
-    at(250, () => sound.play('scanStart'));
+    at(650, () => sound.play('scanStart'));
 
     // Barrido de bajada: la maleta se vuelve radiografía, cambia de color y pita en cada cosa
-    const SCAN_AT = 800;
+    const SCAN_AT = 1300; // después de que la maleta termina de caer
     at(SCAN_AT, () => {
       overlay.classList.add('is-scanning');
       sound.play('scan', { duration: (SWEEP + 800) / 1000 });

@@ -425,6 +425,12 @@
   perspective: 1300px;
   display: grid;
   place-items: center;
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+.scan.is-in .scan__stage {
+  opacity: 1;
 }
 
 /* ---------- La maleta ---------- */
@@ -434,17 +440,15 @@
   height: 0;
   transform-style: preserve-3d;
   transform: translateY(calc(var(--w) * 0.08)) rotateX(-52deg) rotateY(-16deg) rotateZ(4deg) scale(0.7);
-  opacity: 0;
-  transition: transform 0.9s var(--ease), opacity 0.4s;
+  transition: transform 0.9s var(--ease);
 }
 
 .scan.is-in .scan__case {
-  transform: translateY(calc(var(--w) * 0.08)) rotateX(-52deg) rotateY(-10deg) rotateZ(2deg);
-  opacity: 1;
+  transform: translateY(calc(var(--w) * 0.08)) rotateX(-52deg) rotateY(-10deg) rotateZ(2deg) scale(1);
 }
 
 .scan.is-open .scan__case {
-  transform: translateY(calc(var(--w) * 0.12)) rotateX(-40deg) rotateY(-6deg);
+  transform: translateY(calc(var(--w) * 0.12)) rotateX(-40deg) rotateY(-6deg) rotateZ(0deg) scale(1);
 }
 
 .scan__body,
@@ -814,8 +818,7 @@
 
 @keyframes scan-drop {
   from {
-    transform: translateY(calc(var(--w) * -0.6)) rotateX(-70deg) rotateY(-60deg) rotateZ(12deg) scale(0.55);
-    opacity: 0;
+    transform: translateY(calc(var(--w) * -0.5)) rotateX(-58deg) rotateY(-40deg) rotateZ(10deg) scale(0.6);
   }
 }
 
