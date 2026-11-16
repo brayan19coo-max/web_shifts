@@ -455,3 +455,51 @@
   0%, 60% { opacity: 1; }
   61%, 100% { opacity: 0.15; }
 }
+
+/* Drop 03: toda la parte del drop con las letras de X-Cops
+   (táctica para los títulos, de sistema/cámara para lo demás) */
+.drop--xray .drop__title,
+.drop--xray .countdown span,
+.drop--xray .drop__teaser-title {
+  font-family: 'Black Ops One', var(--font-display);
+  font-weight: 400;
+}
+
+.drop--xray .drop__title {
+  font-size: clamp(56px, 9.5vw, 150px);
+  letter-spacing: 0.02em;
+}
+
+.drop--xray .countdown span {
+  font-size: clamp(30px, 4.4vw, 52px);
+}
+
+.drop--xray .drop__label,
+.drop--xray .countdown small,
+.drop--xray .drop__date,
+.drop--xray .drop__form input,
+.drop--xray .drop__form .btn,
+.drop--xray .drop__msg,
+.drop--xray .drop__granted,
+.drop--xray .drop__teaser-text {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  letter-spacing: 0.08em;
+}
+
+.drop--xray .drop__label,
+.drop--xray .countdown small,
+.drop--xray .drop__form .btn {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.drop--xray .drop__form .btn {
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 720px) {
+  .drop--xray .drop__form .btn {
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+}
