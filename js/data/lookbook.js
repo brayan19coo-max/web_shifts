@@ -57,7 +57,7 @@ const DROP_02 = {
       image: 'assets/images/lookbook/drop-02/look-05.webp',
     },
     {
-      title: 'Sospechosos de siempre',
+      title: 'Los sospechosos de siempre',
       text: 'Rojo, azul y blanco: todos culpables.',
       image: 'assets/images/lookbook/drop-02/look-06.webp',
     },
