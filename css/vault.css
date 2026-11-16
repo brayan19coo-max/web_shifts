@@ -642,7 +642,7 @@
 }
 
 .scan.is-scanning .scan__xray {
-  animation: scan-reveal 1.8s linear forwards;
+  animation: scan-reveal 1.6s linear forwards;
 }
 
 .scan.is-scanned .scan__xray {
@@ -691,7 +691,11 @@
 }
 
 .scan.is-scanning .scan__beam {
-  animation: scan-beam 1.8s linear forwards;
+  animation: scan-beam 1.6s linear forwards;
+}
+
+.scan.is-scanning-up .scan__beam {
+  animation: scan-beam-up 0.8s ease-in-out forwards;
 }
 
 .scan.is-scanned .scan__beam {
@@ -701,13 +705,20 @@
 }
 
 @keyframes scan-beam {
-  0% { top: 22%; opacity: 1; }
+  0% { top: 22%; opacity: 0; }
+  6% { opacity: 1; }
   100% { top: 68%; opacity: 1; }
+}
+
+@keyframes scan-beam-up {
+  0% { top: 68%; opacity: 1; }
+  100% { top: 22%; opacity: 0.2; }
 }
 
 /* ---------- Lo que sale de la maleta ---------- */
 .scan__reveal {
   position: absolute;
+  z-index: 2;
   left: 50%;
   top: 46%;
   width: 70%;
@@ -779,4 +790,145 @@
 
 .scan__title span + span {
   font-size: 0.7em;
+}
+
+/* ---------- Más movimiento ---------- */
+/* La maleta flota mientras la escanean */
+.scan__float {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  animation: scan-float 2.6s ease-in-out infinite;
+}
+
+@keyframes scan-float {
+  0%, 100% { transform: translateY(0) rotateY(0deg); }
+  50% { transform: translateY(calc(var(--w) * -0.025)) rotateY(4deg); }
+}
+
+/* Entrada: cae girando y rebota */
+.scan.is-in .scan__case {
+  animation: scan-drop 1s cubic-bezier(0.25, 1.4, 0.45, 1) backwards;
+}
+
+@keyframes scan-drop {
+  from {
+    transform: translateY(calc(var(--w) * -0.6)) rotateX(-70deg) rotateY(-60deg) rotateZ(12deg) scale(0.55);
+    opacity: 0;
+  }
+}
+
+/* Al saltar los seguros, la maleta se sacude */
+.scan.is-unlocked .scan__float {
+  animation: scan-shake 0.4s ease-in-out;
+}
+
+@keyframes scan-shake {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(-6px) rotateZ(-1.5deg); }
+  40% { transform: translateX(5px) rotateZ(1.2deg); }
+  60% { transform: translateX(-3px) rotateZ(-0.8deg); }
+  80% { transform: translateX(2px); }
+}
+
+.scan.is-open .scan__float {
+  animation: none;
+}
+
+/* Cada cosa brilla cuando el rayo pasa por encima */
+.scan.is-scanning .scan__thing,
+.scan.is-scanning .scan__pistol {
+  animation: scan-hit 0.55s ease-out var(--hit, 0ms) backwards;
+}
+
+@keyframes scan-hit {
+  0% { filter: brightness(1); }
+  25% { filter: brightness(2.6) drop-shadow(0 0 6px var(--xr)); }
+  100% { filter: brightness(1); }
+}
+
+/* Destello de "acceso concedido" */
+.scan__flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, var(--xr), transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scan.is-scanned .scan__flash {
+  animation: scan-flash 0.5s ease-out;
+}
+
+@keyframes scan-flash {
+  0% { opacity: 0; }
+  20% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+
+/* Rayos de luz detrás del logo */
+.scan__rays {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  width: 190%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--xr) 55%, transparent) 0deg 6deg, transparent 6deg 22deg);
+  -webkit-mask-image: radial-gradient(circle, #000 10%, transparent 62%);
+  mask-image: radial-gradient(circle, #000 10%, transparent 62%);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.6s 0.4s;
+  animation: scan-rays 9s linear infinite;
+}
+
+.scan.is-open .scan__rays {
+  opacity: 0.8;
+}
+
+@keyframes scan-rays {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Billetes que salen volando */
+.scan__fly {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 72%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.scan__fly span {
+  position: absolute;
+  left: calc(var(--w) * -0.1);
+  top: calc(var(--w) * -0.07);
+  width: calc(var(--w) * 0.2);
+  aspect-ratio: 1;
+  background: #f4f4f4;
+  -webkit-mask: no-repeat center / contain;
+  mask: no-repeat center / contain;
+  opacity: 0;
+}
+
+.scan.is-open .scan__fly span {
+  animation: scan-fly 1.6s cubic-bezier(0.2, 0.7, 0.3, 1) calc(0.3s + var(--d)) forwards;
+}
+
+@keyframes scan-fly {
+  0% { transform: translate(0, 0) rotate(0deg) scale(0.4); opacity: 0; }
+  15% { opacity: 0.9; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan__float,
+  .scan__rays,
+  .scan.is-open .scan__fly span {
+    animation: none;
+  }
 }

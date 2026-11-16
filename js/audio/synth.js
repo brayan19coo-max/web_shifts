@@ -130,6 +130,53 @@ export const RECIPES = {
     noise(ctx, out, { start: 0.12, duration: 0.7, volume: 0.05, filterFrom: 800, filterTo: 6000 });
   },
 
+  // ---- Escáner de rayos X (desbloqueo del Drop 03) ----
+  // Encendido: un zumbido que sube, como una máquina que arranca
+  scanStart: (ctx, out) => {
+    tone(ctx, out, { from: 90, to: 420, duration: 0.6, volume: 0.09, attack: 0.05 });
+    tone(ctx, out, { type: 'triangle', from: 180, to: 840, duration: 0.6, volume: 0.04, attack: 0.05 });
+    noise(ctx, out, { duration: 0.6, volume: 0.05, filterFrom: 300, filterTo: 2400, q: 2 });
+  },
+
+  // Barrido: zumbido eléctrico con vibración, que sube mientras baja el rayo
+  scan: (ctx, out, { duration = 1.6 } = {}) => {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(140, t);
+    osc.frequency.linearRampToValueAtTime(220, t + duration);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(700, t);
+    filter.frequency.linearRampToValueAtTime(1600, t + duration);
+    lfo.frequency.value = 14; // vibración
+    lfoGain.gain.value = 0.025;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.05, t + 0.12);
+    gain.gain.setValueAtTime(0.05, t + duration - 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+    lfo.connect(lfoGain).connect(gain.gain);
+    osc.connect(filter).connect(gain).connect(out);
+    osc.start(t);
+    lfo.start(t);
+    osc.stop(t + duration + 0.05);
+    lfo.stop(t + duration + 0.05);
+    // tono agudo del sensor por encima
+    tone(ctx, out, { from: 1200, to: 1800, duration, volume: 0.018, attack: 0.1 });
+  },
+
+  // "Bip" del escáner cuando detecta algo
+  beep: (ctx, out) => tone(ctx, out, { type: 'square', from: 1560, duration: 0.07, volume: 0.035 }),
+
+  // Acceso concedido: dos bips que suben
+  granted: (ctx, out) => {
+    tone(ctx, out, { type: 'square', from: 988, duration: 0.1, volume: 0.04 });
+    tone(ctx, out, { type: 'square', from: 1480, start: 0.12, duration: 0.18, volume: 0.04 });
+  },
+
   note: (ctx, out, { index = 0 } = {}) => {
     const f = PENTATONIC[index % PENTATONIC.length];
     tone(ctx, out, { type: 'triangle', from: f, duration: 0.6, volume: 0.12, attack: 0.01 });
