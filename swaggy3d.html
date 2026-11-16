@@ -4601,6 +4601,10 @@ window.__dress = function(o){
   if (sh.back) { front(sh.back, 1024*0.02, 512*0.6, 80, sh.accent); front(sh.back, 1024*0.98, 512*0.6, 80, sh.accent); }
   const tex = new THREE.CanvasTexture(cv); tex.flipY = false;
   const mat = toonMat({color: new THREE.Color('#ffffff'), map: tex});
+  // tela real: el estampado sale del mockup de la prenda (looks/<look>/tela.webp); las mangas van lisas
+  let ready = Promise.resolve();
+  const plain = sh.tex ? toonMat({color: new THREE.Color(sh.base)}) : mat;
+  if (sh.tex) ready = new Promise(res => { const im = new Image(); im.onload = () => { c.save(); c.translate(0, 512); c.scale(1, -1); c.drawImage(im, 0, 0, 1024, 512); c.restore(); tex.needsUpdate = true; res(); }; im.onerror = () => res(); im.src = (window.__texData && window.__texData[sh.tex]) || ('assets/images/swaggy/3d/looks/' + sh.tex + '/tela.webp'); });
   const shell = (geo, off, keep) => {
     const P = geo.attributes.position.array, N = geo.attributes.normal.array, n = P.length/3;
     for (let i = 0; i < n; i++){ P[i*3] += N[i*3]*off; P[i*3+1] += N[i*3+1]*off; P[i*3+2] += N[i*3+2]*off; }
@@ -4613,8 +4617,8 @@ window.__dress = function(o){
     geo.setAttribute('uv', new THREE.BufferAttribute(U, 2));
     return geo;
   };
-  const addMesh = (geo, parent) => {
-    const m = new THREE.Mesh(geo, mat); parent.add(m);
+  const addMesh = (geo, parent, m2) => {
+    const m = new THREE.Mesh(geo, m2 || mat); parent.add(m);
     outlineNormals(geo); const ol = new THREE.Mesh(geo, outMatA); ol.userData.isOutline = true; m.add(ol);
     window.__clothes.push(m);
   };
@@ -4631,7 +4635,7 @@ window.__dress = function(o){
     const ey = ep[1] - pv[1];
     const cut = ey + (sh.long ? -0.42 : 0.03);
     const sg2 = shell(g, 0.055, (x, y) => y > cut);
-    addMesh(sg2, arms[i]);
+    addMesh(sg2, arms[i], plain);
     // la manga se dobla con el codo igual que el brazo (misma piel), así no se parte
     const P0 = sg2.attributes.position.array.slice(), n = P0.length/3, W = new Float32Array(n);
     for (let v = 0; v < n; v++) W[v] = sstep(ey + 0.16, ey - 0.16, P0[v*3+1]);
@@ -4651,9 +4655,10 @@ window.__dress = function(o){
       sg2.attributes.position.needsUpdate = true; sg2.computeVertexNormals(); sg2.computeBoundingSphere();
     };
   });
+  return ready;
 };
 
-const __LOOKS = {'base':{},'clyde-roja':{shirt:{base:'#141414',accent:'#e0303a',text:"SHIFT'S",sub:'Every Bullet Country',accent2:'#ffffff'}},'clyde-azul':{shirt:{base:'#f2f2f2',accent:'#2f5fe0',text:"SHIFT'S",sub:'Every Bullet Country',accent2:'#2a2a2a'}},'bonnie':{shirt:{base:'#141414',accent:'#ff6ccf',text:'BONNIE',sub:'the danger of men',accent2:'#ffffff'}},'saint':{shirt:{base:'#141414',accent:'#ffffff',text:'Saint Mode',size:110,sub:'Blessed in the streets',accent2:'#e0303a'}},'xcops':{cap:true, shirt:{base:'#141414',accent:'#9b4dff',text:'X-COPS',sub:'DIVISION',accent2:'#ff5cbe'}},'pijama':{shirt:{base:'#2b3a67',accent:'#ffd36b',pattern:'pijama',long:true}}};
+const __LOOKS = {'base':{},'clyde-roja':{shirt:{base:'#121212',tex:'clyde-roja'}},'clyde-azul':{shirt:{base:'#f4f4f4',tex:'clyde-azul'}},'bonnie':{shirt:{base:'#121212',tex:'bonnie'}},'saint':{shirt:{base:'#121212',tex:'saint'}},'xcops':{cap:true, shirt:{base:'#141414',accent:'#9b4dff',text:'X-COPS',sub:'DIVISION',accent2:'#ff5cbe'}},'pijama':{shirt:{base:'#2b3a67',accent:'#ffd36b',pattern:'pijama',long:true}}};
 window.__dressLook = function(look){
   const o = __LOOKS[look] || {};
   if (window.__dressCap && !o.cap) { place('gorra', 'hidden'); window.__dressCap = false; }

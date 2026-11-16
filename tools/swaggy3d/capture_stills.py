@@ -17,6 +17,11 @@ async def main():
       await pg.evaluate("""() => { const S = window.__swg; for (let i = 0; i < 30; i++) { S.calm(); window.__step(1 / 30); } S.studio();
         const cam = S.camera; cam.fov = 34; cam.position.set(0.9, 1.6, 6.6); cam.lookAt(0, 1.45, 0); cam.updateProjectionMatrix();
         window.__studioLook = cam.position.clone(); }""")
+      import glob
+      td={}
+      for f in glob.glob('/home/claude/web_shifts/assets/images/swaggy/3d/looks/*/tela.webp'):
+          td[f.split('/')[-2]]='data:image/webp;base64,'+base64.b64encode(open(f,'rb').read()).decode()
+      await pg.evaluate('d => { window.__texData = d; }', td)
       if setup: await pg.evaluate(setup)
       data=await pg.evaluate("""() => { const S = window.__swg; for (let i = 0; i < 40; i++) { S.calm(); S.root.position.set(0,0,0); window.__step(1/30); } return S.renderer.domElement.toDataURL('image/png'); }""")
       open(f'{D}/still-{look}.png','wb').write(base64.b64decode(data.split(',')[1]))

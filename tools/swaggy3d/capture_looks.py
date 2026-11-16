@@ -26,6 +26,11 @@ async def main():
       window.__studioLook = cam.position.clone();
       window.__keep = (mad) => { S.calm(); if (mad) S.setMad(true); S.root.position.x = 0; S.root.position.z = 0; };
     }""")
+    import glob
+    td={}
+    for f in glob.glob('/home/claude/web_shifts/assets/images/swaggy/3d/looks/*/tela.webp'):
+        td[f.split('/')[-2]]='data:image/webp;base64,'+base64.b64encode(open(f,'rb').read()).decode()
+    await pg.evaluate('d => { window.__texData = d; }', td)
     if SETUP: await pg.evaluate(SETUP)
     for step in PLAN:
       frames=await pg.evaluate("""({step, FPS}) => {

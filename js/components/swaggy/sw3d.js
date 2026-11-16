@@ -40,7 +40,7 @@ export const ACTION_TIME = Object.fromEntries(Object.entries(ACTION_ANIM).map(([
 // Cada "look" es Swaggy grabado con esa ropa (assets/images/swaggy/3d/looks/<look>/).
 // 'base' = sin camiseta.
 const LOOK_KEY = 'swaggy-look';
-const LOOK_VERSION = '1';
+const LOOK_VERSION = '2';
 const readLook = () => {
   try {
     return JSON.parse(localStorage.getItem(`shifts:${LOOK_KEY}`)) || 'base';

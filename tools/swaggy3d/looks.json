@@ -1,9 +1,8 @@
 {
- "base": "",
- "clyde-roja": "window.__dress({shirt:{base:'#141414',accent:'#e0303a',text:\"SHIFT'S\",sub:'Every Bullet Country',accent2:'#ffffff'}})",
- "clyde-azul": "window.__dress({shirt:{base:'#f2f2f2',accent:'#2f5fe0',text:\"SHIFT'S\",sub:'Every Bullet Country',accent2:'#2a2a2a'}})",
- "bonnie": "window.__dress({shirt:{base:'#141414',accent:'#ff6ccf',text:'BONNIE',sub:'the danger of men',accent2:'#ffffff'}})",
- "saint": "window.__dress({shirt:{base:'#141414',accent:'#ffffff',text:'Saint Mode',size:110,sub:'Blessed in the streets',accent2:'#e0303a'}})",
+ "clyde-roja": "window.__dress({shirt:{base:'#121212',tex:'clyde-roja'}})",
+ "clyde-azul": "window.__dress({shirt:{base:'#f4f4f4',tex:'clyde-azul'}})",
+ "bonnie": "window.__dress({shirt:{base:'#121212',tex:'bonnie'}})",
+ "saint": "window.__dress({shirt:{base:'#121212',tex:'saint'}})",
  "xcops": "window.__dress({cap:true, shirt:{base:'#141414',accent:'#9b4dff',text:'X-COPS',sub:'DIVISION',accent2:'#ff5cbe'}})",
  "pijama": "window.__dress({shirt:{base:'#2b3a67',accent:'#ffd36b',pattern:'pijama',long:true}})"
 }
