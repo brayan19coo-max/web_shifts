@@ -387,6 +387,19 @@
   filter: drop-shadow(0 0 6px var(--xr, #fff));
 }
 
+/* Radiografías en imagen: la imagen blanca hace de máscara y el color es el del parpadeo */
+.xray__item--img {
+  display: block;
+  background: var(--xr, #fff);
+  -webkit-mask: no-repeat center / contain;
+  mask: no-repeat center / contain;
+}
+
+.drop.is-xray .xray__item--img.is-on {
+  filter: none;
+  opacity: 0.7;
+}
+
 /* En celular y equipos de pocos recursos: sin brillo (más liviano) */
 .perf-lite .drop.is-xray .xray__item.is-on {
   filter: none;
@@ -399,8 +412,3 @@
   opacity: 0.45;
 }
 
-@media (max-width: 720px) {
-  .xray__item {
-    min-width: 70px;
-  }
-}

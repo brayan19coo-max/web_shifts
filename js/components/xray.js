@@ -1,5 +1,6 @@
 import { prefersReducedMotion } from '../utils/dom.js';
 import { LITE, whileVisible } from '../utils/perf.js';
+import { XRAY_DIR, XRAY_IMAGES } from '../data/xray-items.js';
 
 /**
  * Rayos X del drop
@@ -19,29 +20,9 @@ const ITEMS = {
   revolver: `<path d="M62 74Q50 110 40 140L74 146Q78 112 94 82Z" fill="currentColor" fill-opacity="0.13"/><polyline transform="rotate(-62 68 100)" points="56.0,96 60.0,104 64.0,96 68.0,104 72.0,96 76.0,104 80.0,96" fill="none" stroke-width="1.1"/><circle cx="62" cy="114" r="3.2" fill="currentColor" fill-opacity="0.95"/><path d="M60 34H132V74H112L104 82H78L70 74H60Z" fill="currentColor" fill-opacity="0.15"/><path d="M60 34L46 20L55 15L69 33Z" fill="currentColor" fill-opacity="0.42"/><rect x="120" y="40" width="102" height="15" rx="2" fill="currentColor" fill-opacity="0.2"/><rect x="122" y="45.5" width="99" height="4" fill="currentColor" fill-opacity="0.62"/><rect x="132" y="57" width="62" height="5" rx="2" fill="currentColor" fill-opacity="0.42"/><rect x="214" y="33" width="6" height="7" fill="currentColor" fill-opacity="0.6"/><rect x="78" y="38" width="44" height="34" rx="6" fill="currentColor" fill-opacity="0.24"/><rect x="81" y="41" width="38" height="8" rx="3.5" fill="currentColor" fill-opacity="0.75"/><rect x="81" y="52" width="38" height="8" rx="3.5" fill="currentColor" fill-opacity="0.75"/><rect x="81" y="63" width="38" height="8" rx="3.5" fill="currentColor" fill-opacity="0.75"/><path d="M94 82Q98 104 118 102V96Q104 96 102 82Z" fill="currentColor" fill-opacity="0.28"/><path d="M100 82Q106 90 101 98" fill="none" stroke-width="2.2"/><circle cx="100" cy="56" r="2.4" fill="currentColor" fill-opacity="0.95"/>`,
   cuchillo: `<path d="M14 72Q64 44 150 47V80H42Q22 80 14 72Z" fill="currentColor" fill-opacity="0.3"/><path d="M22 73Q70 71 148 73" fill="none" stroke-opacity=".6"/><line x1="62" y1="58" x2="142" y2="56" stroke-width="2.4" stroke-opacity=".7"/><rect x="150" y="57" width="78" height="13" rx="2" fill="currentColor" fill-opacity="0.55"/><rect x="144" y="36" width="11" height="54" rx="3" fill="currentColor" fill-opacity="0.62"/><path d="M155 49H222Q234 49 234 63.5Q234 78 222 78H155Z" fill="currentColor" fill-opacity="0.1"/><circle cx="172" cy="63.5" r="4.2" fill="currentColor" fill-opacity="0.95"/><circle cx="193" cy="63.5" r="4.2" fill="currentColor" fill-opacity="0.95"/><circle cx="214" cy="63.5" r="4.2" fill="currentColor" fill-opacity="0.95"/><circle cx="228" cy="63.5" r="2.6" fill="none"/>`,
   navaja: `<rect x="118" y="70" width="104" height="26" rx="13" fill="currentColor" fill-opacity="0.12"/><rect x="124" y="75" width="92" height="16" rx="8" fill="currentColor" fill-opacity="0.3"/><line x1="140" y1="77" x2="206" y2="77" stroke-width="2" stroke-opacity=".8"/><path d="M128 77L44 56Q20 52 12 62L126 92Z" fill="currentColor" fill-opacity="0.32"/><path d="M20 63L124 88" fill="none" stroke-opacity=".6"/><circle cx="128" cy="83" r="6.5" fill="currentColor" fill-opacity="0.85"/><circle cx="208" cy="83" r="3.2" fill="currentColor" fill-opacity="0.95"/><circle cx="62" cy="64" r="3" fill="none"/>`,
-  fajo: `<rect x="24" y="52" width="192" height="58" rx="2" fill="currentColor" fill-opacity="0.13"/><line x1="24" y1="56" x2="216" y2="56" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="60" x2="216" y2="60" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="64" x2="216" y2="64" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="68" x2="216" y2="68" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="72" x2="216" y2="72" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="76" x2="216" y2="76" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="80" x2="216" y2="80" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="84" x2="216" y2="84" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="88" x2="216" y2="88" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="92" x2="216" y2="92" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="96" x2="216" y2="96" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="100" x2="216" y2="100" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="104" x2="216" y2="104" stroke-opacity=".35" stroke-width=".8"/><line x1="24" y1="108" x2="216" y2="108" stroke-opacity=".35" stroke-width=".8"/><path d="M24 52L40 32H232L216 52Z" fill="currentColor" fill-opacity="0.2"/><path d="M216 52L232 32V90L216 110" fill="none"/><ellipse cx="128" cy="42" rx="22" ry="6" fill="none" stroke-opacity=".7"/><path d="M100 30H130L114 52V112H98V50Z" fill="currentColor" fill-opacity="0.5"/><text x="56" y="47" font-size="12" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.8" stroke="none">$100</text>`,
-  billetes: `<g transform="rotate(-28 90 140)"><rect x="40" y="56" width="150" height="66" rx="3" fill="currentColor" fill-opacity="0.14"/><rect x="47" y="62" width="136" height="54" rx="2" fill="none" stroke-opacity=".55"/><ellipse cx="115" cy="89" rx="17" ry="20" fill="none" stroke-opacity=".7"/><text x="52" y="76" font-size="10" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.75" stroke="none">100</text><text x="160" y="112" font-size="10" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.75" stroke="none">100</text></g><g transform="rotate(-12 90 140)"><rect x="40" y="56" width="150" height="66" rx="3" fill="currentColor" fill-opacity="0.14"/><rect x="47" y="62" width="136" height="54" rx="2" fill="none" stroke-opacity=".55"/><ellipse cx="115" cy="89" rx="17" ry="20" fill="none" stroke-opacity=".7"/><text x="52" y="76" font-size="10" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.75" stroke="none">100</text><text x="160" y="112" font-size="10" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.75" stroke="none">100</text></g><g transform="rotate(4 90 140)"><rect x="40" y="56" width="150" height="66" rx="3" fill="currentColor" fill-opacity="0.14"/><rect x="47" y="62" width="136" height="54" rx="2" fill="none" stroke-opacity=".55"/><ellipse cx="115" cy="89" rx="17" ry="20" fill="none" stroke-opacity=".7"/><text x="52" y="76" font-size="10" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.75" stroke="none">100</text><text x="160" y="112" font-size="10" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.75" stroke="none">100</text></g><g transform="rotate(20 90 140)"><rect x="40" y="56" width="150" height="66" rx="3" fill="currentColor" fill-opacity="0.14"/><rect x="47" y="62" width="136" height="54" rx="2" fill="none" stroke-opacity=".55"/><ellipse cx="115" cy="89" rx="17" ry="20" fill="none" stroke-opacity=".7"/><text x="52" y="76" font-size="10" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.75" stroke="none">100</text><text x="160" y="112" font-size="10" font-family="Arial,sans-serif" font-weight="700" fill="currentColor" fill-opacity="0.75" stroke="none">100</text></g>`,
-  esposas: `<circle cx="62" cy="92" r="34" fill="none" stroke-width="9" stroke-opacity=".38"/><circle cx="62" cy="92" r="34" fill="none" stroke-width="1"/><circle cx="62" cy="92" r="25" fill="none" stroke-width="1"/><rect x="48" y="44" width="28" height="22" rx="4" fill="currentColor" fill-opacity="0.48"/><circle cx="62" cy="53" r="3" fill="currentColor" fill-opacity="0.95"/><line x1="62" y1="56" x2="62" y2="61" stroke-width="2"/><path d="M42 116l4-4M50 122l3-5M59 125l1-6" fill="none" stroke-opacity=".7"/><circle cx="178" cy="92" r="34" fill="none" stroke-width="9" stroke-opacity=".38"/><circle cx="178" cy="92" r="34" fill="none" stroke-width="1"/><circle cx="178" cy="92" r="25" fill="none" stroke-width="1"/><rect x="164" y="44" width="28" height="22" rx="4" fill="currentColor" fill-opacity="0.48"/><circle cx="178" cy="53" r="3" fill="currentColor" fill-opacity="0.95"/><line x1="178" y1="56" x2="178" y2="61" stroke-width="2"/><path d="M158 116l4-4M166 122l3-5M175 125l1-6" fill="none" stroke-opacity=".7"/><ellipse cx="94" cy="50" rx="8" ry="5" fill="none" stroke-width="3" stroke-opacity=".6"/><ellipse cx="108" cy="50" rx="8" ry="5" fill="none" stroke-width="3" stroke-opacity=".6"/><ellipse cx="122" cy="50" rx="8" ry="5" fill="none" stroke-width="3" stroke-opacity=".6"/><ellipse cx="136" cy="50" rx="8" ry="5" fill="none" stroke-width="3" stroke-opacity=".6"/><ellipse cx="150" cy="50" rx="8" ry="5" fill="none" stroke-width="3" stroke-opacity=".6"/>`,
-  placa: `<polygon points="120.0,18.0 102.4,55.7 61.0,60.8 91.5,89.3 83.6,130.2 120.0,110.0 156.4,130.2 148.5,89.3 179.0,60.8 137.6,55.7" fill="currentColor" fill-opacity="0.2"/><circle cx="120" cy="82" r="24" fill="currentColor" fill-opacity="0.32"/><circle cx="120" cy="82" r="18" fill="none" stroke-opacity=".8"/><text x="120" y="87" text-anchor="middle" font-size="11" font-family="Arial,sans-serif" font-weight="800" fill="currentColor" fill-opacity="0.9" stroke="none">X-COPS</text><circle cx="120.0" cy="20.0" r="4" fill="currentColor" fill-opacity="0.85"/><circle cx="62.9" cy="61.5" r="4" fill="currentColor" fill-opacity="0.85"/><circle cx="84.7" cy="128.5" r="4" fill="currentColor" fill-opacity="0.85"/><circle cx="155.3" cy="128.5" r="4" fill="currentColor" fill-opacity="0.85"/><circle cx="177.1" cy="61.5" r="4" fill="currentColor" fill-opacity="0.85"/><rect x="112" y="128" width="16" height="10" rx="2" fill="currentColor" fill-opacity="0.55"/>`,
   balas: `<rect x="50" y="70" width="26" height="74" rx="2" fill="currentColor" fill-opacity="0.3"/><rect x="48" y="140" width="30" height="7" rx="1.5" fill="currentColor" fill-opacity="0.55"/><path d="M51 70V48Q63 12 75 48V70Z" fill="currentColor" fill-opacity="0.7"/><circle cx="63" cy="143.5" r="3.5" fill="currentColor" fill-opacity="0.95"/><circle cx="56" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="63" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="70" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="56" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="63" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="70" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="56" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="63" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="70" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="56" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="63" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="70" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/><rect x="108" y="70" width="26" height="74" rx="2" fill="currentColor" fill-opacity="0.3"/><rect x="106" y="140" width="30" height="7" rx="1.5" fill="currentColor" fill-opacity="0.55"/><path d="M109 70V48Q121 12 133 48V70Z" fill="currentColor" fill-opacity="0.7"/><circle cx="121" cy="143.5" r="3.5" fill="currentColor" fill-opacity="0.95"/><circle cx="114" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="121" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="128" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="114" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="121" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="128" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="114" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="121" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="128" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="114" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="121" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="128" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/><rect x="166" y="70" width="26" height="74" rx="2" fill="currentColor" fill-opacity="0.3"/><rect x="164" y="140" width="30" height="7" rx="1.5" fill="currentColor" fill-opacity="0.55"/><path d="M167 70V48Q179 12 191 48V70Z" fill="currentColor" fill-opacity="0.7"/><circle cx="179" cy="143.5" r="3.5" fill="currentColor" fill-opacity="0.95"/><circle cx="172" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="179" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="186" cy="82" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="172" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="179" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="186" cy="94" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="172" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="179" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="186" cy="106" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="172" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="179" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/><circle cx="186" cy="118" r="1.6" fill="currentColor" fill-opacity="0.85"/>`,
   manopla: `<path d="M14 66Q14 40 40 40H204Q228 40 228 64V72Q228 104 196 112H52Q14 108 14 80Z" fill="currentColor" fill-opacity="0.22"/><circle cx="52" cy="64" r="15" fill="currentColor" fill-opacity="0.0" stroke-width="1.2"/><circle cx="52" cy="64" r="15" fill="#000" fill-opacity=".55" stroke="none"/><circle cx="94" cy="64" r="15" fill="currentColor" fill-opacity="0.0" stroke-width="1.2"/><circle cx="94" cy="64" r="15" fill="#000" fill-opacity=".55" stroke="none"/><circle cx="136" cy="64" r="15" fill="currentColor" fill-opacity="0.0" stroke-width="1.2"/><circle cx="136" cy="64" r="15" fill="#000" fill-opacity=".55" stroke="none"/><circle cx="178" cy="64" r="15" fill="currentColor" fill-opacity="0.0" stroke-width="1.2"/><circle cx="178" cy="64" r="15" fill="#000" fill-opacity=".55" stroke="none"/><path d="M40 96Q120 104 200 96" fill="none" stroke-opacity=".6"/>`,
 };
-
-// Lugares del fondo (en %), pegados a los bordes para no tapar el texto
-const SLOTS = [
-  { x: 2, y: 6, w: 28 },
-  { x: 24, y: 2, w: 18 },
-  { x: 40, y: 8, w: 17 },
-  { x: 2, y: 40, w: 20 },
-  { x: 3, y: 72, w: 27 },
-  { x: 26, y: 82, w: 18 },
-  { x: 44, y: 76, w: 17 },
-  { x: 80, y: 4, w: 25 },
-  { x: 64, y: 2, w: 18 },
-  { x: 86, y: 44, w: 17 },
-  { x: 78, y: 76, w: 27 },
-  { x: 62, y: 84, w: 17 },
-];
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const rand = (min, max) => min + Math.random() * (max - min);
@@ -74,30 +55,57 @@ export function initXray(section, logoEl, { colors = [] } = {}) {
   const layer = document.createElement('div');
   layer.className = 'xray';
   layer.setAttribute('aria-hidden', 'true');
-  const names = Object.keys(ITEMS);
-  const items = names.map((name) => {
-    const el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    el.setAttribute('viewBox', '0 0 240 160');
-    el.setAttribute('class', `xray__item xray__item--${name}`);
-    el.innerHTML = ITEMS[name];
-    layer.append(el);
-    return el;
-  });
+  // Dibujos de armas (SVG) + radiografías en imagen
+  const items = [
+    ...Object.keys(ITEMS).map((name) => {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      el.setAttribute('viewBox', '0 0 240 160');
+      el.setAttribute('class', `xray__item xray__item--${name}`);
+      el.innerHTML = ITEMS[name];
+      el.dataset.r = '1.5';
+      return el;
+    }),
+    ...XRAY_IMAGES.map((img) => {
+      const el = document.createElement('span');
+      el.className = 'xray__item xray__item--img';
+      el.dataset.src = XRAY_DIR + img.src; // la imagen se carga la primera vez que sale
+      el.dataset.r = String(img.r);
+      el.style.aspectRatio = String(img.r);
+      return el;
+    }),
+  ];
+  items.forEach((el) => layer.append(el));
   section.prepend(layer);
 
   const reduced = prefersReducedMotion();
-  const perFlash = LITE ? 4 : 7;
+  const narrow = () => window.innerWidth < 720;
 
+  // Regadas por toda la sección: una cuadrícula con cada pieza corrida al azar
+  // dentro de su casilla, con tamaño y giro distintos (bien relleno, nada en fila).
   const placeItems = () => {
-    const slots = shuffle(SLOTS);
-    const chosen = shuffle(items).slice(0, perFlash);
+    const cols = narrow() ? 3 : 6;
+    const rows = narrow() ? 7 : 4;
+    const cells = shuffle(Array.from({ length: cols * rows }, (_, i) => i));
+    const count = Math.min(cells.length, LITE ? Math.round(cells.length * 0.6) : cells.length - 2);
+    const chosen = shuffle(items).slice(0, count);
     items.forEach((el) => el.classList.remove('is-on'));
     chosen.forEach((el, i) => {
-      const slot = slots[i];
-      el.style.left = `${slot.x}%`;
-      el.style.top = `${slot.y}%`;
-      el.style.width = `${slot.w}%`;
-      el.style.setProperty('--rot', `${Math.round(rand(-35, 35))}deg`);
+      const cell = cells[i];
+      const cw = 100 / cols;
+      const ch = 100 / rows;
+      const r = Number(el.dataset.r) || 1;
+      // ancho en % de la sección, más angosto si la pieza es alta
+      const w = cw * rand(0.55, 0.9) * Math.min(1, Math.max(0.45, r / 1.3));
+      el.style.width = `${w}%`;
+      el.style.left = `${(cell % cols) * cw + rand(0, Math.max(0, cw - w))}%`;
+      el.style.top = `${Math.floor(cell / cols) * ch + rand(0, ch * 0.45)}%`;
+      el.style.setProperty('--rot', `${Math.round(rand(-28, 28))}deg`);
+      if (el.dataset.src) {
+        const url = `url("${el.dataset.src}")`;
+        el.style.webkitMaskImage = url;
+        el.style.maskImage = url;
+        delete el.dataset.src;
+      }
       el.classList.add('is-on');
     });
   };
