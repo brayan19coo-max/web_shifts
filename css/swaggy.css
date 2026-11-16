@@ -1483,7 +1483,7 @@ html.is-xray-flash .sw3d__img {
 /* Ficha policial (Drop 03) */
 .swaggy-mugshot {
   position: fixed;
-  right: clamp(10px, 3vw, 30px);
+  left: 110px;
   bottom: clamp(10px, 3vw, 30px);
   z-index: 84;
   width: clamp(150px, 16vw, 200px);
@@ -1553,5 +1553,12 @@ html.is-xray-flash .sw3d__img {
     bottom: 10px;
     width: auto;
     max-height: 72svh;
+  }
+}
+
+/* En pantallas angostas taparía el texto del drop: no sale */
+@media (max-width: 900px) {
+  .swaggy-mugshot {
+    display: none;
   }
 }
