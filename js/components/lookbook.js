@@ -1,7 +1,7 @@
 import { $, $$, escapeHtml, prefersReducedMotion } from '../utils/dom.js';
 import { clamp } from '../utils/format.js';
 import { garmentSvg } from './product-art.js';
-import { LOOKBOOK } from '../data/lookbook.js';
+import { LOOKBOOKS } from '../data/lookbook.js';
 import { sound } from '../audio/sound-manager.js';
 import { initDeck } from './lookbook-deck.js';
 
@@ -12,7 +12,13 @@ import { initDeck } from './lookbook-deck.js';
  * Los looks se definen en js/data/lookbook.js.
  */
 export function initLookbook() {
-  const section = $('#lookbook');
+  $$('[data-lookbook]').forEach((section) => {
+    const data = LOOKBOOKS[Number(section.dataset.lookbook)];
+    if (data) initOne(section, data);
+  });
+}
+
+function initOne(section, LOOKBOOK) {
   const track = $('[data-look-track]', section);
   const progress = $('[data-look-progress]', section);
 

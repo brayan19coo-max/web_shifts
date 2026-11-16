@@ -1,5 +1,5 @@
 /**
- * LOOKBOOK
+ * LOOKBOOKS (uno por drop, el más nuevo primero)
  * =============================================================
  * Cada "look" es una tarjeta del lookbook. Para usar fotos reales:
  * 1. Sube las fotos a assets/images/lookbook/ (verticales 4:5 o 3:4,
@@ -20,7 +20,7 @@
  * muestra el dibujo de la prenda (art + color) sobre el color bg/fg.
  */
 
-export const LOOKBOOK = {
+const DROP_02 = {
   title: 'Lookbook',
   season: 'Drop 02 — Bonnie & Clyde',
   // Crédito de las fotos (se muestra debajo del lookbook). Sin crédito: credit: null
@@ -73,3 +73,62 @@ export const LOOKBOOK = {
     },
   ],
 };
+
+const DROP_01 = {
+  title: 'Lookbook',
+  season: 'Drop 01 — Saint Mode',
+  // Crédito de las fotos (se muestra debajo del lookbook)
+  credit: { label: 'Fotos: @crisstian._s', url: 'https://instagram.com/crisstian._s' },
+  cover: {
+    image: 'assets/images/lookbook/portada-saint.webp',
+    title: 'Saint Mode',
+    kicker: 'Drop 01',
+  },
+  looks: [
+    {
+      title: 'Saint Mode',
+      image: 'assets/images/lookbook/saint-01.webp',
+    },
+    {
+      title: 'Alas',
+      text: 'Donde otros ven límites, nosotros vemos camino.',
+      image: 'assets/images/lookbook/saint-02.webp',
+    },
+    {
+      title: 'Devoción',
+      text: 'Por lo que somos.',
+      image: 'assets/images/lookbook/saint-03.webp',
+    },
+    {
+      title: 'Arcangel',
+      text: 'Blessed in the streets.',
+      image: 'assets/images/lookbook/saint-04.webp',
+    },
+    {
+      title: 'Querubín',
+      text: 'No preguntes de dónde vienen las alas.',
+      image: 'assets/images/lookbook/saint-05.webp',
+    },
+    {
+      title: 'Dúo celestial',
+      text: 'Two icons, one frequency.',
+      image: 'assets/images/lookbook/saint-06.webp',
+    },
+    {
+      title: 'Señal divina',
+      text: 'El comienzo de algo escrito.',
+      image: 'assets/images/lookbook/saint-07.webp',
+    },
+    {
+      title: 'BLACK & LIGHT',
+      image: 'assets/images/lookbook/saint-09.webp',
+    },
+    {
+      title: 'Es el fin. ¿O no?',
+      image: 'assets/images/lookbook/saint-10.webp',
+    },
+  ],
+};
+
+// Cada lookbook se muestra en su propia sección, en este orden.
+export const LOOKBOOKS = [DROP_02, DROP_01];

@@ -81,7 +81,7 @@
       "./js/components/loader.js": "./js/components/loader.js?v=172946b4",
       "./js/components/logo3d.js": "./js/components/logo3d.js?v=766ada5b",
       "./js/components/lookbook-deck.js": "./js/components/lookbook-deck.js?v=fade19a9",
-      "./js/components/lookbook.js": "./js/components/lookbook.js?v=0e319f0c",
+      "./js/components/lookbook.js": "./js/components/lookbook.js?v=172022f6",
       "./js/components/magnetic.js": "./js/components/magnetic.js?v=f62cf8eb",
       "./js/components/manifesto.js": "./js/components/manifesto.js?v=b0ba1172",
       "./js/components/marquee.js": "./js/components/marquee.js?v=5ca6294c",
@@ -116,7 +116,7 @@
       "./js/core/cart-store.js": "./js/core/cart-store.js?v=00db101a",
       "./js/core/drop-state.js": "./js/core/drop-state.js?v=7890fa81",
       "./js/core/store.js": "./js/core/store.js?v=3f80d2ec",
-      "./js/data/lookbook.js": "./js/data/lookbook.js?v=21842fe0",
+      "./js/data/lookbook.js": "./js/data/lookbook.js?v=f0e551f0",
       "./js/data/products.js": "./js/data/products.js?v=7c26178b",
       "./js/main.js": "./js/main.js?v=56c1d7c1",
       "./js/utils/dom.js": "./js/utils/dom.js?v=9f430828",
@@ -267,7 +267,23 @@
     </section>
 
     <!-- ============ LOOKBOOK ============ -->
-    <section class="lookbook" id="lookbook" aria-label="Lookbook">
+    <section class="lookbook" id="lookbook" aria-label="Lookbook Drop 02" data-lookbook="0">
+      <div class="lookbook__sticky">
+        <div class="lookbook__header">
+          <h2 class="section__title"><span data-look-title>Lookbook</span> <span class="lookbook__season" data-look-season></span></h2>
+          <div class="lookbook__progress"><span data-look-progress></span></div>
+        </div>
+        <div class="deck" data-look-deck></div>
+        <div class="lookbook__track" data-look-track data-cursor="Arrastra"></div>
+        <div class="lookbook__foot">
+          <p class="lookbook__hint" aria-hidden="true">← <span class="only-mouse">arrastra</span><span class="only-touch">desliza</span> para ver más looks →</p>
+          <a class="lookbook__credit" data-look-credit href="#" target="_blank" rel="noopener" hidden></a>
+          <button type="button" class="lookbook__back" data-look-close hidden data-sfx-hover="hover">↺ Volver a la portada</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="lookbook" id="lookbook-01" aria-label="Lookbook Drop 01" data-lookbook="1">
       <div class="lookbook__sticky">
         <div class="lookbook__header">
           <h2 class="section__title"><span data-look-title>Lookbook</span> <span class="lookbook__season" data-look-season></span></h2>
