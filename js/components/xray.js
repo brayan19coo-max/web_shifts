@@ -119,12 +119,17 @@ export function initXray(section, logoEl, { colors = [] } = {}) {
         : `url(#xr-tint-${index}) drop-shadow(0 0 10px ${color}) drop-shadow(0 0 28px ${color})`;
     }
   };
+  const html = document.documentElement;
   const lightsOn = (index) => {
     setColor(index);
     section.classList.add('is-xray');
+    // Swaggy (y lo que quiera) también sale en radiografía
+    html.style.setProperty('--xr', colors[index]);
+    html.classList.add('is-xray-flash');
   };
   const lightsOff = () => {
     section.classList.remove('is-xray');
+    html.classList.remove('is-xray-flash');
     if (logoEl) logoEl.style.filter = '';
   };
 

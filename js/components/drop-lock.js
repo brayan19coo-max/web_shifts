@@ -7,6 +7,7 @@ import { createProductCard, bindQuickView } from './product-card.js';
 import { createLogo3D } from './logo3d.js';
 import { playVault } from './vault.js';
 import { initXray } from './xray.js';
+import { grantUnlock } from './swaggy/closet.js';
 import { playScanner } from './scanner.js';
 import { sound } from '../audio/sound-manager.js';
 import { toast } from './toast.js';
@@ -120,6 +121,8 @@ export function initDropLock() {
   async function unlock({ announce = false } = {}) {
     if (unlocking || section.classList.contains('is-unlocked')) return;
     unlocking = true;
+    // premio en el clóset de Swaggy por abrir este drop (ej. 'drop03')
+    setTimeout(() => grantUnlock(DROP.id.replace('-', '')), announce ? 7000 : 0);
     storage.set(storageKey, true);
     input.blur();
     if (announce) {

@@ -198,6 +198,13 @@ export function initSwaggyRoam() {
     }
   }
 
+  // Frases pedidas por otros módulos (ej. moves.js)
+  const asked = new Set();
+  bus.on('swaggy:say', ({ key, once = true } = {}) => {
+    if (once && asked.has(key)) return;
+    if (say(key, { side: 'left', action: 'look', ms: 2600, cool: 3000 })) asked.add(key);
+  });
+
   // Clave incorrecta y último minuto del drop
   bus.on('drop:wrong', () => say('dropWrong', { side: 'left', mood: 'annoyed', action: 'surprise', ms: 2600, cool: 4000 }));
   bus.on('drop:final', () => say('dropFinal', { side: 'left', mood: 'party', action: 'dance', ms: 4000, cool: 0 }));

@@ -193,6 +193,8 @@ export const SWAGGY = {
     stretch: ['Aaaah… estiramiento de nutria.'],
     // Burbuja del botón flotante
     invite: ['¿Jugamos? 🕹️', 'Ven al parche 👀', 'Psst… por aquí 🦦', 'Tengo un juego para ti.'],
+    // Al cambiarle la ropa en el clóset
+    closet: ['¿Cómo me veo? 😎', 'Este outfit es otro nivel.', 'Ropa nueva, actitud nueva.', 'Con esto salgo a la calle de una.'],
     // Al volver del juego al parche
     home: ['¿Otra o qué?', 'Buena esa. ¿Revancha?', 'Descansa los dedos y vuelve.'],
     // Al perder en un juego
@@ -229,6 +231,8 @@ export const SWAGGY = {
     freeShipping: ['¡Envío gratis desbloqueado! 🚚', 'Listo, el envío va por nuestra cuenta 📦'],
     // Clave incorrecta en el drop
     dropWrong: ['Esa no es, brother 😅', 'Casi… pero no. Las claves salen en el Crew.', 'Intenta otra, que yo no te la puedo decir 🤐'],
+    // Al tocar el campo de la clave del drop
+    dropKey: ['No estoy mirando, escribe tranquilo 🙈', 'Yo no vi nada 🙈', 'Tápate, que hay ojos por todos lados 👀'],
     // Último minuto antes del lanzamiento
     dropFinal: ['¡Ya casi! No te muevas de aquí ⏰', 'Último minuto… ¿sientes eso?', 'Prepárate, que esto se abre ya.'],
     // Al cambiar de drop en el lookbook
@@ -268,6 +272,21 @@ export const SWAGGY = {
     viernesNoche: { weekday: 5, hours: [18, 24], phrases: ['Viernes en la noche… ¿y ese outfit para salir?', 'Hoy se sale bien vestido 😎'] },
     madrugada: { hours: [0, 5], phrases: ['¿Qué haces despierto a esta hora? Yo cuidando la tienda 🌙', 'Las mejores compras se hacen de madrugada 🦉'] },
   },
+  // Clóset: la ropa que se le puede poner a Swaggy (en El parche → 👕 Clóset).
+  // unlock: cómo se gana (sin unlock = disponible de una):
+  //   'days3'  → visitar la web 3 días distintos
+  //   'drop03' → desbloquear el Drop 03 (con la clave o cuando salga)
+  //   'found3' → encontrar a Swaggy escondido 3 veces
+  // La pijama se la pone solo de noche (10 p. m. a 5 a. m.) si no le escogiste nada.
+  looks: [
+    { id: 'base', name: 'Al natural' },
+    { id: 'clyde-roja', name: 'Clyde negra/roja' },
+    { id: 'clyde-azul', name: 'Clyde blanca/azul' },
+    { id: 'bonnie', name: 'Bonnie negra/rosa' },
+    { id: 'saint', name: 'Saint Mode', unlock: 'days3', hint: 'Visita la web 3 días distintos' },
+    { id: 'xcops', name: 'X-Cops Division', unlock: 'drop03', hint: 'Desbloquea el Drop 03' },
+    { id: 'pijama', name: 'Pijama', unlock: 'found3', hint: 'Encuentra a Swaggy escondido 3 veces' },
+  ],
   // Premio de los mini juegos. En null = sin premio.
   // Ejemplo: { minScore: 60, text: '10 % de descuento en tu próxima compra' }
   // Para que aplique a un solo juego, agrega game: 'flap' | 'tapdrop' | 'stack' | 'combo' | 'guard' | 'rhythm' | 'runner' | 'catch'.

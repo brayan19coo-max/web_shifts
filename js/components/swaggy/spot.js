@@ -8,6 +8,8 @@ import { LITE } from '../../utils/perf.js';
 import { GAMES } from './games/index.js';
 import { createMusic } from './games/music.js';
 import { merged, seasonal, rare } from './phrases.js';
+import { openCloset, countVisitDay } from './closet.js';
+import { currentLook } from './sw3d.js';
 
 /**
  * El parche de Swaggy
@@ -65,6 +67,7 @@ function lookAt(svg, x, y) {
 }
 
 export function initSwaggy() {
+  countVisitDay();
   const data = storage.get(KEY, { lastVisit: 0, best: {} });
   const phrases = merged();
   const withSeason = (list, chance = 0.3) => {
@@ -146,6 +149,7 @@ export function initSwaggy() {
         <div class="parche__top">
           <p class="parche__title">${escapeHtml(SWAGGY.spotName).replace(escapeHtml(SWAGGY.name), `<em>${escapeHtml(SWAGGY.name)}</em>`)}</p>
           <span class="parche__top-btns">
+            <button type="button" class="parche__arcade-btn parche__closet-btn" data-closet-open aria-haspopup="dialog" aria-label="Clóset de ${escapeHtml(SWAGGY.name)}">👕<span class="parche__closet-label"> Clóset</span></button>
             ${use3d ? '<button type="button" class="parche__arcade-btn" data-arcade-open aria-haspopup="dialog">▶ Arcade</button>' : ''}
             <button type="button" class="icon-btn parche__close" data-parche-close aria-label="Cerrar">✕</button>
           </span>
@@ -207,6 +211,18 @@ export function initSwaggy() {
     requestAnimationFrame(() => overlay.classList.add('is-open'));
     sound.play('open');
     overlay.querySelector('[data-parche-close]').focus({ preventScroll: true });
+
+    // Clóset: cambiarle la ropa (también al Swaggy de la calle 3D)
+    let closeCloset = null;
+    overlay.querySelector('[data-closet-open]').addEventListener('click', () => {
+      if (overlay.querySelector('.closet')) return closeCloset?.();
+      closeCloset = openCloset(overlay, {
+        onPick: (look) => {
+          tell3d({ type: 'swaggy:dress', look: currentLook() });
+          if (!use3d) react('party', pick(phrases.closet), 2000, pick(['spin', 'flex', 'dance']));
+        },
+      });
+    });
 
     if (use3d) {
       bind3d();
@@ -395,6 +411,8 @@ export function initSwaggy() {
     world = overlay.querySelector('.parche__iframe');
     world.addEventListener('load', () => {
       overlay?.querySelector('[data-parche-loading]')?.classList.add('is-done');
+      // la calle 3D se viste igual que el resto de la web
+      tell3d({ type: 'swaggy:dress', look: currentLook() });
       // Esc también funciona cuando el foco está dentro del 3D
       try {
         world.contentWindow.document.addEventListener('keydown', (event) => onKey?.(event));

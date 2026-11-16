@@ -1218,3 +1218,340 @@ html.is-parche .parche .game__stage:active * {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+
+/* ---------- Clóset de Swaggy ---------- */
+.parche__closet-btn {
+  background: #fff;
+}
+
+.closet {
+  position: absolute;
+  top: 70px;
+  right: clamp(10px, 2vw, 24px);
+  bottom: clamp(10px, 2vw, 24px);
+  z-index: 5;
+  width: min(380px, calc(100vw - 20px));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid var(--fg);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #171717, #0c0c0c);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.25s, transform 0.3s var(--ease);
+}
+
+.closet.is-open {
+  opacity: 1;
+  transform: none;
+}
+
+.closet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.closet__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+.closet__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+
+.closet__item {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 10px 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.closet__item.is-on {
+  border-color: var(--fg);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.closet__item.is-locked {
+  cursor: not-allowed;
+}
+
+.closet__item.is-locked .closet__thumb {
+  filter: brightness(0) invert(0.25);
+}
+
+.closet__item.is-shake {
+  animation: closet-shake 0.35s;
+}
+
+@keyframes closet-shake {
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+}
+
+.closet__thumb {
+  width: 92px;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  /* las tiras traen muchos cuadros: se ve solo el primero */
+  background-size: auto 100%;
+}
+
+.closet__name {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.closet__hint {
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--muted);
+}
+
+.closet__photo {
+  justify-content: center;
+}
+
+@media (hover: hover) {
+  .closet__item:not(.is-locked):hover {
+    border-color: var(--fg);
+  }
+}
+
+/* ---------- Movimientos especiales de Swaggy ---------- */
+/* Rayos X: cuando parpadea el logo del Drop 03, Swaggy sale en radiografía */
+html.is-xray-flash .sw3d__img {
+  filter: grayscale(1) invert(1) brightness(1.15) drop-shadow(0 0 6px var(--xr, #9b4dff));
+}
+
+/* Patineta: cruza la pantalla por abajo */
+.swaggy-skate {
+  --w: clamp(80px, 9vw, 120px);
+  position: fixed;
+  left: 0;
+  bottom: 6px;
+  z-index: 84;
+  width: var(--w);
+  pointer-events: none;
+  transform: translateX(-140%);
+  visibility: hidden;
+}
+
+.swaggy-skate.is-go {
+  visibility: visible;
+  animation: swaggy-skate 5s linear forwards;
+}
+
+.swaggy-skate.is-left.is-go {
+  animation-name: swaggy-skate-back;
+}
+
+.swaggy-skate.is-left .swaggy-skate__rider,
+.swaggy-skate.is-left .swaggy-skate__board {
+  scale: -1 1;
+}
+
+.swaggy-skate__rider .sw3d {
+  width: 100%;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.5));
+}
+
+.swaggy-skate__board {
+  display: block;
+  width: 110%;
+  margin: -14% 0 0 -5%;
+}
+
+.swaggy-skate.is-go .swaggy-skate__rider {
+  animation: swaggy-bob 0.5s ease-in-out infinite;
+}
+
+@keyframes swaggy-skate {
+  from { transform: translateX(-140%); }
+  to { transform: translateX(calc(100vw + 40%)); }
+}
+
+@keyframes swaggy-skate-back {
+  from { transform: translateX(calc(100vw + 40%)); }
+  to { transform: translateX(-140%); }
+}
+
+@keyframes swaggy-bob {
+  50% { translate: 0 -3px; }
+}
+
+/* Grafiti en el pie de página */
+.swaggy-graffiti {
+  position: absolute;
+  right: clamp(10px, 4vw, 60px);
+  top: -18px;
+  width: clamp(150px, 18vw, 230px);
+  height: clamp(110px, 12vw, 150px);
+  pointer-events: none;
+  translate: 0 -100%;
+}
+
+.swaggy-graffiti__guy {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 46%;
+  opacity: 0;
+  transform: translateY(30%);
+  transition: opacity 0.3s, transform 0.5s var(--ease);
+}
+
+.swaggy-graffiti__guy .sw3d {
+  width: 100%;
+}
+
+.swaggy-graffiti__logo {
+  position: absolute;
+  left: 0;
+  top: 8%;
+  width: 62%;
+  transform: rotate(-8deg);
+  clip-path: inset(0 100% 0 0);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
+}
+
+.swaggy-graffiti.is-on .swaggy-graffiti__guy {
+  opacity: 1;
+  transform: none;
+}
+
+.swaggy-graffiti.is-on .swaggy-graffiti__logo {
+  animation: swaggy-spray 1.6s steps(12, end) 0.5s forwards;
+}
+
+@keyframes swaggy-spray {
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* Lluvia de billetes al hacer el pedido */
+.swaggy-rain {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.swaggy-rain span {
+  position: absolute;
+  top: -12%;
+  width: clamp(60px, 8vw, 110px);
+  aspect-ratio: 1;
+  background: #b9f5c3;
+  -webkit-mask: no-repeat center / contain;
+  mask: no-repeat center / contain;
+  animation: swaggy-rain 2.6s ease-in var(--d, 0s) forwards;
+}
+
+@keyframes swaggy-rain {
+  to { transform: translate(var(--x, 0), 125vh) rotate(var(--r, 180deg)); }
+}
+
+/* Ficha policial (Drop 03) */
+.swaggy-mugshot {
+  position: fixed;
+  right: clamp(10px, 3vw, 30px);
+  bottom: clamp(10px, 3vw, 30px);
+  z-index: 84;
+  width: clamp(150px, 16vw, 200px);
+  padding: 10px 10px 0;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background: #0d0d10;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateY(130%) rotate(4deg);
+  transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.swaggy-mugshot.is-in {
+  transform: rotate(-2deg);
+  animation: swaggy-flash 0.35s ease-out 0.5s 2;
+}
+
+@keyframes swaggy-flash {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  30% { box-shadow: 0 0 0 999px rgba(255, 255, 255, 0.25); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.swaggy-mugshot__chart {
+  position: absolute;
+  inset: 0 0 26% 0;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.18) 0 1px, transparent 1px 14px);
+}
+
+.swaggy-mugshot__guy {
+  position: relative;
+}
+
+.swaggy-mugshot__guy .sw3d {
+  width: 100%;
+}
+
+.swaggy-mugshot__sign {
+  position: relative;
+  display: grid;
+  margin: -8% -10px 0;
+  padding: 8px 6px;
+  background: #fff;
+  color: #0a0a0a;
+  font-family: 'Black Ops One', var(--font-display);
+  font-size: 18px;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.swaggy-mugshot__sign small {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+@media (max-width: 720px) {
+  .parche__closet-label {
+    display: none;
+  }
+
+  .closet {
+    top: auto;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    max-height: 72svh;
+  }
+}

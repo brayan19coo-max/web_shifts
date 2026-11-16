@@ -21,3 +21,13 @@ Cada archivo es una tira horizontal de cuadros de 240×260 (la cantidad está en
 ## Si cambia el modelo 3D
 
 Herramientas en `tools/swaggy3d/`: `patch.py` arma una copia "estudio" de la escena (sin calle, fondo transparente, reloj controlado), `capture.mjs` graba cada acción con Chromium y `build_sheets.py` arma las tiras. Pásale a Claude el HTML nuevo y las regenera.
+
+## Ropa (clóset de Swaggy)
+
+`looks/<look>/` tiene las mismas 20 tiras pero con Swaggy vestido (camiseta de cada drop, gorra, pijama) y `foto.webp` (foto en alta para "Foto con Swaggy"). La página escoge la carpeta según lo que el visitante eligió en el clóset (`js/components/swaggy/closet.js`, lista en `SWAGGY.looks` de `config.js`). De noche, si no eligió nada, usa `pijama`.
+
+Para agregar o cambiar ropa:
+1. `tools/swaggy3d/dress.js` arma la camiseta (tronco + mangas) con su estampado; `looks.json` tiene cada look.
+2. `patch.py` arma el estudio y luego se pega `dress.js` antes de `window.__swg = {` en `studio/studio.html`.
+3. `capture_looks.py` graba cada look (`plan.json` = las 20 acciones), `build_looks.py <look>` arma las tiras y `capture_stills.py` las fotos.
+4. La calle 3D (`swaggy3d.html`) se viste en vivo con el mensaje `swaggy:dress` (mismo `dress.js` pegado al final de su escena).

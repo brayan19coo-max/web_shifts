@@ -36,22 +36,53 @@ const ACTION_ANIM = {
 /** Duración en segundos de cada acción (para los temporizadores de quien la usa). */
 export const ACTION_TIME = Object.fromEntries(Object.entries(ACTION_ANIM).map(([a, n]) => [a, ANIMS[n] / FPS]));
 
-const url = (name) => `${BASE}${name}.webp?v=${VERSION}`;
-const loaded = new Map(); // nombre → Promise
+// ---------- Ropa (clóset) ----------
+// Cada "look" es Swaggy grabado con esa ropa (assets/images/swaggy/3d/looks/<look>/).
+// 'base' = sin camiseta. De noche (10 p. m. a 5 a. m.), si no escogiste nada, se pone la pijama.
+const LOOK_KEY = 'swaggy-look';
+const LOOK_VERSION = '1';
+const readLook = () => {
+  try {
+    return JSON.parse(localStorage.getItem(`shifts:${LOOK_KEY}`)) || 'base';
+  } catch {
+    return 'base';
+  }
+};
+let chosen = readLook();
+const isNight = () => {
+  const h = new Date().getHours();
+  return h >= 22 || h < 5;
+};
+/** Look que se ve ahora (el escogido, o la pijama de noche si no escogiste ninguno). */
+export const currentLook = () => (chosen === 'base' && isNight() ? 'pijama' : chosen);
+export const chosenLook = () => chosen;
+
+// si una ropa no carga (no existe o falla la red), Swaggy sigue con la de siempre
+const missing = new Set();
+const url = (name, look = currentLook()) =>
+  look === 'base' || missing.has(look) ? `${BASE}${name}.webp?v=${VERSION}` : `${BASE}looks/${look}/${name}.webp?v=${LOOK_VERSION}`;
+const loaded = new Map(); // url → Promise
 
 function load(name) {
-  if (!loaded.has(name)) {
+  const src = url(name);
+  if (!loaded.has(src)) {
     loaded.set(
-      name,
+      src,
       new Promise((resolve) => {
         const img = new Image();
         img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url(name);
+        img.onerror = () => {
+          const look = currentLook();
+          if (look !== 'base' && src.includes('/looks/') && !missing.has(look)) {
+            missing.add(look);
+            load(name).then(resolve);
+          } else resolve(false);
+        };
+        img.src = src;
       }),
     );
   }
-  return loaded.get(name);
+  return loaded.get(src);
 }
 
 /** HTML de un Swaggy 3D. */
@@ -84,9 +115,11 @@ function paint(el, st) {
   const img = el.firstElementChild;
   const n = ANIMS[st.shown];
   if (!img || !n) return;
-  if (img.dataset.anim !== st.shown) {
+  const src = url(st.shown);
+  if (img.dataset.src !== src) {
     img.dataset.anim = st.shown;
-    img.style.backgroundImage = `url("${url(st.shown)}")`;
+    img.dataset.src = src;
+    img.style.backgroundImage = `url("${src}")`;
     img.style.backgroundSize = `${n * 100}% 100%`;
   }
   img.style.backgroundPosition = `${n > 1 ? (st.frame / (n - 1)) * 100 : 0}% 0`;
@@ -149,12 +182,37 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden && visible.size) start();
 });
 
+const all = new Set(); // todos los Swaggy montados
+
+/** Cambia la ropa de todos los Swaggy de la página. */
+export function setSwaggyLook(look) {
+  chosen = look || 'base';
+  try {
+    localStorage.setItem(`shifts:${LOOK_KEY}`, JSON.stringify(chosen));
+  } catch {
+    /* sin almacenamiento: solo dura esta visita */
+  }
+  all.forEach((el) => {
+    if (!el.isConnected) return all.delete(el);
+    const st = state.get(el);
+    if (!st) return;
+    // recarga la animación actual con la ropa nueva y luego la pinta
+    const name = st.shown || st.anim;
+    if (name) load(name).then(() => paint(el, st));
+  });
+  window.dispatchEvent(new CustomEvent('swaggy:look', { detail: { look: currentLook() } }));
+}
+
+/** Dirección de la tira de una animación con un look (para miniaturas del clóset). */
+export const lookStrip = (look, name = 'quieto') => url(name, look);
+
 /** Activa todos los Swaggy 3D que haya dentro de `root` (llamar después de insertarlos). */
 export function mountSwaggy3d(root = document) {
   const els = root.matches?.('[data-sw3d]') ? [root] : [...root.querySelectorAll('[data-sw3d]')];
   els.forEach((el) => {
     if (el._sw3d) return;
     el._sw3d = true;
+    all.add(el);
     if (io) io.observe(el);
     else visible.add(el);
     // si le vuelven a poner la misma acción, que la repita desde el inicio
