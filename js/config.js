@@ -70,7 +70,7 @@ export const DROP = {
   offerEndDate: null,
   timeZone: 'America/Bogota', // zona horaria en la que se muestra la fecha
   autoUnlock: true,
-  passwordHash: 'f9d1c62dc9fee76e7a71c65671eff6f4140c951348830ed419d9e7e5d040a449',
+  passwordHash: 'b05f721f5d7136ef54912e8179a3f05926a6a9d8609a570f16b38180b97a8220',
   // Estética de rayos X: de vez en cuando el logo parpadea en estos colores
   // y en el fondo aparecen armas, cuchillos y dinero como en un escáner.
   // Para quitarla, borra "xray" (o pon xray: null).
