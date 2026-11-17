@@ -1348,7 +1348,8 @@ html.is-parche .parche .game__stage:active * {
 
 /* ---------- Movimientos especiales de Swaggy ---------- */
 /* Rayos X: cuando parpadea el logo del Drop 03, Swaggy sale en radiografía */
-html.is-xray-flash .sw3d__img {
+html.is-xray-flash:not(.perf-lite) .swaggy-roam .sw3d__img,
+html.is-xray-flash:not(.perf-lite) .swaggy-mugshot .sw3d__img {
   filter: grayscale(1) invert(1) brightness(1.15) drop-shadow(0 0 6px var(--xr, #9b4dff));
 }
 

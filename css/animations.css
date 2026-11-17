@@ -175,3 +175,20 @@
 .perf-lite .drawer {
   background: rgba(0, 0, 0, 0.78);
 }
+
+/* Una pantalla completa (El parche, la maleta, la caja fuerte) tapa la página:
+   lo de atrás no se dibuja ni se anima mientras tanto */
+html.is-covered main,
+html.is-covered footer,
+html.is-covered .header,
+html.is-covered .swaggy-roam,
+html.is-covered .swaggy-skate,
+html.is-covered .swaggy-mugshot,
+html.is-covered .marquee {
+  visibility: hidden;
+}
+
+html.is-covered main *,
+html.is-covered footer * {
+  animation-play-state: paused !important;
+}

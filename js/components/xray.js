@@ -28,28 +28,20 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const rand = (min, max) => min + Math.random() * (max - min);
 const shuffle = (list) => list.map((v) => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map((p) => p[1]);
 
-/** Filtro SVG que pinta el blanco del logo del color dado (el contorno negro se queda negro). */
-function tintFilters(colors) {
-  const rows = (hex) => {
-    const n = parseInt(hex.slice(1), 16);
-    const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => (v / 255 / 3).toFixed(4));
-    return `${r} ${r} ${r} 0 0  ${g} ${g} ${g} 0 0  ${b} ${b} ${b} 0 0  0 0 0 1 0`;
-  };
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('width', '0');
-  svg.setAttribute('height', '0');
-  svg.setAttribute('aria-hidden', 'true');
-  svg.style.position = 'absolute';
-  svg.innerHTML = colors
-    .map((c, i) => `<filter id="xr-tint-${i}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${rows(c)}"/></filter>`)
-    .join('');
-  document.body.append(svg);
-}
-
 export function initXray(section, logoEl, { colors = [] } = {}) {
   if (!section || !colors.length) return;
   section.classList.add('drop--xray');
-  tintFilters(colors);
+  // Tinte del logo con filtros CSS (los hace la tarjeta gráfica; el filtro SVG
+  // de antes lo hacía el procesador en cada cuadro y calentaba el celular)
+  const hueOf = (hex) => {
+    const n = parseInt(hex.slice(1), 16);
+    const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => v / 255);
+    const max = Math.max(r, g, b);
+    const d = max - Math.min(r, g, b) || 1;
+    const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return (h * 60 + 360) % 360;
+  };
+  const tints = colors.map((c) => `sepia(1) saturate(6) hue-rotate(${Math.round(hueOf(c) - 38)}deg) brightness(0.95)`);
 
   // Capa de fondo con las radiografías
   const layer = document.createElement('div');
@@ -86,7 +78,7 @@ export function initXray(section, logoEl, { colors = [] } = {}) {
     const cols = narrow() ? 3 : 6;
     const rows = narrow() ? 7 : 4;
     const cells = shuffle(Array.from({ length: cols * rows }, (_, i) => i));
-    const count = Math.min(cells.length, LITE ? Math.round(cells.length * 0.6) : cells.length - 2);
+    const count = Math.min(cells.length, LITE ? 9 : 18);
     const chosen = shuffle(items).slice(0, count);
     items.forEach((el) => el.classList.remove('is-on'));
     chosen.forEach((el, i) => {
@@ -114,9 +106,7 @@ export function initXray(section, logoEl, { colors = [] } = {}) {
     const color = colors[index];
     section.style.setProperty('--xr', color);
     if (logoEl) {
-      logoEl.style.filter = LITE
-        ? `url(#xr-tint-${index})`
-        : `url(#xr-tint-${index}) drop-shadow(0 0 10px ${color}) drop-shadow(0 0 28px ${color})`;
+      logoEl.style.filter = LITE ? tints[index] : `${tints[index]} drop-shadow(0 0 14px ${color})`;
     }
   };
   const html = document.documentElement;
@@ -141,7 +131,6 @@ export function initXray(section, logoEl, { colors = [] } = {}) {
   const scan = async () => {
     if (busy || !running) return;
     busy = true;
-    placeItems();
     let index = Math.floor(Math.random() * colors.length);
     const blinks = reduced ? 1 : Math.round(rand(3, 6));
     for (let i = 0; i < blinks && running; i++) {
@@ -162,9 +151,13 @@ export function initXray(section, logoEl, { colors = [] } = {}) {
     schedule();
   };
 
+  // Las piezas se acomodan mientras está apagado (con tiempo para cargar),
+  // así el parpadeo solo prende y apaga, sin trabajo extra en ese momento
   const schedule = () => {
     clearTimeout(timer);
-    if (running) timer = setTimeout(scan, rand(2600, 6200));
+    if (!running) return;
+    setTimeout(() => running && !busy && placeItems(), 300);
+    timer = setTimeout(scan, rand(2600, 6200));
   };
 
   whileVisible(section, (on) => {

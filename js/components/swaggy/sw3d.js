@@ -162,7 +162,12 @@ function tick(now) {
   last = now;
   if (acc >= 1 / FPS) {
     acc %= 1 / FPS;
-    visible.forEach((el) => (el.isConnected ? step(el) : visible.delete(el)));
+    const covered = document.documentElement.classList.contains('is-covered');
+    visible.forEach((el) => {
+      if (!el.isConnected) return visible.delete(el);
+      if (covered && !el.closest('.parche, .scan, .vault')) return; // tapado por una pantalla completa
+      step(el);
+    });
   }
   // anima a pocos cuadros por segundo: esperar hasta el siguiente en vez de
   // despertar el navegador 60-120 veces por segundo

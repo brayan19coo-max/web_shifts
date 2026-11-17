@@ -1,3 +1,4 @@
+import { setCovered } from '../utils/perf.js';
 import { html, escapeHtml, lockScroll } from '../utils/dom.js';
 import { BRAND, SWAGGY } from '../config.js';
 import { sound } from '../audio/sound-manager.js';
@@ -60,6 +61,7 @@ export function playVault({ title = '', subtitle = '' } = {}) {
   document.body.append(overlay);
   mountSwaggy3d(overlay);
   lockScroll('vault', true);
+  setTimeout(() => setCovered('vault', overlay.isConnected), 450);
 
   const caption = overlay.querySelector('.vault__caption');
   const dial = overlay.querySelector('.vault__dial');
@@ -73,6 +75,7 @@ export function playVault({ title = '', subtitle = '' } = {}) {
       done = true;
       timers.forEach(clearTimeout);
       overlay.classList.add('is-leaving');
+      setCovered('vault', false); // la página vuelve a verse mientras se desvanece
       document.removeEventListener('keydown', onKey);
       setTimeout(() => {
         overlay.remove();

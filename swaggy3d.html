@@ -712,7 +712,8 @@ try{ renderer = new THREE.WebGLRenderer({canvas, antialias:!MOBILE, powerPrefere
 catch(e){ showErr('este navegador no tiene 3D (WebGL) activado.'); return; }
 // Celulares de poca memoria (gama baja): arrancan con menos resolución
 const LOW_END = !!(navigator.deviceMemory && navigator.deviceMemory <= 4);
-let pixelRatio = Math.min(window.devicePixelRatio||1, LOW_END ? 1.25 : MOBILE ? 1.5 : 1.75);
+// En celular arranca en 1.25 (antes 1.5): casi la mitad de píxeles que dibujar y se ve igual de nítido
+let pixelRatio = Math.min(window.devicePixelRatio||1, LOW_END ? 1 : MOBILE ? 1.25 : 1.5);
 renderer.setPixelRatio(pixelRatio);
 renderer.setClearColor(0x38c4ff, 1);
 const scene = new THREE.Scene();
@@ -2974,7 +2975,7 @@ function needsTick(dt, t){
     document.getElementById('nSleep').style.width = Math.round(sleepy*100) + '%'; document.getElementById('nSleepPct').textContent = Math.round(sleepy*100) + '%'; }
   // vitrina: reflejo solo cuando está cerca
   const P = root.position, dv = Math.hypot(P.x - VSPOT.x, P.z - VSPOT.z);
-  vitGlass.userData.on = dv < 1.8 || !!mirrorJob;
+  vitGlass.userData.on = !noMirror && (dv < 1.8 || !!mirrorJob);
   vitGlass.material.uniforms.uOn.value = ease(vitGlass.material.uniforms.uOn.value, vitGlass.userData.on ? 1 : 0, 3, dt);
   // trabajos: ir al carrito / a la vitrina
   if(cartJob){
@@ -3805,11 +3806,15 @@ window.addEventListener('pagehide', saveMem);
 document.addEventListener('visibilitychange', () => { if(document.hidden) saveMem(); });
 
 let perfSum = 0, perfN = 0, quality = 0;
+// Si va lento, baja calidad por pasos: resolución, reflejo de la vitrina, contornos y luz de la lámpara
+let noMirror = LOW_END;
 function lowerQuality(){
   quality++;
   if(pixelRatio > 1.25){ pixelRatio = 1.25; renderer.setPixelRatio(pixelRatio); fit(); return; }
   if(pixelRatio > 1){ pixelRatio = 1; renderer.setPixelRatio(1); fit(); return; }
-  outlinesB.forEach(o => o.visible = false);
+  if(!noMirror){ noMirror = true; return; }
+  if(outlinesB.length && outlinesB[0].visible){ outlinesB.forEach(o => o.visible = false); return; }
+  if(pixelRatio > 0.85){ pixelRatio = 0.85; renderer.setPixelRatio(pixelRatio); fit(); }
 }
 let worldPaused = false;
 // Tope de cuadros por segundo: en celular 30 (pantallas de 120 Hz calentaban
@@ -3822,7 +3827,7 @@ function tick(now){
   lastDraw = now || performance.now();
   const rawDt = clock.getDelta();
   const dt = Math.min(rawDt, 0.05), t = clock.elapsedTime;
-  if(t > 2 && quality < 3){ perfSum += rawDt; perfN++; if(perfN >= 90){ if(perfSum/perfN > 0.042) lowerQuality(); perfSum = 0; perfN = 0; } }
+  if(t > 1.5 && quality < 6){ perfSum += rawDt; perfN++; if(perfN >= 45){ if(perfSum/perfN > (MOBILE ? 0.04 : 0.024)) lowerQuality(); perfSum = 0; perfN = 0; } }
   clockT = t;
   const P = root.position;
   combSayT -= dt; heartT -= dt; ignoredT += dt;

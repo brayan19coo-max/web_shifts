@@ -1,4 +1,5 @@
 import { html, escapeHtml, lockScroll, trapFocus } from '../../utils/dom.js';
+import { setCovered } from '../../utils/perf.js';
 import { storage } from '../../utils/storage.js';
 import { BRAND, SWAGGY } from '../../config.js';
 import { sound } from '../../audio/sound-manager.js';
@@ -209,6 +210,7 @@ export function initSwaggy() {
     lockScroll('parche', true);
     launcher.classList.add('is-hidden');
     requestAnimationFrame(() => overlay.classList.add('is-open'));
+    setTimeout(() => overlay && setCovered('parche', true), 400); // cuando ya tapó todo
     sound.play('open');
     overlay.querySelector('[data-parche-close]').focus({ preventScroll: true });
 
@@ -260,6 +262,7 @@ export function initSwaggy() {
     world = null;
     const el = overlay;
     overlay = null;
+    setCovered('parche', false);
     el.classList.remove('is-open');
     lockScroll('parche', false);
     launcher.classList.remove('is-hidden');

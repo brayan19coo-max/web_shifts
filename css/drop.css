@@ -347,6 +347,7 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  contain: strict; /* mover las piezas no recalcula el resto de la página */
 }
 
 /* Destello del escáner sobre toda la sección */
@@ -363,6 +364,12 @@
 
 .drop.is-xray .xray::before {
   opacity: 0.16;
+}
+
+/* capas propias: prender/apagar el destello no repinta toda la sección */
+.xray::before,
+.xray__item {
+  will-change: opacity;
 }
 
 .xray__item {

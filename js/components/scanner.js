@@ -1,3 +1,4 @@
+import { setCovered } from '../utils/perf.js';
 import { html, escapeHtml, lockScroll, prefersReducedMotion } from '../utils/dom.js';
 import { BRAND } from '../config.js';
 import { sound } from '../audio/sound-manager.js';
@@ -100,6 +101,7 @@ export function playScanner({ title = '', subtitle = '', colors = [] } = {}) {
 
   document.body.append(overlay);
   lockScroll('scan', true);
+  setTimeout(() => setCovered('scan', overlay.isConnected), 450);
 
   const text = overlay.querySelector('[data-scan-text]');
   const timers = [];
@@ -112,6 +114,7 @@ export function playScanner({ title = '', subtitle = '', colors = [] } = {}) {
       done = true;
       timers.forEach(clearTimeout);
       overlay.classList.add('is-leaving');
+      setCovered('scan', false); // la página vuelve a verse mientras se desvanece
       document.removeEventListener('keydown', onKey);
       setTimeout(() => {
         overlay.remove();
